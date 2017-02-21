@@ -82,14 +82,14 @@ class CostOfGoodsController @Inject()(config: AppConfig,
   def whichResult(model: VatFlatRateModel): Future[Int] = {
     if(model.vatReturnPeriod.equalsIgnoreCase(Messages("vatReturnPeriod.option.annual"))){
       model match {
-        case VatFlatRateModel(_,_,Some(cost)) if cost <= 1000 => Future(ResultCodes.ONE)
-        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 >= cost => Future(ResultCodes.TWO) //TODO what the get or else should be
+        case VatFlatRateModel(_,_,Some(cost)) if cost < 1000 => Future(ResultCodes.ONE)
+        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 > cost => Future(ResultCodes.TWO)
         case _ => Future(ResultCodes.THREE)
       }
     } else {
       model match {
-        case VatFlatRateModel(_,_,Some(cost)) if cost <= 250 => Future(ResultCodes.FOUR)
-        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 >= cost => Future(ResultCodes.FIVE) //TODO what the get or else should be
+        case VatFlatRateModel(_,_,Some(cost)) if cost < 250 => Future(ResultCodes.FOUR)
+        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 > cost => Future(ResultCodes.FIVE)
         case _ => Future(ResultCodes.SIX)
       }
     }
