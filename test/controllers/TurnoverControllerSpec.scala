@@ -22,6 +22,7 @@ import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
+import org.scalatest.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
@@ -38,7 +39,8 @@ class TurnoverControllerSpec extends ControllerTestSpec {
   lazy val testMockStateService = mock[StateService]
 
   def createTestController(): TurnoverController = {
-    object TestController extends TurnoverController(mockConfig, mcc, testMockStateService, mockValidatedSession, mockForm)
+    object TestController extends TurnoverController(mockConfig, mcc, testMockStateService, mockValidatedSession, mockForm, mockArticle, headUi, govUkTemplate, header_nav, footer,
+      uiServiceInfo, reportAProblemLink, main_content, main_content_header, footerLinks, uiSidebar, uiInputGroup, uiform, uiErrorSummary)
     TestController
   }
 
@@ -50,7 +52,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
 
   "Calling the .turnover action" when {
 
-    "there is no model in keystore" should {
+    "there is no model in keystore" must {
       lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
       lazy val controller = createTestController()
 
@@ -69,7 +71,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
 
     "Calling the .submitTurnover action with a badRequest and getting an Internal Server Error" when {
 
-      "there is no model in keystore" should {
+      "there is no model in keystore" must {
         lazy val request = FakeRequest("POST", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
           .withFormUrlEncodedBody(("turnover", ""))
         lazy val controller = createTestController()
@@ -84,7 +86,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
       }
     }
 //
-    "there is an annual model in keystore" should {
+    "there is an annual model in keystore" when {
 
       val data = Some(VatFlatRateModel("annually", None, None))
       lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -98,12 +100,13 @@ class TurnoverControllerSpec extends ControllerTestSpec {
       }
 
       "navigate to the annual turnover page" in {
-        Jsoup.parse(bodyOf(result)).title shouldBe messages("turnover.title")
+        val futureResult = await(result)
+        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("turnover.title")
       }
 
     }
 
-    "there is a quarterly model in keystore" should {
+    "there is a quarterly model in keystore" when {
 
       val data = Some(VatFlatRateModel("quarterly", None, None))
       lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -116,11 +119,12 @@ class TurnoverControllerSpec extends ControllerTestSpec {
       }
 
       "navigate to the quarterly turnover page" in {
-        Jsoup.parse(bodyOf(result)).title shouldBe messages("turnover.title")
+        val futureResult = await(result)
+        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("turnover.title")
       }
     }
 
-    "there is an incorrect model in keystore" should {
+    "there is an incorrect model in keystore" must {
 
       val data = Some(VatFlatRateModel("wrong-model", None, None))
       lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -133,14 +137,15 @@ class TurnoverControllerSpec extends ControllerTestSpec {
       }
 
       "show the technical error page" in {
-        Jsoup.parse(bodyOf(result)).title shouldBe messages("techError.title")
+        val futureResult = await(result)
+        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("techError.title")
       }
     }
   }
 
   "Calling the .submitTurnover action" when {
 
-    "not entering any data" should {
+    "not entering any data" must {
       val data = Some(VatFlatRateModel("annually", None, None))
       lazy val request = FakeRequest()
           .withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -153,11 +158,12 @@ class TurnoverControllerSpec extends ControllerTestSpec {
         status(result) shouldBe Status.BAD_REQUEST
       }
       "fail with the correct error message" in {
-        Jsoup.parse(bodyOf(result)).getElementsByClass("error-notification").text should include(messages("error.turnover.required"))
+        val futureResult = await(result)
+        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("error-notification").text should include(messages("error.turnover.required"))
       }
     }
 
-    "submitting a valid turnover" should {
+    "submitting a valid turnover" when {
       lazy val request = FakeRequest()
         .withSession(SessionKeys.sessionId -> s"any-old-id")
         .withFormUrlEncodedBody(("vatReturnPeriod","annually"),("turnover", "10000"))

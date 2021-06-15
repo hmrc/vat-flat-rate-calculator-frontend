@@ -15,21 +15,23 @@
  *@
 
 @import views.html.main_template
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers._
 @import common.Links
-@import uk.gov.hmrc.play.views.html.{helpers => govHelpers}
+@import uk.gov.hmrc.play.views.html.layouts._
+@import layouts.GovUkTemplate
+@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
+@import models.UIHelpersWrapper
 
-@(appConfig: config.AppConfig, costOfGoodsForm: Form[VatFlatRateModel], costOfGoodsPeriodString: String)(implicit request: Request[_], messages: Messages, lang: Lang)
+@(appConfig: config.AppConfig, costOfGoodsForm: Form[VatFlatRateModel], costOfGoodsPeriodString: String, articleLayout: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
 
 @scriptElement = {
 <script type="text/javascript" src='@controllers.routes.Assets.versioned("javascripts/vfr.js")'></script>
 }
 
-@main_template(title = messages("costOfGoods.title"), bodyClasses = None, appConfig = appConfig, scriptElem=Some(scriptElement)) {
+@main_template(title = messages("costOfGoods.title"), bodyClasses = None, appConfig = appConfig, scriptElem=Some(scriptElement), articleLayout = articleLayout, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper = uiHelpersWrapper) {
 
 @if(costOfGoodsForm.hasErrors){
-    @govHelpers.errorSummary(
+    @uiHelpersWrapper.uiErrorSummary(
         Messages("base.errorSummary"), costOfGoodsForm
     )
 }
@@ -57,7 +59,7 @@
     <p>@Html(messages("costOfGoods.para.2", Links.capitalExpenditureGoods))</p>
 </div>
 
-@form(action = controllers.routes.CostOfGoodsController.submitCostOfGoods) {
+@uiHelpersWrapper.uiform(action = controllers.routes.CostOfGoodsController.submitCostOfGoods) {
 
         <div class="form-group">
             @moneyInputFormat(

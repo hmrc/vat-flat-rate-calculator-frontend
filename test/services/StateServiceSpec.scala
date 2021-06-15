@@ -20,16 +20,18 @@ import connectors.KeystoreConnector
 import models.{ResultModel, VatFlatRateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
 
-class StateServiceSpec extends UnitSpec with MockitoSugar {
+class StateServiceSpec extends PlaySpec with MockitoSugar {
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   val mockVatFlatRateModel: Option[VatFlatRateModel] = Some(VatFlatRateModel("annually", Some(10000.00), Some(10.00)))
@@ -49,7 +51,7 @@ class StateServiceSpec extends UnitSpec with MockitoSugar {
     new StateService(mockConnector)
   }
 
-  "Calling StateService .fetchData" should {
+  "Calling StateService .fetchData" must {
     "return a VatReturnPeriodModel when there is one in Keystore" in {
       val service = mockedStateService()
       val result: Future[Option[VatFlatRateModel]] = service.fetchVatFlatRate()
@@ -57,7 +59,7 @@ class StateServiceSpec extends UnitSpec with MockitoSugar {
       await(result) shouldBe Some(VatFlatRateModel("annually", Some(10000.00), Some(10.00)))
     }
   }
-  "Calling StateService .saveData" should {
+  "Calling StateService .saveData" must {
 
     "return a Cachemap with a valid response" in {
       val testData = VatFlatRateModel("annually", Some(10000.00), Some(10.00))
@@ -69,7 +71,7 @@ class StateServiceSpec extends UnitSpec with MockitoSugar {
     }
   }
 
-  "Calling StateService .fetchResultModel" should {
+  "Calling StateService .fetchResultModel" must {
     "return a ResultModel when there is one in Keystore" in {
       val service = mockedStateService()
       val result: Future[Option[ResultModel]] = service.fetchResultModel()
@@ -77,7 +79,7 @@ class StateServiceSpec extends UnitSpec with MockitoSugar {
       await(result) shouldBe Some(VatFlatRateModel("annually", Some(10000.00), Some(10.00)))
     }
   }
-  "Calling StateService .saveResultModel" should {
+  "Calling StateService .saveResultModel" must {
 
     "return a Cachemap with a valid response" in {
       val testData = VatFlatRateModel("annually", Some(10000.00), Some(10.00))

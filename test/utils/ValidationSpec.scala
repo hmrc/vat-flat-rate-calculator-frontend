@@ -17,12 +17,13 @@
 package utils
 
 import assets.TestForm
-import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
 
-class ValidationSpec extends UnitSpec with MockitoSugar {
+class ValidationSpec extends PlaySpec with MockitoSugar {
 
-  "calling isTwoDecimalPlaces" should {
+  "calling isTwoDecimalPlaces" must {
     "return an error message if there are too many decimal places" in {
       val data = Map(
         "turnover" -> "10000.003"
@@ -31,7 +32,7 @@ class ValidationSpec extends UnitSpec with MockitoSugar {
       boundForm.errors.map(_.message) shouldBe List("error.twoDecimalPlaces")
     }
   }
-  "calling isLessThanMaximumTurnover" should {
+  "calling isLessThanMaximumTurnover" must {
     "return an error message if the value added is more than 9999999999.99" in {
       val data = Map(
         "turnover" -> "9999999999.99"
@@ -40,7 +41,7 @@ class ValidationSpec extends UnitSpec with MockitoSugar {
       boundForm.errors.map(_.message) shouldBe List("error.moreThanMaximumTurnover")
     }
   }
-  "calling isPositive" should {
+  "calling isPositive" must {
     "return an error message if the value added is negative" in {
       val data = Map(
         "turnover" -> "-100"

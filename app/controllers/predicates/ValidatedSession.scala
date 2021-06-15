@@ -16,29 +16,28 @@
 
 package controllers.predicates
 
-import javax.inject.Inject
 import config.AppConfig
 import forms.VatFlatRateForm
-import play.api.Logger
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.Logging
+import play.api.i18n.I18nSupport
 import play.api.mvc._
-import views.html.{home => views}
-
-import scala.concurrent.Future
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
+import javax.inject.Inject
+import scala.concurrent.Future
 
 class ValidatedSession @Inject()(config: AppConfig,
                                  mcc: MessagesControllerComponents,
-                                 forms: VatFlatRateForm) extends FrontendController(mcc) with I18nSupport{
+                                 forms: VatFlatRateForm) extends FrontendController(mcc)
+  with I18nSupport with Logging {
 
-  private type PlayRequest = Request[AnyContent] => Result
   private type AsyncRequest = Request[AnyContent] => Future[Result]
 
   def async(action: AsyncRequest): Action[AnyContent] = {
     Action.async { implicit request =>
       if(request.session.get(SessionKeys.sessionId).isEmpty) {
-        Logger.warn("No session ID found; timing out")
+        logger.warn("No session ID found; timing out")
         Future.successful(Redirect(controllers.routes.TimeoutController.timeout()))
       } else {
        action(request)

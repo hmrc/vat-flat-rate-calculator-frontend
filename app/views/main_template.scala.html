@@ -16,6 +16,10 @@
 
 @import views.html.helpers.two_thirds_banner_content_ur
 @import views.html.helpers.two_thirds_banner
+@import uk.gov.hmrc.play.views.html.layouts._
+@import layouts.GovUkTemplate
+@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
+@import models.UIHelpersWrapper
 
 @(title: String,
   sidebarLinks: Option[Html] = None,
@@ -24,15 +28,27 @@
   mainClass: Option[String] = None,
   scriptElem: Option[Html] = None,
   isUserResearchBannerVisible:Boolean = false,
-  appConfig: config.AppConfig)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+  appConfig: config.AppConfig,
+  articleLayout: Article,
+  headUi: HeadWithTrackingConsent,
+  govukTemplate: GovUkTemplate,
+header_nav: HeaderNav,
+footer: Footer,
+uiServiceInfo: ServiceInfo,
+reportAProblemLink: ReportAProblemLink,
+main_content: MainContent,
+main_content_header: MainContentHeader,
+uiHelpersWrapper: UIHelpersWrapper)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @serviceInfoContent = {}
 
-@import uk.gov.hmrc.play.views.html.layouts
+@article = @{
+    articleLayout(mainContent)
+}
 
 @sidebar = {
     @if(sidebarLinks.isDefined) {
-        @layouts.sidebar(sidebarLinks.get, Some("sidebar"))
+        @uiHelpersWrapper.uiSidebar(sidebarLinks.get, Some("sidebar"))
     }
 }
 
@@ -58,8 +74,17 @@
                bodyClasses = bodyClasses,
                sidebar = sidebar,
                contentHeader = contentHeader,
-               mainContent = layouts.article(mainContent),
+               mainContent = article,
                serviceInfoContent = serviceInfoContent,
                scriptElem = scriptElem,
-               afterHeader = afterHeader
+               afterHeader = afterHeader,
+               headUi = headUi,
+               govukTemplate = govukTemplate,
+               header_nav = header_nav,
+               footer = footer,
+               uiServiceInfo = uiServiceInfo,
+               reportAProblemLink = reportAProblemLink,
+               main_content = main_content,
+               main_content_header = main_content_header,
+               uiHelpersWrapper = uiHelpersWrapper
 )

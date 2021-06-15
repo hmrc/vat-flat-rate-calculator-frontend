@@ -18,18 +18,22 @@ package controllers
 
 import helpers.ControllerTestSpec
 import org.jsoup.Jsoup
+import org.scalatest.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout, status}
 
 class TimeoutControllerSpec extends ControllerTestSpec {
 
   class Setup {
     val controller = new TimeoutController(
-      mockConfig, mcc, mockStateService, mockValidatedSession
+      mockConfig, mcc, mockStateService, mockValidatedSession, mockArticle,
+      headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink,
+      main_content, main_content_header, footerLinks, uiSidebar, uiInputGroup, uiform, uiErrorSummary
     )
   }
 
-  "Calling the .timeout action" should {
+  "Calling the .timeout action" must {
 
     "return 200" in new Setup {
       lazy val request = FakeRequest("GET", "/")
@@ -40,7 +44,8 @@ class TimeoutControllerSpec extends ControllerTestSpec {
     "navigate to the timeout page" in new Setup {
       lazy val request = FakeRequest("GET", "/")
       lazy val result = controller.timeout(request)
-      Jsoup.parse(bodyOf(result)).title shouldBe messages("timeout.title")
+      val futureResult = await(result)
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("timeout.title")
     }
   }
 
