@@ -21,6 +21,7 @@ import models.{ResultModel, VatFlatRateModel}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatest.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
 import play.api.i18n.{Lang, Messages}
 import play.api.i18n.Messages.Implicits._
@@ -35,7 +36,9 @@ import uk.gov.hmrc.http.SessionKeys
 class ResultControllerSpec extends ControllerTestSpec {
 
   def createTestController(data: Option[ResultModel]): ResultController = {
-    object TestResultController extends ResultController(mockApplicationConfig, mcc, createMockStateService(), mockValidatedSession)
+    object TestResultController extends ResultController(mockApplicationConfig, mcc, createMockStateService(), mockValidatedSession, mockArticle, headUi, govUkTemplate, header_nav, footer,
+      uiServiceInfo, reportAProblemLink, main_content,
+      main_content_header, footerLinks, uiSidebar, uiInputGroup, uiform, uiErrorSummary)
     def createMockStateService(): StateService = {
       val mockStateService = mock[StateService]
 
@@ -47,7 +50,7 @@ class ResultControllerSpec extends ControllerTestSpec {
     TestResultController
   }
 
-  "Navigating to the result page without a model in keystore" should {
+  "Navigating to the result page without a model in keystore" must  {
     val data = None
     lazy val controller = createTestController(data)
     lazy val request = FakeRequest()
@@ -64,7 +67,7 @@ class ResultControllerSpec extends ControllerTestSpec {
     }
   }
 
-  "Navigating to the result page with a model in keystore, resultCode 1" should {
+  "Navigating to the result page with a model in keystore, resultCode 1" must {
     val data = Some(ResultModel(VatFlatRateModel("annually", Some(2000), Some(500)), 1))
     lazy val request = FakeRequest()
       .withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -76,11 +79,12 @@ class ResultControllerSpec extends ControllerTestSpec {
     }
 
     "navigate to the result page" in {
-      Jsoup.parse(bodyOf(result)).title shouldBe messages("result.title")
+      val futureResult = await(result)
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
     }
   }
 
-  "Navigating to the result page with a model in keystore, resultCode 2" should {
+  "Navigating to the result page with a model in keystore, resultCode 2" must {
     val data = Some(ResultModel(VatFlatRateModel("annually", Some(50001), Some(1000)), 2))
     lazy val request = FakeRequest()
       .withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -92,11 +96,12 @@ class ResultControllerSpec extends ControllerTestSpec {
     }
 
     "navigate to the result page" in {
-      Jsoup.parse(bodyOf(result)).title shouldBe messages("result.title")
+      val futureResult = await(result)
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
     }
   }
 
-  "Navigating to the result page with a model in keystore, resultCode 3" should {
+  "Navigating to the result page with a model in keystore, resultCode 3" must {
     val data = Some(ResultModel(VatFlatRateModel("annually", Some(5000), Some(1000)), 3))
     lazy val request = FakeRequest()
       .withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -108,11 +113,12 @@ class ResultControllerSpec extends ControllerTestSpec {
     }
 
     "navigate to the result page" in {
-      Jsoup.parse(bodyOf(result)).title shouldBe messages("result.title")
+      val futureResult = await(result)
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
     }
   }
 
-  "Navigating to the result page with a model in keystore, resultCode 4" should {
+  "Navigating to the result page with a model in keystore, resultCode 4" must {
     val data = Some(ResultModel(VatFlatRateModel("quarterly", Some(2000), Some(100)), 4))
     lazy val request = FakeRequest()
       .withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -124,11 +130,12 @@ class ResultControllerSpec extends ControllerTestSpec {
     }
 
     "navigate to the result page" in {
-      Jsoup.parse(bodyOf(result)).title shouldBe messages("result.title")
+      val futureResult = await(result)
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
     }
   }
 
-  "Navigating to the result page with a model in keystore, resultCode 5" should {
+  "Navigating to the result page with a model in keystore, resultCode 5" must {
     val data = Some(ResultModel(VatFlatRateModel("quarterly", Some(12501), Some(250)), 5))
     lazy val request = FakeRequest()
       .withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -140,11 +147,12 @@ class ResultControllerSpec extends ControllerTestSpec {
     }
 
     "navigate to the result page" in {
-      Jsoup.parse(bodyOf(result)).title shouldBe messages("result.title")
+      val futureResult = await(result)
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
     }
   }
 
-  "Navigating to the result page with a model in keystore, resultCode 6" should {
+  "Navigating to the result page with a model in keystore, resultCode 6" must {
     val data = Some(ResultModel(VatFlatRateModel("quarterly", Some(12500), Some(250)), 6))
     lazy val request = FakeRequest()
       .withSession(SessionKeys.sessionId -> s"any-old-id")
@@ -156,7 +164,8 @@ class ResultControllerSpec extends ControllerTestSpec {
     }
 
     "navigate to the result page" in {
-      Jsoup.parse(bodyOf(result)).title shouldBe messages("result.title")
+      val futureResult = await(result)
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
     }
   }
 

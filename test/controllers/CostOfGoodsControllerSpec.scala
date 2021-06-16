@@ -22,12 +22,15 @@ import models.VatFlatRateModel
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatest.Matchers.convertToAnyShouldWrapper
 import org.scalatest.concurrent.ScalaFutures
+import play.api.Play.materializer
 import play.api.http.Status
 import play.api.i18n.MessagesProvider
+import play.api.mvc.BodyParsers.parse.materializer
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{await, _}
 import services.StateService
 import uk.gov.hmrc.http.SessionKeys
 
@@ -52,7 +55,10 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       mockStateService
     }
 
-    object TestController extends CostOfGoodsController(mockConfig, mcc, createMockStateService(), mockValidatedSession, mockForm)
+    object TestController extends CostOfGoodsController(mockConfig, mcc, createMockStateService(),
+      mockValidatedSession, mockForm, mockArticle, headUi, govUkTemplate, header_nav,
+      footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header,
+      footerLinks, uiSidebar, uiInputGroup, uiform, uiErrorSummary)
     TestController
   }
 
@@ -75,7 +81,7 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
   
   "Calling the .costOfGoods action" when {
 
-    "there is no session ID" should {
+    "there is no session ID" when{
       val data = mockVatReturnPeriodModel
       lazy val request = FakeRequest("GET", "/")
 
@@ -91,7 +97,7 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
     }
 
-    "there is no model in keystore" should {
+    "there is no model in keystore" when {
       val data = mockNoVatReturnPeriodModel
       lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> "any-old-id")
 
@@ -107,7 +113,7 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
     }
 
-    "navigating to the costOfGoods page for an annual vat return period" should {
+    "navigating to the costOfGoods page for an annual vat return period" when {
       val data = mockAnnually1000NoneModel
       lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> "any-old-id")
 
@@ -119,11 +125,14 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "navigate to the quarterly turnover page" in {
-        messages(s"${Jsoup.parse(bodyOf(result)).body.select("h1")}") shouldBe "<h1>"+messages("costOfGoods.heading", messages("common.year"))+"</h1>"
+
+        val resultCompleted = await(result)
+        messages(s"${Jsoup.parse(bodyOf(resultCompleted)).body.select("h1")}") shouldBe "<h1>"+messages("costOfGoods.heading", messages("common.year"))+"</h1>"
+        //messages(s"${Jsoup.parse(bodyOf(result)).body.select("h1")}") shouldBe "<h1>"+messages("costOfGoods.heading", messages("common.year"))+"</h1>"
       }
     }
 
-    "navigating to the costOfGoods page for a quarterly vat return period" should {
+    "navigating to the costOfGoods page for a quarterly vat return period" when {
       val data = mockQuarterly1000NoneModel
       lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> "any-old-id")
 
@@ -135,14 +144,15 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "navigate to the quarterly turnover page" in {
-        messages(s"${Jsoup.parse(bodyOf(result)).body.select("h1")}") shouldBe "<h1>"+messages("costOfGoods.heading", messages("common.quarter"))+"</h1>"
+        val resultCompleted = await(result)
+        messages(s"${Jsoup.parse(bodyOf(resultCompleted)).body.select("h1")}") shouldBe "<h1>"+messages("costOfGoods.heading", messages("common.quarter"))+"</h1>"
       }
     }
   }
 
   "Calling the .submitCostOfGoods action" when {
 
-    "submitting with a correct model for annual, cost<=1000, cost>0.02t" should {
+    "submitting with a correct model for annual, cost<=1000, cost>0.02t" when {
       val data = mockAnnuallyLessThan1000Model
       lazy implicit val request: Request[AnyContent] = FakeRequest("POST", "/")
         .withSession(SessionKeys.sessionId -> "any-old-id")
@@ -157,14 +167,14 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "return result code 1" in {
-        val result = await(controller.whichResult(data.get))
+        val result = controller.whichResult(data.get)
         assert(result == ResultCodes.ONE)
       }
     }
 
     "Calling the .submitCostOfGoods action (500 error)" when {
 
-      "submitting with a correct model but incorrect value" should {
+      "submitting with a correct model but incorrect value" when {
         val data = mockAnnuallyIncorrect
         lazy val request = FakeRequest("POST", "/").withSession(SessionKeys.sessionId -> "any-old-id")
         lazy val controller = createTestController(data)
@@ -177,7 +187,7 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
 
-    "submitting with a correct model for annual, cost>=1000, cost<0.02t" should {
+    "submitting with a correct model for annual, cost>=1000, cost<0.02t" when {
       val data = mockAnnuallyLessThan2PercentModel
       lazy implicit val request: Request[AnyContent] = FakeRequest("POST", "/")
         .withSession(SessionKeys.sessionId -> "any-old-id")
@@ -191,12 +201,12 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "return result code 2" in {
-        val result = await(controller.whichResult(data.get))
+        val result = controller.whichResult(data.get)
         assert(result == ResultCodes.TWO)
       }
     }
 
-    "submitting with a correct model for annual, cost>1000, cost>0.02t" should {
+    "submitting with a correct model for annual, cost>1000, cost>0.02t" when {
       val data = mockAnnuallyBaseModel
       lazy implicit val request: Request[AnyContent] = FakeRequest("POST", "/")
         .withSession(SessionKeys.sessionId -> "any-old-id")
@@ -210,12 +220,12 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "return result code 3" in {
-        val result = await(controller.whichResult(data.get))
+        val result = controller.whichResult(data.get)
         assert(result == ResultCodes.THREE)
       }
     }
 
-    "submitting with a correct model for quarterly, cost<=250, cost>0.02t" should {
+    "submitting with a correct model for quarterly, cost<=250, cost>0.02t" when {
       val data = mockQuarterlyLessThan250Model
       lazy implicit val request: Request[AnyContent] = FakeRequest("POST", "/")
         .withSession(SessionKeys.sessionId -> "any-old-id")
@@ -229,12 +239,12 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "return result code 4" in {
-        val result = await(controller.whichResult(data.get))
+        val result = controller.whichResult(data.get)
         assert(result == ResultCodes.FOUR)
       }
     }
 
-    "submitting with a correct model for quarterly, cost>250, cost<0.02t" should {
+    "submitting with a correct model for quarterly, cost>250, cost<0.02t" when {
       val data = mockQuarterlyLessThan2PercentModel
       lazy implicit val request: Request[AnyContent] = FakeRequest("POST", "/")
         .withSession(SessionKeys.sessionId -> "any-old-id")
@@ -248,12 +258,12 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "return result code 5" in {
-        val result = await(controller.whichResult(data.get))
+        val result = controller.whichResult(data.get)
         assert(result == ResultCodes.FIVE)
       }
     }
 
-    "submitting with a correct model for quarterly, cost>250, cost>0.02t" should {
+    "submitting with a correct model for quarterly, cost>250, cost>0.02t" when {
       val data = mockQuarterlyBaseModel
       lazy implicit val request: FakeRequest[AnyContent] = FakeRequest("POST", "/")
         .withSession(SessionKeys.sessionId -> "any-old-id")
@@ -267,12 +277,12 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "return result code 6" in {
-        val result = await(controller.whichResult(data.get))
+        val result = controller.whichResult(data.get)
         assert(result == ResultCodes.SIX)
       }
     }
 
-    "there is an error with the form for an annual model" should {
+    "there is an error with the form for an annual model" when {
 
       val data = mockAnnuallyLessThan1000Model
       lazy val request = FakeRequest("POST", "/").withSession(SessionKeys.sessionId -> "any-old-id")
@@ -286,7 +296,7 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
 
     }
 
-    "there is an error with the form for a quarterly model" should {
+    "there is an error with the form for a quarterly model" when {
 
       val data = mockQuarterlyLessThan250Model
       lazy val request = FakeRequest("POST", "/").withSession(SessionKeys.sessionId -> "any-old-id")
@@ -300,14 +310,13 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
 
     }
 
-    "there is an error with the form and no model" should {
+    "there is an error with the form and no model" when {
 
       val data = mockNoVatReturnPeriodModel
       lazy val request = FakeRequest("POST", "/").withSession(SessionKeys.sessionId -> "any-old-id")
 
       lazy val controller = createTestController(data)
       lazy val result = controller.submitCostOfGoods(request)
-
       "return Internal Server Error" in {
         status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       }

@@ -15,16 +15,17 @@
  *@
 
 @import views.html.main_template
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers._
-@import uk.gov.hmrc.play.views.html.helpers
+@import uk.gov.hmrc.play.views.html.layouts._
+@import layouts.GovUkTemplate
+@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
+@import models.UIHelpersWrapper
 
-@(appConfig: config.AppConfig, vatReturnPeriodForm: Form[VatFlatRateModel])(implicit request: Request[_], messages: Messages)
+@(appConfig: config.AppConfig, vatReturnPeriodForm: Form[VatFlatRateModel], article: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messages("vatReturnPeriod.title"), bodyClasses = None, appConfig = appConfig) {
+@main_template(title = messages("vatReturnPeriod.title"), bodyClasses = None, appConfig = appConfig, articleLayout = article, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper= uiHelpersWrapper) {
 
 @if(vatReturnPeriodForm.hasErrors){
-@helpers.errorSummary(
+@uiHelpersWrapper.uiErrorSummary(
 Messages("base.errorSummary"), vatReturnPeriodForm
 )
 }
@@ -36,10 +37,10 @@ Messages("base.errorSummary"), vatReturnPeriodForm
     <p>@messages("vatReturnPeriod.para.2")</p>
 </div>
 
-@form(action = controllers.routes.VatReturnPeriodController.submitVatReturnPeriod) {
+@uiHelpersWrapper.uiform(action = controllers.routes.VatReturnPeriodController.submitVatReturnPeriod) {
 
     <div class="form-group">
-            @helpers.input_radio_group(
+            @uiHelpersWrapper.uiInputGroup(
                 vatReturnPeriodForm("vatReturnPeriod"),
                 Seq(
                     "annually" -> Messages("vatReturnPeriod.option.annual"),

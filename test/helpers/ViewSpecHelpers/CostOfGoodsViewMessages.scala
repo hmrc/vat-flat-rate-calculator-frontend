@@ -16,7 +16,7 @@
 
 package helpers.ViewSpecHelpers
 
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Lang
 
 trait CostOfGoodsViewMessages extends MockitoSugar {

@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package config
+package utils
 
-import com.google.inject.AbstractModule
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
 
-class DIModule extends AbstractModule {
-  override def configure(): Unit = {
-    bind(classOf[AppConfig]) to classOf[ApplicationConfig]
-  }
+trait FakeApplication {
+
+  protected def appBuilder: GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .configure(
+        "metrics.enabled" -> true,
+        "metrics.jvm" -> false
+      )
+
+  lazy val fakeApplication: Application = appBuilder.build()
+
 }

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import sbt.Keys._
+import sbt.Keys.{scalacOptions, _}
 import sbt._
 import play.routes.compiler.InjectedRoutesGenerator
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import com.typesafe.sbt.digest.Import.digest
 import com.typesafe.sbt.web.Import.pipelineStages
 import com.typesafe.sbt.web.Import.Assets
@@ -26,7 +25,6 @@ import com.timushev.sbt.updates.UpdatesPlugin.autoImport.moduleFilterRemoveValue
 import uk.gov.hmrc._
 import DefaultBuildSettings._
 import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 import play.sbt.routes.RoutesKeys.routesGenerator
 
@@ -53,14 +51,11 @@ lazy val microservice: Project = Project(appName, file("."))
       play.sbt.PlayScala,
       SbtAutoBuildPlugin,
       SbtGitVersioning,
-      SbtDistributablesPlugin,
-      SbtArtifactory
     ) ++ plugins : _*)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(playSettings : _*)
   .settings(scoverageSettings: _*)
   .settings(scalaSettings: _*)
-  .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(majorVersion := 0 )
   .settings(
@@ -69,7 +64,12 @@ lazy val microservice: Project = Project(appName, file("."))
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     routesGenerator := InjectedRoutesGenerator,
     pipelineStages in Assets := Seq(digest),
-    scalaVersion := "2.12.11"
+    scalaVersion := "2.12.12",
+    scalacOptions += "-P:silencer:lineContentFilters=^\\w",
+    libraryDependencies ++= Seq(
+      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.1" cross CrossVersion.full),
+      "com.github.ghik" % "silencer-lib" % "1.7.1" % Provided cross CrossVersion.full
+    )
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)

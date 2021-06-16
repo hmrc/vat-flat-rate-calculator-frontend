@@ -17,17 +17,17 @@
 package connectors
 
 import java.util.UUID
-
 import config.ApplicationConfig
 import helpers.ControllerTestSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.Matchers.convertToAnyShouldWrapper
 import play.api.libs.json.Json
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -41,7 +41,7 @@ class KeystoreConnectorSpec extends ControllerTestSpec {
 
   lazy val target = new KeystoreConnector(config, vfrSessionCache)
 
-  "KeystoreConnector .fetchFormData" should {
+  "KeystoreConnector .fetchFormData" must {
 
     val testData = Some("hello")
 
@@ -54,7 +54,7 @@ class KeystoreConnectorSpec extends ControllerTestSpec {
     }
   }
 
-  "KeystoreConnector .saveFormData" should {
+  "KeystoreConnector .saveFormData" must {
     val testData = "hello"
     val returnedCacheMap = CacheMap("key", Map("data" -> Json.toJson(testData)))
 

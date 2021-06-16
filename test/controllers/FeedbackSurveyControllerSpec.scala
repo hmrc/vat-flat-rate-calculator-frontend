@@ -18,8 +18,10 @@ package controllers
 
 import com.codahale.metrics.SharedMetricRegistries
 import helpers.ControllerTestSpec
+import org.scalatest.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{defaultAwaitTimeout, status}
 
 class FeedbackSurveyControllerSpec extends ControllerTestSpec {
   SharedMetricRegistries.clear()

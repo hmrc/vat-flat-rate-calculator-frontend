@@ -16,37 +16,68 @@
 
 package views.home
 
-import config.AppConfig
+import config.{AppConfig, ApplicationConfig}
 import forms.VatFlatRateForm
 import helpers.ViewSpecHelpers.CostOfGoodsViewMessages
+import models.UIHelpersWrapper
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.test.UnitSpec
 import org.jsoup.Jsoup
+import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatestplus.play.PlaySpec
+import play.api.Application
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.Injector
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.{AnyContentAsEmpty, DefaultMessagesControllerComponents, MessagesControllerComponents}
 import views.html.home.costOfGoods
-import play.api.i18n.Messages.Implicits._
+import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
+import uk.gov.hmrc.play.views.html.layouts.{Article, Footer, FooterLinks, HeadWithTrackingConsent, HeaderNav, MainContent, MainContentHeader, ServiceInfo, Sidebar}
+import views.html.layouts.GovUkTemplate
 
-class CostOfGoodsViewSpec extends UnitSpec with GuiceOneAppPerSuite with CostOfGoodsViewMessages {
+class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfGoodsViewMessages {
 
   implicit lazy val fakeRequest = FakeRequest()
   def injector: Injector = app.injector
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
   lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
+  lazy val mockArticle = injector.instanceOf[Article]
+  lazy val headUi = injector.instanceOf[HeadWithTrackingConsent]
+  lazy val govUkTemplate = injector.instanceOf[GovUkTemplate]
+
+  lazy val header_nav = injector.instanceOf[HeaderNav]
+  lazy val footer = injector.instanceOf[Footer]
+  lazy val uiServiceInfo = injector.instanceOf[ServiceInfo]
+  lazy val reportAProblemLink = injector.instanceOf[ReportAProblemLink]
+  lazy val main_content = injector.instanceOf[MainContent]
+  lazy val main_content_header = injector.instanceOf[MainContentHeader]
+  lazy val footerLinks = injector.instanceOf[FooterLinks]
+
+  lazy val uiSidebar = injector.instanceOf[Sidebar]
+  lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
+  lazy val uiform = injector.instanceOf[FormWithCSRF]
+  lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
+
+  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
+
+  val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
+  implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
+
   val costOfGoodsPeriod = "annually"
 
 
-  "the CostOfGoodsView" should {
+  "the CostOfGoodsView" must {
     lazy val CostOfGoodsForm = mockForm.costOfGoodsForm.bind(Map("vatReturnPeriod" -> "annually",
                                                                  "turnover" -> "1000",
-                                                                 "costOfGoods" -> "100"))
+                                                               "costOfGoods" -> "100"))
 
-    lazy val view = costOfGoods(appConfig ,CostOfGoodsForm, costOfGoodsPeriod)
+
+    lazy val view = costOfGoods(appConfig ,CostOfGoodsForm, costOfGoodsPeriod, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
     lazy val doc = Jsoup.parse(view.body)
 
     lazy val errorCostOfGoodsForm = mockForm.costOfGoodsForm.bind(Map("vatReturnPeriod" -> "annually"))
 
-    lazy val errorView = costOfGoods(appConfig ,errorCostOfGoodsForm, costOfGoodsPeriod)
+    lazy val errorView = costOfGoods(appConfig ,errorCostOfGoodsForm, costOfGoodsPeriod, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
     lazy val errorDoc = Jsoup.parse(errorView.body)
 
     "have the correct title" in {
@@ -62,7 +93,7 @@ class CostOfGoodsViewSpec extends UnitSpec with GuiceOneAppPerSuite with CostOfG
     }
 
     "have a h2 with text" in {
-      doc.select("h2").text().dropRight(14) shouldBe costOfGoodDontInclude
+      doc.select("h2").text() shouldBe costOfGoodDontInclude
     }
 
     "have a list of bulletpoints" in {

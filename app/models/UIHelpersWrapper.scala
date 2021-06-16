@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import com.google.inject.AbstractModule
+import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup}
+import uk.gov.hmrc.play.views.html.layouts.{FooterLinks, Sidebar}
 
-class DIModule extends AbstractModule {
-  override def configure(): Unit = {
-    bind(classOf[AppConfig]) to classOf[ApplicationConfig]
-  }
-}
+case class UIHelpersWrapper(uiSidebar: Sidebar, uiInputGroup: InputRadioGroup,
+                            uiform: FormWithCSRF, uiErrorSummary: ErrorSummary, footerLinks: FooterLinks)

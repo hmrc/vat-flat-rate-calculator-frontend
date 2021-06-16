@@ -18,13 +18,18 @@ package controllers
 
 import config.ApplicationConfig
 import controllers.predicates.ValidatedSession
+import models.UIHelpersWrapper
+
 import javax.inject.Inject
-import play.api.Logger
+import play.api.{Logger, Logging}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.StateService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
+import uk.gov.hmrc.play.views.html.layouts.{Article, Footer, FooterLinks, HeadWithTrackingConsent, HeaderNav, MainContent, MainContentHeader, ServiceInfo, Sidebar}
+import views.html.layouts.GovUkTemplate
 import views.html.{home => views}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,14 +38,32 @@ import scala.util.Random
 class ResultController @Inject()(config: ApplicationConfig,
                                  mcc: MessagesControllerComponents,
                                  stateService: StateService,
-                                 session: ValidatedSession) extends FrontendController(mcc) with I18nSupport {
+                                 session: ValidatedSession,
+                                 article: Article,
+                                 headUi: HeadWithTrackingConsent,
+                                 govUkTemplate: GovUkTemplate,
+                                 header_nav: HeaderNav,
+                                 footer: Footer,
+                                 uiServiceInfo: ServiceInfo,
+                                 reportAProblemLink: ReportAProblemLink,
+                                 main_content: MainContent,
+                                 main_content_header: MainContentHeader,
+                                 footerLinks: FooterLinks,
+                                 uiSidebar: Sidebar,
+                                 uiInputGroup: InputRadioGroup,
+                                 uiform: FormWithCSRF,
+                                 uiErrorSummary: ErrorSummary) extends FrontendController(mcc)
+  with I18nSupport with Logging {
+
+  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
 
   val result: Action[AnyContent] = session.async { implicit request =>
     val showUserResearchPanel = setURPanelFlag
     stateService.fetchResultModel.map {
-      case Some(model)  => Ok(views.result(config, model.result, showUserResearchPanel))
+      case Some(model)  => Ok(views.result(config, model.result, showUserResearchPanel, article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo,
+        reportAProblemLink, main_content, main_content_header, uiHelpersWrapper))
       case None         =>
-        Logger.warn("ResultModel could not be retrieved from Keystore")
+        logger.warn("ResultModel could not be retrieved from Keystore")
         Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod())
     }
   }

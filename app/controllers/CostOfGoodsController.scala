@@ -20,17 +20,20 @@ import common.ResultCodes
 import config.AppConfig
 import controllers.predicates.ValidatedSession
 import forms.VatFlatRateForm
-import javax.inject.{Inject, Singleton}
-import models.{ResultModel, VatFlatRateModel}
-import play.api.Logger
+import models.{ResultModel, UIHelpersWrapper, VatFlatRateModel}
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.StateService
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
+import uk.gov.hmrc.play.views.html.layouts._
+import views.html.layouts.GovUkTemplate
 import views.html.{errors => errs, home => views}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -39,7 +42,23 @@ class CostOfGoodsController @Inject()(config: AppConfig,
                                       mcc: MessagesControllerComponents,
                                       stateService: StateService,
                                       session: ValidatedSession,
-                                      forms: VatFlatRateForm) extends FrontendController(mcc) with I18nSupport {
+                                      forms: VatFlatRateForm,
+                                      article: Article,
+                                      headUi: HeadWithTrackingConsent,
+                                      govUkTemplate: GovUkTemplate,
+                                      header_nav: HeaderNav,
+                                      footer: Footer,
+                                      uiServiceInfo: ServiceInfo,
+                                      reportAProblemLink: ReportAProblemLink,
+                                      main_content: MainContent,
+                                      main_content_header: MainContentHeader,
+                                      footerLinks: FooterLinks,
+                                      uiSidebar: Sidebar,
+                                      uiInputGroup: InputRadioGroup,
+                                      uiform: FormWithCSRF,
+                                      uiErrorSummary: ErrorSummary) extends FrontendController(mcc) with I18nSupport with Logging {
+
+  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
 
   val costOfGoods: Action[AnyContent] = session.async { implicit request =>
     routeRequest(Ok, forms.costOfGoodsForm)
@@ -48,7 +67,7 @@ class CostOfGoodsController @Inject()(config: AppConfig,
   val submitCostOfGoods: Action[AnyContent] = session.async { implicit request =>
     forms.costOfGoodsForm.bindFromRequest.fold(
       errors => {
-        Logger.warn("Cost of Goods form could not be bound")
+        logger.warn("Cost of Goods form could not be bound")
         routeRequest(BadRequest, errors)
       },
       success => {
@@ -70,24 +89,24 @@ class CostOfGoodsController @Inject()(config: AppConfig,
       case Some(model) =>
         model.vatReturnPeriod match {
           case s  if s.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.annual"))    =>
-            res(views.costOfGoods(config, form.fill(model), messagesApi("common.year")))
+            res(views.costOfGoods(config, form.fill(model), messagesApi("common.year"), article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper))
           case s  if s.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.quarter"))   =>
-            res(views.costOfGoods(config, form.fill(model), messagesApi("common.quarter")))
+            res(views.costOfGoods(config, form.fill(model), messagesApi("common.quarter"), article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper))
           case _ =>
-            Logger.warn(
+            logger.warn(
               s"""Incorrect value found for Vat Return Period:
                  |Should be [${messagesApi("vatReturnPeriod.option.annual")}] or [${messagesApi("vatReturnPeriod.option.quarter")}] but found ${model.vatReturnPeriod}""".stripMargin
             )
-            InternalServerError(errs.technicalError(config))
+            InternalServerError(errs.technicalError(config, article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, footerLinks, uiHelpersWrapper))
         }
       case _ =>
         res match {
           case Ok =>
-            Logger.warn("[CostOfGoods Controller]No model found in Keystore; redirecting back to landing page")
+            logger.warn("[CostOfGoods Controller]No model found in Keystore; redirecting back to landing page")
             Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod())
           case BadRequest =>
-            Logger.warn("[CostOfGoods Controller]No VatFlatRate model found in Keystore")
-            InternalServerError(errs.technicalError(config))
+            logger.warn("[CostOfGoods Controller]No VatFlatRate model found in Keystore")
+            InternalServerError(errs.technicalError(config, article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, footerLinks, uiHelpersWrapper))
         }
     }
   }
