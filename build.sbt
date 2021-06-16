@@ -27,6 +27,7 @@ import DefaultBuildSettings._
 import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 import play.sbt.routes.RoutesKeys.routesGenerator
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 
 val appName = "vat-flat-rate-calculator-frontend"
 
@@ -50,6 +51,7 @@ lazy val microservice: Project = Project(appName, file("."))
     Seq(
       play.sbt.PlayScala,
       SbtAutoBuildPlugin,
+      SbtDistributablesPlugin,
       SbtGitVersioning,
     ) ++ plugins : _*)
   .disablePlugins(JUnitXmlReportPlugin)
