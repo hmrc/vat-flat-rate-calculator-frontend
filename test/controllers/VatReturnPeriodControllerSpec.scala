@@ -24,18 +24,14 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Result
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, _}
+import play.api.test.Helpers._
 import services.StateService
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.views.html.layouts.Article
-
 
 class VatReturnPeriodControllerSpec extends ControllerTestSpec {
 

@@ -24,8 +24,6 @@ import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.StateService
