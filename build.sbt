@@ -68,6 +68,7 @@ lazy val microservice: Project = Project(appName, file("."))
     pipelineStages in Assets := Seq(digest),
     scalaVersion := "2.12.12",
     scalacOptions += "-P:silencer:lineContentFilters=^\\w",
+    scalacOptions += "-P:silencer:pathFilters=views;routes;--feature",
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.1" cross CrossVersion.full),
       "com.github.ghik" % "silencer-lib" % "1.7.1" % Provided cross CrossVersion.full
