@@ -14,8 +14,7 @@
  * limitations under the License.
 *@
 
-@import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-@import uk.gov.hmrc.childcarecalculatorfrontend.controllers
+@import config.ApplicationConfig
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 
 @this(
@@ -29,7 +28,7 @@
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     backLink: playComponents.back_link,
-    appConfig: FrontendAppConfig,
+    appConfig: ApplicationConfig,
 )
 
 @(
@@ -47,7 +46,7 @@
 @head = {
     @if(timeoutEnabled) {
         @hmrcTimeoutDialogHelper(
-            signOutUrl = controllers.routes.SessionExpiredController.onPageLoad.url,
+            signOutUrl = "",
             timeout = Some(1800),
             countdown = Some(120),
             message = Some(Messages("timeout.message")),
@@ -68,9 +67,9 @@
         headBlock = Some(head)
     )),
     headerBlock = Some(hmrcStandardHeader(
-        serviceUrl = Some(controllers.routes.WhatToTellTheCalculatorController.onPageLoad.url),
-        phaseBanner = Some(hmrcStandardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
-        userResearchBanner = if (urBanner) {Some(UserResearchBanner(url = appConfig.urBannerUrl))} else None
+        serviceUrl = Some(controllers.routes.VatReturnPeriodController.vatReturnPeriod.url),
+        phaseBanner = Some(hmrcStandardBetaBanner(url = "")),
+        userResearchBanner = if (urBanner) {Some(UserResearchBanner(url = ""))} else None
     )),
     beforeContentBlock = Some(accountMenu),
     scriptsBlock = Some(hmrcScripts()),
