@@ -84,3 +84,12 @@ lazy val microservice: Project = Project(appName, file("."))
   .settings(dependencyUpdatesFilter -= moduleFilter(organization = "org.scalatestplus.play"))
   .settings(dependencyUpdatesFilter -= moduleFilter(organization = "org.scoverage"))
   .settings(dependencyUpdatesFailBuild := false)
+  .settings(
+    TwirlKeys.templateImports ++= Seq(
+      "uk.gov.hmrc.govukfrontend.views.html.components._",
+      "uk.gov.hmrc.govukfrontend.views.html.helpers._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
+      "uk.gov.hmrc.govukfrontend.views.html.components.implicits._"
+    )
+  )
