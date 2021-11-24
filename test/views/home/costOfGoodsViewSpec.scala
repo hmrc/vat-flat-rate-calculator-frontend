@@ -57,8 +57,7 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
   lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
   lazy val uiform = injector.instanceOf[FormWithCSRF]
   lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
-
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
+  lazy val costOfGoodsView = injector.instanceOf[costOfGoods]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
   implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
@@ -72,12 +71,12 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
                                                                "costOfGoods" -> "100"))
 
 
-    lazy val view = costOfGoods(appConfig ,CostOfGoodsForm, costOfGoodsPeriod, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val view = costOfGoodsView(CostOfGoodsForm, costOfGoodsPeriod)
     lazy val doc = Jsoup.parse(view.body)
 
     lazy val errorCostOfGoodsForm = mockForm.costOfGoodsForm.bind(Map("vatReturnPeriod" -> "annually"))
 
-    lazy val errorView = costOfGoods(appConfig ,errorCostOfGoodsForm, costOfGoodsPeriod, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val errorView = costOfGoodsView(errorCostOfGoodsForm, costOfGoodsPeriod)
     lazy val errorDoc = Jsoup.parse(errorView.body)
 
     "have the correct title" in {

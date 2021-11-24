@@ -16,13 +16,14 @@
 
 package helpers
 
+import java.nio.charset.Charset
+
 import akka.actor.TypedActor.dispatcher
 import akka.stream.Materializer
 import akka.util.ByteString
 import config.{AppConfig, ApplicationConfig}
 import controllers.predicates.ValidatedSession
 import forms.VatFlatRateForm
-import models.UIHelpersWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.i18n.{Lang, MessagesApi}
@@ -34,7 +35,6 @@ import uk.gov.hmrc.play.views.html.layouts._
 import utils.FakeApplication
 import views.html.layouts.GovUkTemplate
 
-import java.nio.charset.Charset
 import scala.language.implicitConversions
 
 trait ControllerTestSpec extends PlaySpec with MockitoSugar with FakeApplication {
@@ -68,7 +68,6 @@ trait ControllerTestSpec extends PlaySpec with MockitoSugar with FakeApplication
   lazy val uiform = fakeApplication.injector.instanceOf[FormWithCSRF]
   lazy val uiErrorSummary = fakeApplication.injector.instanceOf[ErrorSummary]
 
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
 
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}

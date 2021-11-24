@@ -14,11 +14,9 @@
  * limitations under the License.
  *@
 
-@(panelTitle: String,
-linkText: String,
-linkUrl: String,
-externalLinkWarning: Option[String]
-)
+@this()
+
+@(panelTitle: String,linkText: String, linkUrl: String, externalLinkWarning: Option[String])
 
 <div class="banner-panel__title">@panelTitle</div>
 <a href="@linkUrl"

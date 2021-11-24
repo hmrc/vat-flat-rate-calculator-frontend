@@ -21,26 +21,22 @@
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 @import models.UIHelpersWrapper
 
+@this(
+    appConfig: config.AppConfig,
+    articleLayout: Article,
+    twoThirdsBanner: two_thirds_banner,
+    twoThirdsBannerContentUr: two_thirds_banner_content_ur,
+    uiHelpersWrapper: UIHelpersWrapper,
+    govuk_wrapper: govuk_wrapper
+)
+
 @(title: String,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
   scriptElem: Option[Html] = None,
-  isUserResearchBannerVisible:Boolean = false,
-  appConfig: config.AppConfig,
-  articleLayout: Article,
-  headUi: HeadWithTrackingConsent,
-  govukTemplate: GovUkTemplate,
-header_nav: HeaderNav,
-footer: Footer,
-uiServiceInfo: ServiceInfo,
-reportAProblemLink: ReportAProblemLink,
-main_content: MainContent,
-main_content_header: MainContentHeader,
-uiHelpersWrapper: UIHelpersWrapper)(mainContent: Html)(implicit request : Request[_], messages: Messages)
-
-@serviceInfoContent = {}
+  isUserResearchBannerVisible:Boolean = false)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
 @article = @{
     articleLayout(mainContent)
@@ -55,7 +51,7 @@ uiHelpersWrapper: UIHelpersWrapper)(mainContent: Html)(implicit request : Reques
 @afterHeader = {
 @if(isUserResearchBannerVisible) {
 
-    @two_thirds_banner(Some(two_thirds_banner_content_ur(
+    @twoThirdsBanner(Some(twoThirdsBannerContentUr(
         messages("result.userResearchLink.title"),
         messages("result.userResearchLink.link"),
         appConfig.urBannerLink,
@@ -66,25 +62,12 @@ uiHelpersWrapper: UIHelpersWrapper)(mainContent: Html)(implicit request : Reques
 }
 }
 
-
-
-@govuk_wrapper(appConfig = appConfig,
-               title = title,
+@govuk_wrapper(title = title,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebar,
                contentHeader = contentHeader,
                mainContent = article,
-               serviceInfoContent = serviceInfoContent,
                scriptElem = scriptElem,
-               afterHeader = afterHeader,
-               headUi = headUi,
-               govukTemplate = govukTemplate,
-               header_nav = header_nav,
-               footer = footer,
-               uiServiceInfo = uiServiceInfo,
-               reportAProblemLink = reportAProblemLink,
-               main_content = main_content,
-               main_content_header = main_content_header,
-               uiHelpersWrapper = uiHelpersWrapper
+               afterHeader = afterHeader
 )

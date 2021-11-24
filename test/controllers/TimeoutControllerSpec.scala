@@ -22,15 +22,13 @@ import org.scalatest.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, status}
+import views.html.fallback.timeout
 
 class TimeoutControllerSpec extends ControllerTestSpec {
 
   class Setup {
-    val controller = new TimeoutController(
-      mockConfig, mcc, mockStateService, mockValidatedSession, mockArticle,
-      headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink,
-      main_content, main_content_header, footerLinks, uiSidebar, uiInputGroup, uiform, uiErrorSummary
-    )
+    lazy val timeoutView = fakeApplication.injector.instanceOf[timeout]
+    val controller = new TimeoutController(mcc, timeoutView)
   }
 
   "Calling the .timeout action" must {
