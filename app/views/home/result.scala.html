@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 @import models.UIHelpersWrapper
 
-@(appConfig: config.AppConfig, resultCode: Int, showUserResearchPanel: Boolean, articleLayout: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
+@(appConfig: config.AppConfig, resultCode: Int, showUserResearchPanel: Boolean, articleLayout: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: uk.gov.hmrc.play.views.html.layouts.Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
 
 @scriptElement = {
 <script type="text/javascript" src='@controllers.routes.Assets.versioned("javascripts/vfr.js")'></script>

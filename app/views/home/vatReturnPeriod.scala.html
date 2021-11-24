@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 @import models.UIHelpersWrapper
 
-@(appConfig: config.AppConfig, vatReturnPeriodForm: Form[VatFlatRateModel], article: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
+@(appConfig: config.AppConfig, vatReturnPeriodForm: Form[VatFlatRateModel], article: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: uk.gov.hmrc.play.views.html.layouts.Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
 
 @main_template(title = messages("vatReturnPeriod.title"), bodyClasses = None, appConfig = appConfig, articleLayout = article, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper= uiHelpersWrapper) {
 
