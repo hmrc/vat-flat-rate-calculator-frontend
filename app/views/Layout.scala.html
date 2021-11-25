@@ -39,7 +39,6 @@
     urBanner: Boolean = false)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @accountMenu = {
-    @Some(hmrcLanguageSelectHelper())
     @if(backLinkEnabled) { @backLink() }
 }
 
@@ -62,7 +61,7 @@
 
 
 @govukLayout(
-    pageTitle = Some(s"""$pageTitle - ${messages("site.service_name")} - GOV.UK"""),
+    pageTitle = Some(s"""$pageTitle - ${messages("service.name")} - GOV.UK"""),
     headBlock = Some(hmrcHead(
         headBlock = Some(head)
     )),
