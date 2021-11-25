@@ -52,8 +52,7 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
   lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
   lazy val uiform = injector.instanceOf[FormWithCSRF]
   lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
-
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
+  lazy val resultView = injector.instanceOf[result]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
   implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
@@ -64,7 +63,7 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
 
   "the ResultView" must {
 
-    lazy val view = result(appConfig ,resultCode, showUserResearchPanel, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val view = resultView(resultCode, showUserResearchPanel)
     lazy val doc = Jsoup.parse(view.body)
 
     "have the correct title" in {

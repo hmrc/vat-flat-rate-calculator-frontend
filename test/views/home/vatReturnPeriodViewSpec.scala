@@ -54,8 +54,7 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
   lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
   lazy val uiform = injector.instanceOf[FormWithCSRF]
   lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
-
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
+  lazy val vatReturnPeriodView = injector.instanceOf[vatReturnPeriod]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
   implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
@@ -67,12 +66,11 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
     lazy val VatReturnPeriodForm = mockForm.vatReturnPeriodForm.bind(Map("vatReturnPeriod" -> "annually",
       "turnover" -> "1000",
       "costOfGoods" -> "100"))
-    lazy val view = vatReturnPeriod(appConfig ,VatReturnPeriodForm, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val view = vatReturnPeriodView(VatReturnPeriodForm)
     lazy val doc = Jsoup.parse(view.body)
 
     lazy val errorVatReturnPeriodForm = mockForm.vatReturnPeriodForm.bind(Map("" -> ""))
-    lazy val errorView = vatReturnPeriod(appConfig ,errorVatReturnPeriodForm, mockArticle, headUi, govUkTemplate, header_nav, footer,
-      uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val errorView = vatReturnPeriodView(errorVatReturnPeriodForm)
     lazy val errorDoc = Jsoup.parse(errorView.body)
 
 

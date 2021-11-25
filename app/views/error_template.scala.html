@@ -14,13 +14,11 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.layouts._
+@this(
+    govuk_wrapper: govuk_wrapper
+)
 
-@import layouts.GovUkTemplate
-@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
-@import models.UIHelpersWrapper
-
-@(pageTitle: String, heading: String, message: String, appConfig: config.AppConfig, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit messages: Messages)
+@(pageTitle: String, heading: String, message: String)(implicit messages: Messages)
 
 @contentHeader = {
   <h1>@heading</h1>
@@ -30,4 +28,4 @@
   <p>@message</p>
 }
 
-@govuk_wrapper(appConfig = appConfig, title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper = uiHelpersWrapper)
+@govuk_wrapper(title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)

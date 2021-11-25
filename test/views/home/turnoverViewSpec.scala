@@ -55,7 +55,7 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
   lazy val uiform = injector.instanceOf[FormWithCSRF]
   lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
 
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
+  lazy val turnoverView = injector.instanceOf[turnover]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
   implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
@@ -66,11 +66,11 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
     lazy val TurnoverForm = mockForm.turnoverForm.bind(Map("vatReturnPeriod" -> "annually",
       "turnover" -> "1000",
       "costOfGoods" -> "100"))
-    lazy val view = turnover(appConfig ,TurnoverForm, turnoverPeriodString, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val view = turnoverView(TurnoverForm, turnoverPeriodString)
     lazy val doc = Jsoup.parse(view.body)
 
     lazy val errorTurnoverForm = mockForm.turnoverForm.bind(Map("vatReturnPeriod" -> "annually"))
-    lazy val errorView = turnover(appConfig ,errorTurnoverForm, turnoverPeriodString, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val errorView = turnoverView(errorTurnoverForm, turnoverPeriodString)
     lazy val errorDoc = Jsoup.parse(errorView.body)
 
     "have the correct title" in {

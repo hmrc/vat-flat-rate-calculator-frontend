@@ -14,14 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.layouts._
-@import layouts.GovUkTemplate
-@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
-@import models.UIHelpersWrapper
+@import views.html.main_template
 
-@(appConfig: config.AppConfig, articleLayout: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
+@this(
+    mainTemplate: main_template
+)
 
-@views.html.main_template(title = Messages("timeout.title"), bodyClasses = None, appConfig = appConfig, articleLayout = articleLayout, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper = uiHelpersWrapper) {
+@()(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = Messages("timeout.title")) {
 
 <h1 class="heading-large">@Messages("timeout.heading")</h1>
 
