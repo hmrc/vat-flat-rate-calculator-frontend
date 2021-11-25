@@ -16,18 +16,19 @@
 
 @import views.html.main_template
 @import common.Links
-@import uk.gov.hmrc.play.views.html.layouts._
-@import layouts.GovUkTemplate
-@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
-@import models.UIHelpersWrapper
 
-@(appConfig: config.AppConfig, resultCode: Int, showUserResearchPanel: Boolean, articleLayout: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: uk.gov.hmrc.play.views.html.layouts.Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
+@this(
+    mainTemplate: main_template,
+    appConfig: config.AppConfig
+)
+
+@(resultCode: Int, showUserResearchPanel: Boolean)(implicit request: Request[_], messages: Messages)
 
 @scriptElement = {
 <script type="text/javascript" src='@controllers.routes.Assets.versioned("javascripts/vfr.js")'></script>
 }
 
-@main_template(title = messages("result.title"), bodyClasses = None, appConfig = appConfig, scriptElem=Some(scriptElement), isUserResearchBannerVisible = showUserResearchPanel, articleLayout = articleLayout, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper = uiHelpersWrapper) {
+@mainTemplate(title = messages("result.title"), isUserResearchBannerVisible = showUserResearchPanel) {
 
     <div class="transaction-banner--complete">
         <span></span>
@@ -44,7 +45,7 @@
         </p>
     </div>
 
-    <div clas="form-group">
+    <div class="form-group">
         <strong class="bold-small">@Messages("result.para.1")</strong>
 
         <section class="form-group">

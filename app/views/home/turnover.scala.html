@@ -17,18 +17,22 @@
 @import views.html.main_template
 @import views.html.helpers._
 @import uk.gov.hmrc.play.views.html.layouts._
-@import layouts.GovUkTemplate
-@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 @import models.UIHelpersWrapper
 
-@(appConfig: config.AppConfig, turnoverForm: Form[VatFlatRateModel], turnoverPeriodString: String, articleLayout: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate,header_nav: HeaderNav, footer: uk.gov.hmrc.play.views.html.layouts.Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
+@this(
+    uiHelpersWrapper: UIHelpersWrapper,
+    moneyInputFormat: moneyInputFormat,
+    mainTemplate: main_template
+)
 
-@main_template(title = messages("turnover.title"), bodyClasses = None, appConfig = appConfig, articleLayout = articleLayout, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper = uiHelpersWrapper) {
+@(turnoverForm: Form[VatFlatRateModel], turnoverPeriodString: String)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = messages("turnover.title")) {
 
 @if(turnoverForm.hasErrors){
-@uiHelpersWrapper.uiErrorSummary(
-Messages("base.errorSummary"), turnoverForm
-)
+    @uiHelpersWrapper.uiErrorSummary(
+        Messages("base.errorSummary"), turnoverForm
+    )
 }
 
 <h1>@messages("turnover.heading", turnoverPeriodString)</h1>

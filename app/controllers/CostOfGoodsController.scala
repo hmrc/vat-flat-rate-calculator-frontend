@@ -17,10 +17,10 @@
 package controllers
 
 import common.ResultCodes
-import config.AppConfig
 import controllers.predicates.ValidatedSession
 import forms.VatFlatRateForm
-import models.{ResultModel, UIHelpersWrapper, VatFlatRateModel}
+import javax.inject.{Inject, Singleton}
+import models.{ResultModel, VatFlatRateModel}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -28,37 +28,19 @@ import play.api.mvc._
 import services.StateService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
-import uk.gov.hmrc.play.views.html.layouts._
-import views.html.layouts.GovUkTemplate
 import views.html.{errors => errs, home => views}
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class CostOfGoodsController @Inject()(config: AppConfig,
-                                      mcc: MessagesControllerComponents,
+class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
                                       stateService: StateService,
                                       session: ValidatedSession,
                                       forms: VatFlatRateForm,
-                                      article: Article,
-                                      headUi: HeadWithTrackingConsent,
-                                      govUkTemplate: GovUkTemplate,
-                                      header_nav: HeaderNav,
-                                      footer: Footer,
-                                      uiServiceInfo: ServiceInfo,
-                                      reportAProblemLink: ReportAProblemLink,
-                                      main_content: MainContent,
-                                      main_content_header: MainContentHeader,
-                                      footerLinks: FooterLinks,
-                                      uiSidebar: Sidebar,
-                                      uiInputGroup: InputRadioGroup,
-                                      uiform: FormWithCSRF,
-                                      uiErrorSummary: ErrorSummary) extends FrontendController(mcc) with I18nSupport with Logging {
+                                      costOfGoodsView: views.costOfGoods,
+                                      technicalErrorView: errs.technicalError) extends FrontendController(mcc) with I18nSupport with Logging {
 
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
 
   val costOfGoods: Action[AnyContent] = session.async { implicit request =>
     routeRequest(Ok, forms.costOfGoodsForm)
@@ -89,15 +71,15 @@ class CostOfGoodsController @Inject()(config: AppConfig,
       case Some(model) =>
         model.vatReturnPeriod match {
           case s  if s.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.annual"))    =>
-            res(views.costOfGoods(config, form.fill(model), messagesApi("common.year"), article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper))
+            res(costOfGoodsView(form.fill(model), messagesApi("common.year")))
           case s  if s.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.quarter"))   =>
-            res(views.costOfGoods(config, form.fill(model), messagesApi("common.quarter"), article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper))
+            res(costOfGoodsView(form.fill(model), messagesApi("common.quarter")))
           case _ =>
             logger.warn(
               s"""Incorrect value found for Vat Return Period:
                  |Should be [${messagesApi("vatReturnPeriod.option.annual")}] or [${messagesApi("vatReturnPeriod.option.quarter")}] but found ${model.vatReturnPeriod}""".stripMargin
             )
-            InternalServerError(errs.technicalError(config, article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, footerLinks, uiHelpersWrapper))
+            InternalServerError(technicalErrorView())
         }
       case _ =>
         res match {
@@ -106,7 +88,7 @@ class CostOfGoodsController @Inject()(config: AppConfig,
             Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod())
           case BadRequest =>
             logger.warn("[CostOfGoods Controller]No VatFlatRate model found in Keystore")
-            InternalServerError(errs.technicalError(config, article, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, footerLinks, uiHelpersWrapper))
+            InternalServerError(technicalErrorView())
         }
     }
   }

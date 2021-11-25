@@ -31,6 +31,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.StateService
 import uk.gov.hmrc.http.SessionKeys
+import views.html.errors.technicalError
+import views.html.home.costOfGoods
 
 import scala.concurrent.Future
 
@@ -53,10 +55,10 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       mockStateService
     }
 
-    object TestController extends CostOfGoodsController(mockConfig, mcc, createMockStateService(),
-      mockValidatedSession, mockForm, mockArticle, headUi, govUkTemplate, header_nav,
-      footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header,
-      footerLinks, uiSidebar, uiInputGroup, uiform, uiErrorSummary)
+    lazy val costOfGoodsView = fakeApplication.injector.instanceOf[costOfGoods]
+    lazy val technicalErrorView = fakeApplication.injector.instanceOf[technicalError]
+    object TestController extends CostOfGoodsController(mcc, createMockStateService(),
+      mockValidatedSession, mockForm, costOfGoodsView, technicalErrorView)
     TestController
   }
 

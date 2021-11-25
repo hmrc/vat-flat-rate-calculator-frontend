@@ -16,8 +16,12 @@
 
 package models
 
+import javax.inject.Inject
 import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup}
 import uk.gov.hmrc.play.views.html.layouts.{FooterLinks, Sidebar}
 
-case class UIHelpersWrapper(uiSidebar: Sidebar, uiInputGroup: InputRadioGroup,
-                            uiform: FormWithCSRF, uiErrorSummary: ErrorSummary, footerLinks: FooterLinks)
+class UIHelpersWrapper @Inject()(val uiSidebar: Sidebar,
+                                 val uiInputGroup: InputRadioGroup,
+                                 val uiform: FormWithCSRF,
+                                 val uiErrorSummary: ErrorSummary,
+                                 val footerLinks: FooterLinks)

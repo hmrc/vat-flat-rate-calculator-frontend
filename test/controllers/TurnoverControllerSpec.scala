@@ -31,14 +31,18 @@ import services.StateService
 import scala.concurrent.Future
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
+import views.html.errors.technicalError
+import views.html.home.turnover
 
 class TurnoverControllerSpec extends ControllerTestSpec {
 
   lazy val testMockStateService = mock[StateService]
 
   def createTestController(): TurnoverController = {
-    object TestController extends TurnoverController(mockConfig, mcc, testMockStateService, mockValidatedSession, mockForm, mockArticle, headUi, govUkTemplate, header_nav, footer,
-      uiServiceInfo, reportAProblemLink, main_content, main_content_header, footerLinks, uiSidebar, uiInputGroup, uiform, uiErrorSummary)
+    lazy val turnoverView = fakeApplication.injector.instanceOf[turnover]
+    lazy val technicalErrorView = fakeApplication.injector.instanceOf[technicalError]
+    object TestController extends TurnoverController(mcc, testMockStateService,
+      mockValidatedSession, mockForm, turnoverView, technicalErrorView)
     TestController
   }
 
