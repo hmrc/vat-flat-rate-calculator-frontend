@@ -24,20 +24,19 @@
 
 @(resultCode: Int, showUserResearchPanel: Boolean)(implicit request: Request[_], messages: Messages)
 
-@scriptElement = {
-<script type="text/javascript" src='@controllers.routes.Assets.versioned("javascripts/vfr.js")'></script>
-}
+
 @layout(
     pageTitle = messages("result.title"),
-    backLinkEnabled = false
+    backLinkEnabled = false,
+    urBanner = true
 ) {
 
 <div class="transaction-banner--complete">
     <span></span>
     @if(resultCode == 1 || resultCode == 2 || resultCode == 4 || resultCode == 5){
-    <h1 class="heading-large" id="resultOutcome">@Messages("result.1.heading")</h1>
+    <h1 class="govuk-heading-l" id="resultOutcome">@Messages("result.1.heading")</h1>
     } else {
-    <h1 class="heading-large" id="resultOutcome">@Messages("result.2.heading")</h1>
+    <h1 class="govuk-heading-l" id="resultOutcome">@Messages("result.2.heading")</h1>
     }
 </div>
 
@@ -48,7 +47,7 @@
 </div>
 
 <div class="form-group">
-    <strong class="bold-small">@Messages("result.para.1")</strong>
+    <strong class="govuk-body govuk-!-font-weight-bold">@Messages("result.para.1")</strong>
 
     <section class="form-group">
         <details>
@@ -60,7 +59,7 @@
     </section>
 </div>
 <div class="form-group">
-    <h2 class="heading-medium">@Messages("result.heading.2")</h2>
+    <h2 class="govuk-heading-m">@Messages("result.heading.2")</h2>
 
     <p class="govuk-body">@Messages("result.para.2")</p>
     <p class="govuk-body">@Html(Messages("result.para.3", appConfig.businessTaxAccount))</p>

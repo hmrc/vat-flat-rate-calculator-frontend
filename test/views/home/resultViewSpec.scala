@@ -75,11 +75,11 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
     }
 
     "have some introductory text" in {
-      doc.select("div > p").eq(1).text() shouldBe ResultIntro
+      doc.select("div > p").eq(0).text() shouldBe ResultIntro
     }
 
     "have a header for progressive disclosure" in {
-      doc.select("strong").text() shouldBe ResultProgressiveDisclosureHeader
+      doc.select("strong").text() should include(ResultProgressiveDisclosureHeader)
     }
 
     "have a progressive disclosure" in {
@@ -91,7 +91,7 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
     }
 
     "have a h2 with text" in {
-      doc.select("h2").text() shouldBe ResultH2Text
+      doc.select("h2").text() should include(ResultH2Text)
     }
 
     "have instructions on what happens next" in {
@@ -111,10 +111,10 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
     }
 
     "have a user research banner" in {
-      doc.select("div.banner-panel__title").text() shouldBe ResultBannerTitle
-      doc.select("a").eq(4).text() shouldBe ResultBannerText
-      doc.select("a").eq(4).attr("href") shouldBe ResultBannerTextHref
-      doc.select("a > span").eq(0).text() shouldBe ResultBannerClose
+      doc.select("div.hmrc-user-research-banner__title").text() shouldBe ResultBannerTitle
+      doc.select("a.hmrc-user-research-banner__link").text() shouldBe ResultBannerText
+      doc.select("a.hmrc-user-research-banner__link").attr("href") shouldBe ResultBannerTextHref
+      doc.select("button.hmrc-user-research-banner__close").text() shouldBe ResultBannerClose
     }
 
   }
