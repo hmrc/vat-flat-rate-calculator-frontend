@@ -57,6 +57,59 @@ Full width panel used at top of page to contain UR recruitment notice
    color: #fff;
 }
 
+details .summary {
+    text-decoration: underline;
+}
+
+.panel-indent {
+      margin: 0;
+      clear: both;
+      border-left: 4px solid #bfc1c3;
+      padding: 10px 0 10px 15px;
+      font-family: GDS Transport,arial,sans-serif;
+}
+
+details > summary:first-of-type {
+    display: list-item;
+    counter-increment: list-item 0;
+    list-style: inside disclosure-closed;
+    font-family: GDS Transport,arial,sans-serif;
+}
+summary {
+    display: block;
+    font-family: GDS Transport,arial,sans-serif;
+}
+details summary:hover {
+    color: #2b8cc4;
+}
+details summary {
+    display: inline-block;
+    color: #005ea5;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 0.26316em;
+}
+.panel-indent p:only-child, p:only-child, .panel-indent p:last-child, p:last-child {
+    margin-bottom: 0;
+    font-family: GDS Transport,arial,sans-serif;
+}
+
+.panel-indent p:first-child, p:first-child {
+    margin-top: 0;
+    font-family: GDS Transport,arial,sans-serif;
+}
+
+.transaction-banner--complete {
+  background-color: #28a197;
+  color: #fff;
+  padding: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+h1#resultOutcome.govuk-heading-l {
+    color: #fff;
+}
+
 @media (min-width: 641px) {
        .banner-panel__close {
            right: 35px;
@@ -67,3 +120,11 @@ Full width panel used at top of page to contain UR recruitment notice
     }
 
 
+main {
+   font-size: 19px;
+   line-height: 1.31579;
+}
+
+.form-group {
+  margin-bottom: 19px;
+}

@@ -16,6 +16,7 @@
 
 @import config.ApplicationConfig
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 
 @this(
     govukLayout: GovukLayout,
@@ -27,8 +28,9 @@
     hmrcStandardBetaBanner: StandardBetaBanner,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
     backLink: playComponents.back_link,
-    appConfig: ApplicationConfig,
+    appConfig: ApplicationConfig
 )
 
 @(
@@ -43,34 +45,26 @@
 }
 
 @head = {
-    @if(timeoutEnabled) {
-        @hmrcTimeoutDialogHelper(
-            signOutUrl = "",
-            timeout = Some(1800),
-            countdown = Some(120),
-            message = Some(Messages("timeout.message")),
-            keepAliveButtonText = Some(Messages("timeout.continue")),
-            signOutButtonText = Some(Messages("timeout.exit"))
-        )
-    }
+    <link rel="stylesheet" type="text/css" href ='@routes.Assets.versioned("stylesheets/vfr.css")'>
 }
 
 @mainContent = {
     @contentBlock
+    @hmrcReportTechnicalIssue(ReportTechnicalIssue(
+        serviceId = appConfig.contactFormServiceIdentifier,
+        baseUrl = Some(appConfig.contactHost)
+    ))
 }
 
-
 @govukLayout(
-    pageTitle = Some(s"""$pageTitle - ${messages("service.name")} - GOV.UK"""),
+    pageTitle = Some(pageTitle),
     headBlock = Some(hmrcHead(
         headBlock = Some(head)
     )),
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl = Some(controllers.routes.VatReturnPeriodController.vatReturnPeriod.url),
-        phaseBanner = Some(hmrcStandardBetaBanner(url = "")),
-        userResearchBanner = if (urBanner) {Some(UserResearchBanner(url = ""))} else None
-    )),
-    beforeContentBlock = Some(accountMenu),
+        userResearchBanner = if (urBanner) {Some(UserResearchBanner(url = appConfig.urBannerLink))} else None
+)),
     scriptsBlock = Some(hmrcScripts()),
     footerBlock = Some(hmrcStandardFooter())
 )(mainContent)

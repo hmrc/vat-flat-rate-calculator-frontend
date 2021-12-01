@@ -14,56 +14,57 @@
  * limitations under the License.
  *@
 
-@import views.html.main_template
+@import views.html.Layout
 @import common.Links
 
 @this(
-    mainTemplate: main_template,
+    layout: Layout,
     appConfig: config.AppConfig
 )
 
 @(resultCode: Int, showUserResearchPanel: Boolean)(implicit request: Request[_], messages: Messages)
 
-@scriptElement = {
-<script type="text/javascript" src='@controllers.routes.Assets.versioned("javascripts/vfr.js")'></script>
-}
 
-@mainTemplate(title = messages("result.title"), isUserResearchBannerVisible = showUserResearchPanel) {
+@layout(
+    pageTitle = messages("result.title"),
+    backLinkEnabled = false,
+    urBanner = true
+) {
 
-    <div class="transaction-banner--complete">
-        <span></span>
-            @if(resultCode == 1 || resultCode == 2 || resultCode == 4 || resultCode == 5){
-            <h1 class="heading-large" id="resultOutcome">@Messages("result.1.heading")</h1>
-                } else {
-            <h1 class="heading-large" id="resultOutcome">@Messages("result.2.heading")</h1>
-            }
-    </div>
+<div class="transaction-banner--complete">
+    <span></span>
+    @if(resultCode == 1 || resultCode == 2 || resultCode == 4 || resultCode == 5){
+    <h1 class="govuk-heading-l" id="resultOutcome">@Messages("result.1.heading")</h1>
+    } else {
+    <h1 class="govuk-heading-l" id="resultOutcome">@Messages("result.2.heading")</h1>
+    }
+</div>
 
-    <div class="form-group">
-        <p class="panel-indent" id="resultSummary" >
-            @Html(Messages(s"result.${resultCode}.summary", Links.howMuchYouPay))
-        </p>
-    </div>
+<div class="form-group">
+    <p class="panel-indent" id="resultSummary" >
+        @Html(Messages(s"result.${resultCode}.summary", Links.howMuchYouPay))
+    </p>
+</div>
 
-    <div class="form-group">
-        <strong class="bold-small">@Messages("result.para.1")</strong>
+<div class="form-group">
+    <strong class="govuk-body govuk-!-font-weight-bold">@Messages("result.para.1")</strong>
 
-        <section class="form-group">
-            <details>
-                <summary><span class="summary">@messages("result.accordion.question")</span></summary>
-                <div class="panel-indent">
-                    <p>@messages("result.accordion.summary")</p>
-                </div>
-            </details>
-        </section>
-    </div>
-    <div class="form-group">
-        <h2 class="heading-medium">@Messages("result.heading.2")</h2>
+    <section class="form-group">
+        <details>
+            <summary><span class="summary">@messages("result.accordion.question")</span></summary>
+            <div class="panel-indent">
+                <p class="govuk-body">@messages("result.accordion.summary")</p>
+            </div>
+        </details>
+    </section>
+</div>
+<div class="form-group">
+    <h2 class="govuk-heading-m">@Messages("result.heading.2")</h2>
 
-        <p>@Messages("result.para.2")</p>
-        <p>@Html(Messages("result.para.3", appConfig.businessTaxAccount))</p>
-        <p>@Html(Messages("result.para.4", Links.flatRateScheme))</p>
-        <p>@Html(Messages("result.para.5", Links.vatRegistration))</p>
-        <p id="feedback-survey-message"><a id="feedback-survey-link" href="@controllers.routes.FeedbackSurveyController.redirectFeedbackSurvey">@Messages("result.feedbackSurvey")</a></p>
-    </div>
+    <p class="govuk-body">@Messages("result.para.2")</p>
+    <p class="govuk-body">@Html(Messages("result.para.3", appConfig.businessTaxAccount))</p>
+    <p class="govuk-body">@Html(Messages("result.para.4", Links.flatRateScheme))</p>
+    <p class="govuk-body">@Html(Messages("result.para.5", Links.vatRegistration))</p>
+    <p class="govuk-body" id="feedback-survey-message"><a class="govuk-link" id="feedback-survey-link" href="@controllers.routes.FeedbackSurveyController.redirectFeedbackSurvey">@Messages("result.feedbackSurvey")</a></p>
+</div>
 }
