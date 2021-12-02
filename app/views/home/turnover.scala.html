@@ -18,43 +18,51 @@
 @import views.html.helpers._
 @import uk.gov.hmrc.play.views.html.layouts._
 @import models.UIHelpersWrapper
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     uiHelpersWrapper: UIHelpersWrapper,
-    moneyInputFormat: moneyInputFormat,
-    mainTemplate: main_template
+    moneyInputFormat: newMoneyInputFormat,
+    layout: Layout,
+    govukErrorSummary : GovukErrorSummary
 )
 
 @(turnoverForm: Form[VatFlatRateModel], turnoverPeriodString: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("turnover.title")) {
-
-@if(turnoverForm.hasErrors){
-    @uiHelpersWrapper.uiErrorSummary(
-        Messages("base.errorSummary"), turnoverForm
-    )
+@title = @{
+    if(turnoverForm.hasErrors) messages("site.title.error", messages("turnover.title")) else messages("turnover.title")
 }
 
-<h1>@messages("turnover.heading", turnoverPeriodString)</h1>
+@layout(
+    pageTitle = title,
+    backLinkEnabled = false
+) {
 
-<div class="form-group">
-    <p>@messages("turnover.para.1")</p>
-</div>
+@if(turnoverForm.hasErrors) {
+    @govukErrorSummary(ErrorSummary(
+        title       = Text(messages("error.summary.title")),
+        errorList   = for(error <- turnoverForm.errors) yield {
+            ErrorLink(
+                href    = Some(s"#${error.key}"),
+                content = Text(messages(error.message, error.args:_*))
+            )
+        }
+    ))
+}
 
 @uiHelpersWrapper.uiform(action = controllers.routes.TurnoverController.submitTurnover) {
 
-    <div class="form-group">
-        @moneyInputFormat(
+    @moneyInputFormat(
         turnoverForm("turnover"),
         'type -> "number",
         '_legend -> Messages("turnover.heading", turnoverPeriodString),
-        '_legendClass -> "visually-hidden"
-        )
-    </div>
+        '_legendClass -> "govuk-visually-hidden",
+        '_hintText -> Messages("turnover.para.1")
+    )
 
-    <button class="button" type="submit" id="continue-button">@Messages("common.continue")</button>
+    <button class="govuk-button" data-module="govuk-button" type="submit">@Messages("common.continue")</button>
 
-    <div class="form-hidden">
+    <div class="govuk-visually-hidden">
         @helper.inputText(turnoverForm("vatReturnPeriod"), 'type -> "hidden", 'class -> "visually-hidden")
     </div>
 }

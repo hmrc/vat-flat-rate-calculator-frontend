@@ -82,21 +82,21 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
     }
 
     "have some introductory text" in {
-      doc.select("div > p").eq(1).text shouldBe turnoverIntro
+      doc.getElementsByClass("govuk-hint").text shouldBe turnoverIntro
     }
 
     "have a £ symbol present" in {
-      doc.select(".poundSign").text shouldBe "£"
+      doc.getElementsByClass("govuk-input__prefix").text shouldBe "£"
     }
 
     "display the correct error" in {
       errorTurnoverForm.hasErrors shouldBe true
-      errorDoc.select("span.error-notification").eq(0).text shouldBe turnoverError
+      errorDoc.getElementsByClass("govuk-error-message").first.text must include(turnoverError)
     }
 
     "have a continue button" in{
-      doc.select("button").text shouldBe turnoverContinue
-      doc.select("button").attr("type") shouldBe "submit"
+      doc.getElementsByClass("govuk-button").text shouldBe turnoverContinue
+      doc.getElementsByClass("govuk-button").attr("type") shouldBe "submit"
     }
 
     "have a valid form" in{
