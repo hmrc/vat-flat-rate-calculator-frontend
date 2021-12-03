@@ -103,7 +103,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
 
       "navigate to the annual turnover page" in {
         val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("turnover.title")
+        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("turnover.title")} - ${messages("service.name")} - GOV.UK""")
       }
 
     }
@@ -122,7 +122,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
 
       "navigate to the quarterly turnover page" in {
         val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("turnover.title")
+        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("turnover.title")} - ${messages("service.name")} - GOV.UK""")
       }
     }
 
@@ -161,7 +161,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
       }
       "fail with the correct error message" in {
         val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("error-notification").text should include(messages("error.turnover.required"))
+        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("govuk-error-message").text should include(messages("error.turnover.required"))
       }
     }
 
