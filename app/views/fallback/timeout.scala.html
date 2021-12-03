@@ -14,18 +14,18 @@
  * limitations under the License.
  *@
 
-@import views.html.main_template
+@import views.html.Layout
 
 @this(
-    mainTemplate: main_template
+   layout: Layout
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = Messages("timeout.title")) {
+@layout(
+    pageTitle = messages("timeout.title")
+) {
+ <h1 class="govuk-heading-l">@Messages("timeout.heading")</h1>
 
-<h1 class="heading-large">@Messages("timeout.heading")</h1>
-
-<p>@Html(Messages("timeout.para.1", controllers.routes.VatReturnPeriodController.vatReturnPeriod()))</p>
-
+ <p class="govuk-body">@Html(Messages("timeout.para.1", controllers.routes.VatReturnPeriodController.vatReturnPeriod()))</p>
 }
