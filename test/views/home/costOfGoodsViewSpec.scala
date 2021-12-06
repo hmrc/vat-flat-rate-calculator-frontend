@@ -88,37 +88,37 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
     }
 
     "have some introductory text" in {
-      doc.select("div > p").eq(1).text shouldBe costOfGoodsParagraph1
+      doc.select("div > p").eq(0).text shouldBe costOfGoodsParagraph1
     }
 
     "have a h2 with text" in {
-      doc.select("h2").text() shouldBe costOfGoodDontInclude
+      doc.select("#main-content > div > div > h2").text() shouldBe costOfGoodDontInclude
     }
 
     "have a list of bulletpoints" in {
-      doc.select("ul > li").eq(1).text() shouldBe costOfGoodsBullet1
-      doc.select("ul > li").eq(2).text() shouldBe costOfGoodsBullet2
-      doc.select("ul > li").eq(3).text() shouldBe costOfGoodsBullet3
-      doc.select("ul > li").eq(4).text() shouldBe costOfGoodsBullet4
-      doc.select("ul > li").eq(5).text() shouldBe costOfGoodsBullet5
-      doc.select("ul > li").eq(6).text() shouldBe costOfGoodsBullet6
-      doc.select("ul > li").eq(7).text() shouldBe costOfGoodsBullet7
-      doc.select("ul > li").eq(8).text() shouldBe costOfGoodsBullet8
-      doc.select("ul > li").eq(9).text() shouldBe costOfGoodsBullet9
+      doc.select("#main-content > div > div > ul > li:nth-child(1)").text() shouldBe costOfGoodsBullet1
+      doc.select("#main-content > div > div > ul > li:nth-child(2)").text() shouldBe costOfGoodsBullet2
+      doc.select("#main-content > div > div > ul > li:nth-child(3)").text() shouldBe costOfGoodsBullet3
+      doc.select("#main-content > div > div > ul > li:nth-child(4)").text() shouldBe costOfGoodsBullet4
+      doc.select("#main-content > div > div > ul > li:nth-child(5)").text() shouldBe costOfGoodsBullet5
+      doc.select("#main-content > div > div > ul > li:nth-child(6)").text() shouldBe costOfGoodsBullet6
+      doc.select("#main-content > div > div > ul > li:nth-child(7)").text() shouldBe costOfGoodsBullet7
+      doc.select("#main-content > div > div > ul > li:nth-child(8)").text() shouldBe costOfGoodsBullet8
+      doc.select("#main-content > div > div > ul > li:nth-child(9)").text() shouldBe costOfGoodsBullet9
     }
 
     "have text that contains a link" in {
-      doc.select("p").eq(2).text() shouldBe costOfGoodsParagraph2
+      doc.select("#main-content > div > div > div:nth-child(5) > p").text() shouldBe costOfGoodsParagraph2
       doc.select("p").eq(2).attr("href") shouldBe ""
     }
 
     "have a £ symbol present" in {
-      doc.select(".poundSign").text shouldBe "£"
+      doc.select("#main-content > div > div > form > div.govuk-form-group > div.govuk-input__wrapper > div").text shouldBe "£"
     }
 
     "display the correct error" in {
       errorCostOfGoodsForm.hasErrors shouldBe true
-      errorDoc.select("span.error-notification").eq(0).text shouldBe costOfGoodsError
+      errorDoc.select("#costOfGoods-error").text.contains(costOfGoodsError)
     }
 
     "have a continue button" in{

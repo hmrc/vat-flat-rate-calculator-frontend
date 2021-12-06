@@ -18,60 +18,77 @@
 @import views.html.helpers._
 @import common.Links
 @import models.UIHelpersWrapper
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-    mainTemplate: main_template,
-    moneyInputFormat: moneyInputFormat,
-    uiHelpersWrapper: UIHelpersWrapper
+    uiHelpersWrapper: UIHelpersWrapper,
+    moneyInputFormat: newMoneyInputFormat,
+    layout: Layout,
+    govukErrorSummary : GovukErrorSummary
 )
 
 @(costOfGoodsForm: Form[VatFlatRateModel], costOfGoodsPeriodString: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("costOfGoods.title")) {
-
-@if(costOfGoodsForm.hasErrors){
-    @uiHelpersWrapper.uiErrorSummary(Messages("base.errorSummary"), costOfGoodsForm)
+@title = @{
+    if(costOfGoodsForm.hasErrors) messages("site.title.error", messages("costOfGoods.title")) else messages("costOfGoods.title")
 }
 
-<h1>@messages("costOfGoods.heading", costOfGoodsPeriodString)</h1>
+@layout(
+    pageTitle = title,
+    backLinkEnabled = false
+) {
 
-<div class="form-group">
-    <p>@messages("costOfGoods.para.1")</p>
-</div>
-<h2>@messages("costOfGoods.doNotInclude")</h2>
+    @if(costOfGoodsForm.hasErrors) {
+        @govukErrorSummary(ErrorSummary(
+            title       = Text(messages("error.summary.title")),
+            errorList   = for(error <- costOfGoodsForm.errors) yield {
+                ErrorLink(
+                    href    = Some(s"#${error.key}"),
+                    content = Text(messages(error.message, error.args:_*))
+                )
+            }
+        ))
+    }
 
-<ul class="list list-bullet">
-    <li>@messages("costOfGoods.bullet.1")</li>
-    <li>@messages("costOfGoods.bullet.2")</li>
-    <li>@messages("costOfGoods.bullet.3")</li>
-    <li>@messages("costOfGoods.bullet.4")</li>
-    <li>@messages("costOfGoods.bullet.5")</li>
-    <li>@messages("costOfGoods.bullet.6")</li>
-    <li>@messages("costOfGoods.bullet.7")</li>
-    <li>@messages("costOfGoods.bullet.8")</li>
-    <li>@messages("costOfGoods.bullet.9")</li>
-</ul>
+    <h1 class="govuk-heading-l">@messages("costOfGoods.heading", costOfGoodsPeriodString)</h1>
 
-<div class="form-group">
-    <p>@Html(messages("costOfGoods.para.2", Links.capitalExpenditureGoods))</p>
-</div>
-
-@uiHelpersWrapper.uiform(action = controllers.routes.CostOfGoodsController.submitCostOfGoods) {
-
-        <div class="form-group">
-            @moneyInputFormat(
-            costOfGoodsForm("costOfGoods"),
-            '_legend -> Messages("costOfGoods.heading", costOfGoodsPeriodString)
-            )
-        </div>
-
-    <button class="button" type="submit" id="continue-button">@Messages("common.continue")</button>
-
-    <div class="form-hidden">
-        @helper.inputText(costOfGoodsForm("vatReturnPeriod"), 'type -> "hidden", 'class -> "visually-hidden")
-        @helper.inputText(costOfGoodsForm("turnover"), 'type -> "hidden", 'class -> "visually-hidden")
+    <div class="form-group">
+        <p>@messages("costOfGoods.para.1")</p>
     </div>
-}
+    <h2 class="govuk-heading-m">@messages("costOfGoods.doNotInclude")</h2>
 
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("costOfGoods.bullet.1")</li>
+        <li>@messages("costOfGoods.bullet.2")</li>
+        <li>@messages("costOfGoods.bullet.3")</li>
+        <li>@messages("costOfGoods.bullet.4")</li>
+        <li>@messages("costOfGoods.bullet.5")</li>
+        <li>@messages("costOfGoods.bullet.6")</li>
+        <li>@messages("costOfGoods.bullet.7")</li>
+        <li>@messages("costOfGoods.bullet.8")</li>
+        <li>@messages("costOfGoods.bullet.9")</li>
+    </ul>
+
+    <div class="form-group">
+        <p class="govuk-body">@Html(messages("costOfGoods.para.2", Links.capitalExpenditureGoods))</p>
+    </div>
+
+    @uiHelpersWrapper.uiform(action = controllers.routes.CostOfGoodsController.submitCostOfGoods) {
+
+        @moneyInputFormat(
+            costOfGoodsForm("costOfGoods"),
+            'type -> "number",
+            '_legend -> "",
+            '_legendClass -> "govuk-visually-hidden",
+            '_hintText -> ""
+        )
+
+        <button class="govuk-button" data-module="govuk-button" type="submit">@Messages("common.continue")</button>
+
+        <div class="govuk-visually-hidden">
+            @helper.inputText(costOfGoodsForm("vatReturnPeriod"), 'type -> "hidden", 'class -> "visually-hidden")
+            @helper.inputText(costOfGoodsForm("turnover"), 'type -> "hidden", 'class -> "visually-hidden")
+        </div>
+    }
 
 }
