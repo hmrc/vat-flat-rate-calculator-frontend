@@ -79,7 +79,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -96,7 +96,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -113,7 +113,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -130,7 +130,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -147,7 +147,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -164,7 +164,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
