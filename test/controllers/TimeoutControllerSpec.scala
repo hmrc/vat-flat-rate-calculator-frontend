@@ -43,7 +43,7 @@ class TimeoutControllerSpec extends ControllerTestSpec {
       lazy val request = FakeRequest("GET", "/")
       lazy val result = controller.timeout(request)
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("timeout.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("timeout.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
