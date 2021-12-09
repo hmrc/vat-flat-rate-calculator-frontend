@@ -79,15 +79,15 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
     }
 
     "have the correct heading" in {
-      doc.select("h1").text() shouldBe  vatReturnPeriodHeading
+      doc.getElementsByClass("govuk-heading-l").text() shouldBe  vatReturnPeriodHeading
     }
 
     "have some introductory text" in {
-      doc.select("div > p").eq(1).text shouldBe vatReturnPeriodIntro
+      doc.select("div > p").eq(0).text shouldBe vatReturnPeriodIntro
     }
 
     "have a paragraph text" in {
-      doc.select("div > p").eq(2).text shouldBe vatReturnPeriodPara
+      doc.select("#main-content > div > div > div.form-group.govuk-body > p:nth-child(2)").text shouldBe vatReturnPeriodPara
     }
 
     "have a 'annually' label on radio button" in {
@@ -100,7 +100,9 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
 
     "display the correct error" in {
       errorVatReturnPeriodForm.hasErrors shouldBe true
-      errorDoc.select("span.error-notification").eq(0).text shouldBe vatReturnPeriodError
+      val visuallyHiddenElement = errorDoc.getElementsByClass("govuk-visually-hidden")
+      visuallyHiddenElement.remove()
+      mockMessage(errorDoc.select("#vatReturnPeriod-error").text()) shouldBe (vatReturnPeriodError)
     }
 
     "have a continue button" in{
