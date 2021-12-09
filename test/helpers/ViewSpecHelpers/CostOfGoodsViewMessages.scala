@@ -21,10 +21,10 @@ import play.api.i18n.Lang
 
 trait CostOfGoodsViewMessages extends MockitoSugar {
   implicit val lang: Lang = Lang("en")
-  val costOfGoodTitle                      = "Enter your cost of goods"
+  val costOfGoodTitle                      = "Enter your cost of goods - Check your VAT flat rate - GOV.UK"
   def costOfGoodsHeading(period : String)  = s"Enter your cost of goods for the $period including VAT"
   val costOfGoodsParagraph1                = "Goods are moveable items or materials exclusively used in your business. You can also include gas and electricity. If you're estimating, give realistic figures."
-  val costOfGoodDontInclude                = "Don't include: "
+  val costOfGoodDontInclude                = "Don't include:"
   val costOfGoodsBullet1                   = "any services - which is anything that isn't goods"
   val costOfGoodsBullet2                   = "expenses like travel and accommodation"
   val costOfGoodsBullet3                   = "food and drink eaten by yourself or your staff"
