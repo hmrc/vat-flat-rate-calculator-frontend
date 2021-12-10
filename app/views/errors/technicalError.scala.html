@@ -14,21 +14,21 @@
  * limitations under the License.
  *@
 
-@import views.html.main_template
-
 @this(
-    mainTemplate: main_template
+ layout: Layout,
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = Messages("techError.title")) {
+@layout(
+ pageTitle = Messages("techError.title"),
+ backLinkEnabled = false
+) {
+ <h1 class="govuk-heading-l" id="pageHeading">@Messages("techError.heading")</h1>
 
-<h1 class="heading-large" id="pageHeading">@Messages("techError.heading")</h1>
+ <p class="govuk-body" id="startAgainText">@Messages("techError.para.1")</p>
 
-<p id="startAgainText">@Messages("techError.para.1")</p>
-
-<ul>
-    <li><a href=@controllers.routes.VatReturnPeriodController.vatReturnPeriod() id="startAgainLink">@Messages("common.startAgain")</a></li>
-</ul>
+ <ul class="govuk-list govuk-list--bullet">
+  <li><a href=@controllers.routes.VatReturnPeriodController.vatReturnPeriod() id="startAgainLink">@Messages("common.startAgain")</a></li>
+ </ul>
 }

@@ -14,14 +14,11 @@
  * limitations under the License.
  *@
 
-@import views.html.main_template
 @import views.html.helpers._
-@import uk.gov.hmrc.play.views.html.layouts._
-@import models.UIHelpersWrapper
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-    uiHelpersWrapper: UIHelpersWrapper,
+    formWithCSRF: FormWithCSRF,
     moneyInputFormat: newMoneyInputFormat,
     layout: Layout,
     govukErrorSummary : GovukErrorSummary
@@ -50,7 +47,7 @@
     ))
 }
 
-@uiHelpersWrapper.uiform(action = controllers.routes.TurnoverController.submitTurnover) {
+@formWithCSRF(action = controllers.routes.TurnoverController.submitTurnover) {
 
     @moneyInputFormat(
         turnoverForm("turnover"),

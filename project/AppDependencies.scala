@@ -26,8 +26,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-partials"              % "8.1.0-play-28",
     "uk.gov.hmrc" %% "http-caching-client"        % "9.5.0-play-28",
     "uk.gov.hmrc" %% "govuk-template"             % "5.68.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "0.88.0-play-28",
-    "uk.gov.hmrc" %% "play-ui"                    % "9.6.0-play-28"
+    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "0.88.0-play-28"
   )
 
   trait TestDependencies {

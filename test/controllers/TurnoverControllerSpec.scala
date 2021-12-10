@@ -140,7 +140,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
 
       "show the technical error page" in {
         val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("techError.title")
+        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("techError.title")} - ${messages("service.name")} - GOV.UK""")
       }
     }
   }

@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import views.html.main_template
 @import views.html.helpers._
 @import common.Links
 @import models.UIHelpersWrapper
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-    uiHelpersWrapper: UIHelpersWrapper,
+    formWithCSRF: FormWithCSRF,
     moneyInputFormat: newMoneyInputFormat,
     layout: Layout,
     govukErrorSummary : GovukErrorSummary
@@ -73,7 +72,7 @@
         <p class="govuk-body">@Html(messages("costOfGoods.para.2", Links.capitalExpenditureGoods))</p>
     </div>
 
-    @uiHelpersWrapper.uiform(action = controllers.routes.CostOfGoodsController.submitCostOfGoods) {
+    @formWithCSRF(action = controllers.routes.CostOfGoodsController.submitCostOfGoods) {
 
         @moneyInputFormat(
             costOfGoodsForm("costOfGoods"),

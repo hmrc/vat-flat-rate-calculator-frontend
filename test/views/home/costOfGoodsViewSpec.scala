@@ -19,21 +19,15 @@ package views.home
 import config.{AppConfig, ApplicationConfig}
 import forms.VatFlatRateForm
 import helpers.ViewSpecHelpers.CostOfGoodsViewMessages
-import models.UIHelpersWrapper
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import org.jsoup.Jsoup
 import org.scalatest.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
-import play.api.Application
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{AnyContentAsEmpty, DefaultMessagesControllerComponents, MessagesControllerComponents}
+import play.api.mvc.{MessagesControllerComponents}
 import views.html.home.costOfGoods
-import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
-import uk.gov.hmrc.play.views.html.layouts.{Article, Footer, FooterLinks, HeadWithTrackingConsent, HeaderNav, MainContent, MainContentHeader, ServiceInfo, Sidebar}
-import views.html.layouts.GovUkTemplate
+
 
 class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfGoodsViewMessages {
 
@@ -41,22 +35,6 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
   def injector: Injector = app.injector
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
   lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
-  lazy val mockArticle = injector.instanceOf[Article]
-  lazy val headUi = injector.instanceOf[HeadWithTrackingConsent]
-  lazy val govUkTemplate = injector.instanceOf[GovUkTemplate]
-
-  lazy val header_nav = injector.instanceOf[HeaderNav]
-  lazy val footer = injector.instanceOf[Footer]
-  lazy val uiServiceInfo = injector.instanceOf[ServiceInfo]
-  lazy val reportAProblemLink = injector.instanceOf[ReportAProblemLink]
-  lazy val main_content = injector.instanceOf[MainContent]
-  lazy val main_content_header = injector.instanceOf[MainContentHeader]
-  lazy val footerLinks = injector.instanceOf[FooterLinks]
-
-  lazy val uiSidebar = injector.instanceOf[Sidebar]
-  lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
-  lazy val uiform = injector.instanceOf[FormWithCSRF]
-  lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
   lazy val costOfGoodsView = injector.instanceOf[costOfGoods]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]

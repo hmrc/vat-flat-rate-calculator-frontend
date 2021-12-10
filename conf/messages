@@ -27,7 +27,7 @@ error.moreThanMaximumTurnover      = Enter an amount less than £9,999,999,999.9
 ############################################################################
 # Technical errors
 ############################################################################
-techError.title                    = Sorry, there is a problem with the service - Check your VAT flat rate - GOV.UK
+techError.title                    = Sorry, there is a problem with the service
 techError.heading                  = Sorry, there is a problem with the service
 techError.para.1                   = Try again later. Your VFR registration is not affected by this problem.
 

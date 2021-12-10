@@ -30,8 +30,6 @@ import play.api.i18n.{Lang, MessagesApi}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{MessagesControllerComponents, Result}
 import services.StateService
-import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
-import uk.gov.hmrc.play.views.html.layouts._
 import utils.FakeApplication
 import views.html.layouts.GovUkTemplate
 
@@ -40,7 +38,7 @@ import scala.language.implicitConversions
 trait ControllerTestSpec extends PlaySpec with MockitoSugar with FakeApplication {
 
   implicit val mat: Materializer = fakeApplication.injector.instanceOf[Materializer]
-  //implicit val executionContext: ExecutionContext = executionContext
+
   implicit val lang: Lang = Lang("en")
 
   lazy val messages: MessagesApi = fakeApplication.injector.instanceOf[MessagesApi]
@@ -51,23 +49,7 @@ trait ControllerTestSpec extends PlaySpec with MockitoSugar with FakeApplication
   lazy val mockStateService: StateService = fakeApplication.injector.instanceOf[StateService]
   lazy val mockForm: VatFlatRateForm = fakeApplication.injector.instanceOf[VatFlatRateForm]
   val mockMCC: MessagesControllerComponents = fakeApplication.injector.instanceOf[MessagesControllerComponents]
-  lazy val mockArticle = fakeApplication.injector.instanceOf[Article]
-  lazy val headUi = fakeApplication.injector.instanceOf[HeadWithTrackingConsent]
   lazy val govUkTemplate = fakeApplication.injector.instanceOf[GovUkTemplate]
-
-  lazy val header_nav = fakeApplication.injector.instanceOf[HeaderNav]
-  lazy val footer = fakeApplication.injector.instanceOf[Footer]
-  lazy val uiServiceInfo = fakeApplication.injector.instanceOf[ServiceInfo]
-  lazy val reportAProblemLink = fakeApplication.injector.instanceOf[ReportAProblemLink]
-  lazy val main_content = fakeApplication.injector.instanceOf[MainContent]
-  lazy val main_content_header = fakeApplication.injector.instanceOf[MainContentHeader]
-  lazy val footerLinks = fakeApplication.injector.instanceOf[FooterLinks]
-
-  lazy val uiSidebar = fakeApplication.injector.instanceOf[Sidebar]
-  lazy val uiInputGroup = fakeApplication.injector.instanceOf[InputRadioGroup]
-  lazy val uiform = fakeApplication.injector.instanceOf[FormWithCSRF]
-  lazy val uiErrorSummary = fakeApplication.injector.instanceOf[ErrorSummary]
-
 
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}

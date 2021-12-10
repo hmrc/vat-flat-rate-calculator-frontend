@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import views.html.main_template
-@import uk.gov.hmrc.play.views.html.layouts._
 @import models.UIHelpersWrapper
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     layout: Layout,
-    uiHelpersWrapper: UIHelpersWrapper,
+    formWithCSRF: FormWithCSRF,
     govukRadios : GovukRadios,
     govukErrorSummary : GovukErrorSummary
 )
@@ -61,7 +59,7 @@
         <p>@messages("vatReturnPeriod.para.2")</p>
     </div>
 
-    @uiHelpersWrapper.uiform(action = controllers.routes.VatReturnPeriodController.submitVatReturnPeriod) {
+    @formWithCSRF(action = controllers.routes.VatReturnPeriodController.submitVatReturnPeriod) {
 
         @govukRadios(Radios(
             fieldset = Some(Fieldset(

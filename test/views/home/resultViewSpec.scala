@@ -18,7 +18,6 @@ package views.home
 
 import config.{AppConfig, ApplicationConfig}
 import helpers.ViewSpecHelpers.ResultViewMessages
-import models.UIHelpersWrapper
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import org.jsoup.Jsoup
@@ -27,31 +26,12 @@ import org.scalatestplus.play.PlaySpec
 import play.api.inject.Injector
 import views.html.home.result
 import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
-import uk.gov.hmrc.play.views.html.layouts.{Article, Footer, FooterLinks, HeadWithTrackingConsent, HeaderNav, MainContent, MainContentHeader, ServiceInfo, Sidebar}
-import views.html.layouts.GovUkTemplate
 
 class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMessages {
 
   implicit lazy val fakeRequest = FakeRequest()
   def injector: Injector = app.injector
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
-  lazy val mockArticle = injector.instanceOf[Article]
-  lazy val headUi = injector.instanceOf[HeadWithTrackingConsent]
-  lazy val govUkTemplate = injector.instanceOf[GovUkTemplate]
-
-  lazy val header_nav = injector.instanceOf[HeaderNav]
-  lazy val footer = injector.instanceOf[Footer]
-  lazy val uiServiceInfo = injector.instanceOf[ServiceInfo]
-  lazy val reportAProblemLink = injector.instanceOf[ReportAProblemLink]
-  lazy val main_content = injector.instanceOf[MainContent]
-  lazy val main_content_header = injector.instanceOf[MainContentHeader]
-  lazy val footerLinks = injector.instanceOf[FooterLinks]
-
-  lazy val uiSidebar = injector.instanceOf[Sidebar]
-  lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
-  lazy val uiform = injector.instanceOf[FormWithCSRF]
-  lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
   lazy val resultView = injector.instanceOf[result]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
