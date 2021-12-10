@@ -74,7 +74,7 @@ class VatReturnPeriodControllerSpec extends ControllerTestSpec {
 
       "navigate to the turnover page" in {
         val resultCompleted = await(result)
-        Jsoup.parse(bodyOf(resultCompleted)).title shouldBe messages("vatReturnPeriod.title")
+        Jsoup.parse(bodyOf(resultCompleted)).title shouldBe messages(s"""${messages("vatReturnPeriod.title")} - ${messages("service.name")} - GOV.UK""")
       }
     }
 
@@ -93,7 +93,7 @@ class VatReturnPeriodControllerSpec extends ControllerTestSpec {
       }
       "navigate to the turnover page" in {
         val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("vatReturnPeriod.title")
+        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("vatReturnPeriod.title")} - ${messages("service.name")} - GOV.UK""")
       }
     }
   }
@@ -111,7 +111,7 @@ class VatReturnPeriodControllerSpec extends ControllerTestSpec {
       }
       "fail with the correct error message" in {
         val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("error-notification").text should include(messages("error.vatReturnPeriod.required"))
+        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("govuk-error-message").text should include(messages("error.vatReturnPeriod.required"))
       }
     }
 

@@ -17,49 +17,78 @@
 @import views.html.main_template
 @import uk.gov.hmrc.play.views.html.layouts._
 @import models.UIHelpersWrapper
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-    mainTemplate: main_template,
-    uiHelpersWrapper: UIHelpersWrapper
+    layout: Layout,
+    uiHelpersWrapper: UIHelpersWrapper,
+    govukRadios : GovukRadios,
+    govukErrorSummary : GovukErrorSummary
 )
 
-@(vatReturnPeriodForm: Form[VatFlatRateModel])(implicit request: Request[_], messages: Messages)
+@(
+        vatReturnPeriodForm: Form[VatFlatRateModel]
+)(
+        implicit request: Request[_],
+        messages: Messages
+)
 
-@mainTemplate(title = messages("vatReturnPeriod.title")) {
-
-@if(vatReturnPeriodForm.hasErrors){
-    @uiHelpersWrapper.uiErrorSummary(
-        Messages("base.errorSummary"), vatReturnPeriodForm
-    )
+@title = @{
+    if(vatReturnPeriodForm.errors.nonEmpty) messages("site.title.error", messages(s"vatReturnPeriod.title")) else messages(s"vatReturnPeriod.title")
 }
 
-<h1>@messages("vatReturnPeriod.heading")</h1>
+@layout(
+    pageTitle = title
+) {
 
-<div class="form-group">
-    <p>@messages("vatReturnPeriod.para.1")</p>
-    <p>@messages("vatReturnPeriod.para.2")</p>
-</div>
 
-@uiHelpersWrapper.uiform(action = controllers.routes.VatReturnPeriodController.submitVatReturnPeriod) {
+    @if(vatReturnPeriodForm.hasErrors) {
+        @govukErrorSummary(ErrorSummary(
+            title       = Text(messages("error.summary.title")),
+            errorList   = for(error <- vatReturnPeriodForm.errors) yield {
+                ErrorLink(
+                    href    = Some(s"#${error.key}"),
+                    content = Text(messages(error.message, error.args:_*))
+                )
+            }
+        ))
+    }
 
-    <div class="form-group">
-            @uiHelpersWrapper.uiInputGroup(
-                vatReturnPeriodForm("vatReturnPeriod"),
-                Seq(
-                    "annually" -> Messages("vatReturnPeriod.option.annual"),
-                    "quarterly" -> Messages("vatReturnPeriod.option.quarter")
-                ),
-                '_groupClass -> "form-group inline",
-                '_legend -> Messages("vatReturnPeriod.heading"),
-                '_legendID -> "vatReturnPeriod",
-                '_legendClass -> "visuallyhidden",
-                '_labelAfter -> true,
-                '_labelClass -> "block-label selection-button-radio"
-            )
+    <h1 class="govuk-heading-l">@messages("vatReturnPeriod.heading")</h1>
+
+    <div class="form-group govuk-body">
+        <p >@messages("vatReturnPeriod.para.1")</p>
+        <p>@messages("vatReturnPeriod.para.2")</p>
     </div>
 
+    @uiHelpersWrapper.uiform(action = controllers.routes.VatReturnPeriodController.submitVatReturnPeriod) {
 
-    <button class="button" type="submit" id="continue-button">@Messages("common.continue")</button>
-}
+        @govukRadios(Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(Messages("vatReturnPeriod.heading")),
+                    classes = "govuk-visually-hidden",
+                    isPageHeading = true
+                ))
+            )),
+            errorMessage = if (vatReturnPeriodForm.hasErrors) Some(ErrorMessage(
+                content = Text(vatReturnPeriodForm.errors(0).messages.mkString)
+            )) else None,
+            idPrefix = Some("vatReturnPeriod"),
+            name = "vatReturnPeriod",
+            items = Seq(
+                RadioItem(
+                    content = Text(Messages("vatReturnPeriod.option.annual")),
+                    value = Some("annually")
+                ),
+                RadioItem(
+                    content = Text(Messages("vatReturnPeriod.option.quarter")),
+                    value = Some("quarterly")
+                )
+            ),
+            classes = "govuk-radios--inline"
+        ))
 
+        <button class="govuk-button" data-module="govuk-button" type="submit">@Messages("common.continue")</button>
+    }
 }
