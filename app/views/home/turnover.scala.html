@@ -60,7 +60,7 @@
         '_hintText -> Messages("turnover.para.1")
     )
 
-    <button class="govuk-button" data-module="govuk-button" type="submit">@Messages("common.continue")</button>
+    <button id="continue-button" class="govuk-button" data-module="govuk-button" type="submit">@Messages("common.continue")</button>
 
     <div class="govuk-visually-hidden">
         @helper.inputText(turnoverForm("vatReturnPeriod"), 'type -> "hidden", 'class -> "visually-hidden")
