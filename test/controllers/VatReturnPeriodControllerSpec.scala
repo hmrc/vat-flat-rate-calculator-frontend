@@ -17,6 +17,7 @@
 package controllers
 
 import java.util.UUID
+
 import helpers.ControllerTestSpec
 import models.VatFlatRateModel
 import org.jsoup.Jsoup
@@ -32,16 +33,16 @@ import services.StateService
 import scala.concurrent.Future
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
+import views.html.home.vatReturnPeriod
 
 class VatReturnPeriodControllerSpec extends ControllerTestSpec {
 
   lazy val testMockStateService = mock[StateService]
 
   def createTestController() = {
-    object TestController extends VatReturnPeriodController(mockConfig, mcc, testMockStateService,
-      mockValidatedSession, mockForm, mockArticle, headUi, govUkTemplate, header_nav,
-      footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, footerLinks,
-      uiSidebar, uiInputGroup, uiform, uiErrorSummary)
+    lazy val vatReturnPeriodView = fakeApplication.injector.instanceOf[vatReturnPeriod]
+    object TestController extends VatReturnPeriodController(mcc, testMockStateService,
+      mockValidatedSession, mockForm, vatReturnPeriodView)
     TestController
   }
 
@@ -73,7 +74,7 @@ class VatReturnPeriodControllerSpec extends ControllerTestSpec {
 
       "navigate to the turnover page" in {
         val resultCompleted = await(result)
-        Jsoup.parse(bodyOf(resultCompleted)).title shouldBe messages("vatReturnPeriod.title")
+        Jsoup.parse(bodyOf(resultCompleted)).title shouldBe messages(s"""${messages("vatReturnPeriod.title")} - ${messages("service.name")} - GOV.UK""")
       }
     }
 
@@ -92,7 +93,7 @@ class VatReturnPeriodControllerSpec extends ControllerTestSpec {
       }
       "navigate to the turnover page" in {
         val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("vatReturnPeriod.title")
+        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("vatReturnPeriod.title")} - ${messages("service.name")} - GOV.UK""")
       }
     }
   }
@@ -110,7 +111,7 @@ class VatReturnPeriodControllerSpec extends ControllerTestSpec {
       }
       "fail with the correct error message" in {
         val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("error-notification").text should include(messages("error.vatReturnPeriod.required"))
+        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("govuk-error-message").text should include(messages("error.vatReturnPeriod.required"))
       }
     }
 

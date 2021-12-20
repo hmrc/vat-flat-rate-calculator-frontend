@@ -21,7 +21,7 @@ import play.api.i18n.Lang
 
 trait ResultViewMessages extends MockitoSugar {
   implicit val lang: Lang = Lang("en")
-  val ResultTitle                         = "Your VAT calculation"
+  val ResultTitle                         = "Your VAT calculation - Check your VAT flat rate - GOV.UK"
   val ResultHeading                       = "Use the 16.5% VAT flat rate"
   val ResultIntro                         = "Based on your answers, you are a limited cost business. This is because the cost of your goods for this year was under £1,000."
   val ResultProgressiveDisclosureHeader   = "You may need to do this calculation for every VAT period"
@@ -36,8 +36,8 @@ trait ResultViewMessages extends MockitoSugar {
   val ResultNextText4                     = "You may want to deregister from VAT (opens in a new window)"
   val ResultNextText4Href                 = "http://www.gov.uk/vat-registration/cancel-registration"
   val FeedbackSurveyText                  = "What did you think of this service?"
-  val ResultBannerTitle                   = "Help improve GOV.UK"
-  val ResultBannerText                    = "Help improve this digital service by joining the HMRC user panel (opens in new window)"
+  val ResultBannerTitle                   = "Help improve HMRC services"
+  val ResultBannerText                    = "Sign up to take part in user research (opens in new tab)"
   val ResultBannerClose                   = "No thanks"
   val ResultBannerTextHref                = "https://signup.take-part-in-research.service.gov.uk/?utm_campaign=VFRS_results&utm_source=Survey_Banner&utm_medium=other&t=HMRC&id=114"
 }

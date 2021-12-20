@@ -33,7 +33,7 @@ class ApplicationConfig @Inject()(val config: ServicesConfig) extends AppConfig 
 
   private def loadConfig(key: String): String = config.getString(key)
 
-  private lazy val contactHost          = config.getString("contact-frontend.host")
+  lazy val contactHost          = config.getString("contact-frontend.host")
   lazy val contactFormServiceIdentifier = "VFR"
   lazy val reportAProblemPartialUrl     = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl       = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"

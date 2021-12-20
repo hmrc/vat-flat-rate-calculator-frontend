@@ -29,14 +29,15 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.SessionKeys
+import views.html.home.result
 
 
 class ResultControllerSpec extends ControllerTestSpec {
 
   def createTestController(data: Option[ResultModel]): ResultController = {
-    object TestResultController extends ResultController(mockApplicationConfig, mcc, createMockStateService(), mockValidatedSession, mockArticle, headUi, govUkTemplate, header_nav, footer,
-      uiServiceInfo, reportAProblemLink, main_content,
-      main_content_header, footerLinks, uiSidebar, uiInputGroup, uiform, uiErrorSummary)
+
+    lazy val resultView = fakeApplication.injector.instanceOf[result]
+    object TestResultController extends ResultController(mcc, createMockStateService(), mockValidatedSession, resultView)
     def createMockStateService(): StateService = {
       val mockStateService = mock[StateService]
 
@@ -78,7 +79,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -95,7 +96,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -112,7 +113,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -129,7 +130,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -146,7 +147,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 
@@ -163,7 +164,7 @@ class ResultControllerSpec extends ControllerTestSpec {
 
     "navigate to the result page" in {
       val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages("result.title")
+      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
     }
   }
 

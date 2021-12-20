@@ -19,7 +19,6 @@ package views.home
 import config.{AppConfig, ApplicationConfig}
 import forms.VatFlatRateForm
 import helpers.ViewSpecHelpers.TurnoverViewMessages
-import models.UIHelpersWrapper
 import org.jsoup.Jsoup
 import org.scalatest.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
@@ -28,8 +27,6 @@ import play.api.inject.Injector
 import play.api.test.FakeRequest
 import views.html.home.turnover
 import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
-import uk.gov.hmrc.play.views.html.layouts.{Article, Footer, FooterLinks, HeadWithTrackingConsent, HeaderNav, MainContent, MainContentHeader, ServiceInfo, Sidebar}
 import views.html.layouts.GovUkTemplate
 
 class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverViewMessages {
@@ -38,24 +35,8 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
   def injector: Injector = app.injector
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
   lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
-  lazy val mockArticle = injector.instanceOf[Article]
-  lazy val headUi = injector.instanceOf[HeadWithTrackingConsent]
   lazy val govUkTemplate = injector.instanceOf[GovUkTemplate]
-
-  lazy val header_nav = injector.instanceOf[HeaderNav]
-  lazy val footer = injector.instanceOf[Footer]
-  lazy val uiServiceInfo = injector.instanceOf[ServiceInfo]
-  lazy val reportAProblemLink = injector.instanceOf[ReportAProblemLink]
-  lazy val main_content = injector.instanceOf[MainContent]
-  lazy val main_content_header = injector.instanceOf[MainContentHeader]
-  lazy val footerLinks = injector.instanceOf[FooterLinks]
-
-  lazy val uiSidebar = injector.instanceOf[Sidebar]
-  lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
-  lazy val uiform = injector.instanceOf[FormWithCSRF]
-  lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
-
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
+  lazy val turnoverView = injector.instanceOf[turnover]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
   implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
@@ -66,11 +47,11 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
     lazy val TurnoverForm = mockForm.turnoverForm.bind(Map("vatReturnPeriod" -> "annually",
       "turnover" -> "1000",
       "costOfGoods" -> "100"))
-    lazy val view = turnover(appConfig ,TurnoverForm, turnoverPeriodString, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val view = turnoverView(TurnoverForm, turnoverPeriodString)
     lazy val doc = Jsoup.parse(view.body)
 
     lazy val errorTurnoverForm = mockForm.turnoverForm.bind(Map("vatReturnPeriod" -> "annually"))
-    lazy val errorView = turnover(appConfig ,errorTurnoverForm, turnoverPeriodString, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val errorView = turnoverView(errorTurnoverForm, turnoverPeriodString)
     lazy val errorDoc = Jsoup.parse(errorView.body)
 
     "have the correct title" in {
@@ -82,21 +63,21 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
     }
 
     "have some introductory text" in {
-      doc.select("div > p").eq(1).text shouldBe turnoverIntro
+      doc.getElementsByClass("govuk-hint").text shouldBe turnoverIntro
     }
 
     "have a £ symbol present" in {
-      doc.select(".poundSign").text shouldBe "£"
+      doc.getElementsByClass("govuk-input__prefix").text shouldBe "£"
     }
 
     "display the correct error" in {
       errorTurnoverForm.hasErrors shouldBe true
-      errorDoc.select("span.error-notification").eq(0).text shouldBe turnoverError
+      errorDoc.getElementsByClass("govuk-error-message").first.text must include(turnoverError)
     }
 
     "have a continue button" in{
-      doc.select("button").text shouldBe turnoverContinue
-      doc.select("button").attr("type") shouldBe "submit"
+      doc.getElementsByClass("govuk-button").text shouldBe turnoverContinue
+      doc.getElementsByClass("govuk-button").attr("type") shouldBe "submit"
     }
 
     "have a valid form" in{

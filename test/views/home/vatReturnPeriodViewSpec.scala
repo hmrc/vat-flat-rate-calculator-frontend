@@ -19,7 +19,6 @@ package views.home
 import config.{AppConfig, ApplicationConfig}
 import forms.VatFlatRateForm
 import helpers.ViewSpecHelpers.VatReturnPeriodViewMessages
-import models.UIHelpersWrapper
 import org.jsoup.Jsoup
 import org.scalatest.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
@@ -28,9 +27,6 @@ import play.api.inject.Injector
 import play.api.test.FakeRequest
 import views.html.home.vatReturnPeriod
 import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
-import uk.gov.hmrc.play.views.html.layouts.{Article, Footer, FooterLinks, HeadWithTrackingConsent, HeaderNav, MainContent, MainContentHeader, ServiceInfo, Sidebar}
-import views.html.layouts.GovUkTemplate
 
 class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with VatReturnPeriodViewMessages {
 
@@ -38,24 +34,7 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
   def injector: Injector = app.injector
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
   lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
-  lazy val mockArticle = injector.instanceOf[Article]
-  lazy val headUi = injector.instanceOf[HeadWithTrackingConsent]
-  lazy val govUkTemplate = injector.instanceOf[GovUkTemplate]
-
-  lazy val header_nav = injector.instanceOf[HeaderNav]
-  lazy val footer = injector.instanceOf[Footer]
-  lazy val uiServiceInfo = injector.instanceOf[ServiceInfo]
-  lazy val reportAProblemLink = injector.instanceOf[ReportAProblemLink]
-  lazy val main_content = injector.instanceOf[MainContent]
-  lazy val main_content_header = injector.instanceOf[MainContentHeader]
-  lazy val footerLinks = injector.instanceOf[FooterLinks]
-
-  lazy val uiSidebar = injector.instanceOf[Sidebar]
-  lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
-  lazy val uiform = injector.instanceOf[FormWithCSRF]
-  lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
-
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
+  lazy val vatReturnPeriodView = injector.instanceOf[vatReturnPeriod]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
   implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
@@ -67,12 +46,11 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
     lazy val VatReturnPeriodForm = mockForm.vatReturnPeriodForm.bind(Map("vatReturnPeriod" -> "annually",
       "turnover" -> "1000",
       "costOfGoods" -> "100"))
-    lazy val view = vatReturnPeriod(appConfig ,VatReturnPeriodForm, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val view = vatReturnPeriodView(VatReturnPeriodForm)
     lazy val doc = Jsoup.parse(view.body)
 
     lazy val errorVatReturnPeriodForm = mockForm.vatReturnPeriodForm.bind(Map("" -> ""))
-    lazy val errorView = vatReturnPeriod(appConfig ,errorVatReturnPeriodForm, mockArticle, headUi, govUkTemplate, header_nav, footer,
-      uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val errorView = vatReturnPeriodView(errorVatReturnPeriodForm)
     lazy val errorDoc = Jsoup.parse(errorView.body)
 
 
@@ -81,15 +59,15 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
     }
 
     "have the correct heading" in {
-      doc.select("h1").text() shouldBe  vatReturnPeriodHeading
+      doc.getElementsByClass("govuk-heading-l").text() shouldBe  vatReturnPeriodHeading
     }
 
     "have some introductory text" in {
-      doc.select("div > p").eq(1).text shouldBe vatReturnPeriodIntro
+      doc.select("div > p").eq(0).text shouldBe vatReturnPeriodIntro
     }
 
     "have a paragraph text" in {
-      doc.select("div > p").eq(2).text shouldBe vatReturnPeriodPara
+      doc.select("#main-content > div > div > div.form-group.govuk-body > p:nth-child(2)").text shouldBe vatReturnPeriodPara
     }
 
     "have a 'annually' label on radio button" in {
@@ -102,7 +80,9 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
 
     "display the correct error" in {
       errorVatReturnPeriodForm.hasErrors shouldBe true
-      errorDoc.select("span.error-notification").eq(0).text shouldBe vatReturnPeriodError
+      val visuallyHiddenElement = errorDoc.getElementsByClass("govuk-visually-hidden")
+      visuallyHiddenElement.remove()
+      mockMessage(errorDoc.select("#vatReturnPeriod-error").text()) shouldBe (vatReturnPeriodError)
     }
 
     "have a continue button" in{
