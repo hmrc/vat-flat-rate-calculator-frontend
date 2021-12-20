@@ -14,67 +14,79 @@
  * limitations under the License.
  *@
 
-@import views.html.main_template
 @import views.html.helpers._
 @import common.Links
-@import uk.gov.hmrc.play.views.html.layouts._
-@import layouts.GovUkTemplate
-@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
-@import models.UIHelpersWrapper
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@(appConfig: config.AppConfig, costOfGoodsForm: Form[VatFlatRateModel], costOfGoodsPeriodString: String, articleLayout: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
+@this(
+    formWithCSRF: FormWithCSRF,
+    moneyInputFormat: newMoneyInputFormat,
+    layout: Layout,
+    govukErrorSummary : GovukErrorSummary
+)
 
-@scriptElement = {
-<script type="text/javascript" src='@controllers.routes.Assets.versioned("javascripts/vfr.js")'></script>
+@(costOfGoodsForm: Form[VatFlatRateModel], costOfGoodsPeriodString: String)(implicit request: Request[_], messages: Messages)
+
+@title = @{
+    if(costOfGoodsForm.hasErrors) messages("site.title.error", messages("costOfGoods.title")) else messages("costOfGoods.title")
 }
 
-@main_template(title = messages("costOfGoods.title"), bodyClasses = None, appConfig = appConfig, scriptElem=Some(scriptElement), articleLayout = articleLayout, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper = uiHelpersWrapper) {
+@layout(
+    pageTitle = title,
+    backLinkEnabled = false
+) {
 
-@if(costOfGoodsForm.hasErrors){
-    @uiHelpersWrapper.uiErrorSummary(
-        Messages("base.errorSummary"), costOfGoodsForm
-    )
-}
+    @if(costOfGoodsForm.hasErrors) {
+        @govukErrorSummary(ErrorSummary(
+            title       = Text(messages("error.summary.title")),
+            errorList   = for(error <- costOfGoodsForm.errors) yield {
+                ErrorLink(
+                    href    = Some(s"#${error.key}"),
+                    content = Text(messages(error.message, error.args:_*))
+                )
+            }
+        ))
+    }
 
-<h1>@messages("costOfGoods.heading", costOfGoodsPeriodString)</h1>
+    <h1 class="govuk-heading-l">@messages("costOfGoods.heading", costOfGoodsPeriodString)</h1>
 
-<div class="form-group">
-    <p>@messages("costOfGoods.para.1")</p>
-</div>
-<h2>@messages("costOfGoods.doNotInclude")</h2>
-
-<ul class="list list-bullet">
-    <li>@messages("costOfGoods.bullet.1")</li>
-    <li>@messages("costOfGoods.bullet.2")</li>
-    <li>@messages("costOfGoods.bullet.3")</li>
-    <li>@messages("costOfGoods.bullet.4")</li>
-    <li>@messages("costOfGoods.bullet.5")</li>
-    <li>@messages("costOfGoods.bullet.6")</li>
-    <li>@messages("costOfGoods.bullet.7")</li>
-    <li>@messages("costOfGoods.bullet.8")</li>
-    <li>@messages("costOfGoods.bullet.9")</li>
-</ul>
-
-<div class="form-group">
-    <p>@Html(messages("costOfGoods.para.2", Links.capitalExpenditureGoods))</p>
-</div>
-
-@uiHelpersWrapper.uiform(action = controllers.routes.CostOfGoodsController.submitCostOfGoods) {
-
-        <div class="form-group">
-            @moneyInputFormat(
-            costOfGoodsForm("costOfGoods"),
-            '_legend -> Messages("costOfGoods.heading", costOfGoodsPeriodString)
-            )
-        </div>
-
-    <button class="button" type="submit" id="continue-button">@Messages("common.continue")</button>
-
-    <div class="form-hidden">
-        @helper.inputText(costOfGoodsForm("vatReturnPeriod"), 'type -> "hidden", 'class -> "visually-hidden")
-        @helper.inputText(costOfGoodsForm("turnover"), 'type -> "hidden", 'class -> "visually-hidden")
+    <div class="form-group">
+        <p>@messages("costOfGoods.para.1")</p>
     </div>
-}
+    <h2 class="govuk-heading-m">@messages("costOfGoods.doNotInclude")</h2>
 
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("costOfGoods.bullet.1")</li>
+        <li>@messages("costOfGoods.bullet.2")</li>
+        <li>@messages("costOfGoods.bullet.3")</li>
+        <li>@messages("costOfGoods.bullet.4")</li>
+        <li>@messages("costOfGoods.bullet.5")</li>
+        <li>@messages("costOfGoods.bullet.6")</li>
+        <li>@messages("costOfGoods.bullet.7")</li>
+        <li>@messages("costOfGoods.bullet.8")</li>
+        <li>@messages("costOfGoods.bullet.9")</li>
+    </ul>
+
+    <div class="form-group">
+        <p class="govuk-body">@Html(messages("costOfGoods.para.2", Links.capitalExpenditureGoods))</p>
+    </div>
+
+    @formWithCSRF(action = controllers.routes.CostOfGoodsController.submitCostOfGoods) {
+
+        @moneyInputFormat(
+            costOfGoodsForm("costOfGoods"),
+            'type -> "number",
+            '_legend -> "",
+            '_legendClass -> "govuk-visually-hidden",
+            '_hintText -> ""
+        )
+
+        <button id="continue-button" class="govuk-button" data-module="govuk-button" type="submit">@Messages("common.continue")</button>
+
+        <div class="govuk-visually-hidden">
+            @helper.inputText(costOfGoodsForm("vatReturnPeriod"), 'type -> "hidden", 'class -> "visually-hidden")
+            @helper.inputText(costOfGoodsForm("turnover"), 'type -> "hidden", 'class -> "visually-hidden")
+        </div>
+    }
 
 }

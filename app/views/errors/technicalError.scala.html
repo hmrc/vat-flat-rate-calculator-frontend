@@ -14,20 +14,21 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.layouts._
-@import layouts.GovUkTemplate
-@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
-@import models.UIHelpersWrapper
+@this(
+ layout: Layout,
+)
 
-@(appConfig: config.AppConfig, articleLayout: Article, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, footerLinks: FooterLinks, uiHelpersWrapper: UIHelpersWrapper)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@views.html.main_template(title = Messages("techError.title"), bodyClasses = None, appConfig = appConfig, articleLayout = articleLayout, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper = uiHelpersWrapper) {
+@layout(
+ pageTitle = Messages("techError.title"),
+ backLinkEnabled = false
+) {
+ <h1 class="govuk-heading-l" id="pageHeading">@Messages("techError.heading")</h1>
 
-<h1 class="heading-large" id="pageHeading">@Messages("techError.heading")</h1>
+ <p class="govuk-body" id="startAgainText">@Messages("techError.para.1")</p>
 
-<p id="startAgainText">@Messages("techError.para.1")</p>
-
-<ul>
-    <li><a href=@controllers.routes.VatReturnPeriodController.vatReturnPeriod() id="startAgainLink">@Messages("common.startAgain")</a></li>
-</ul>
+ <ul class="govuk-list govuk-list--bullet">
+  <li><a href=@controllers.routes.VatReturnPeriodController.vatReturnPeriod() id="startAgainLink">@Messages("common.startAgain")</a></li>
+ </ul>
 }

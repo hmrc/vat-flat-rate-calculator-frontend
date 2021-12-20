@@ -19,21 +19,15 @@ package views.home
 import config.{AppConfig, ApplicationConfig}
 import forms.VatFlatRateForm
 import helpers.ViewSpecHelpers.CostOfGoodsViewMessages
-import models.UIHelpersWrapper
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import org.jsoup.Jsoup
 import org.scalatest.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
-import play.api.Application
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{AnyContentAsEmpty, DefaultMessagesControllerComponents, MessagesControllerComponents}
+import play.api.mvc.{MessagesControllerComponents}
 import views.html.home.costOfGoods
-import uk.gov.hmrc.play.views.html.helpers.{ErrorSummary, FormWithCSRF, InputRadioGroup, ReportAProblemLink}
-import uk.gov.hmrc.play.views.html.layouts.{Article, Footer, FooterLinks, HeadWithTrackingConsent, HeaderNav, MainContent, MainContentHeader, ServiceInfo, Sidebar}
-import views.html.layouts.GovUkTemplate
+
 
 class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfGoodsViewMessages {
 
@@ -41,24 +35,7 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
   def injector: Injector = app.injector
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
   lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
-  lazy val mockArticle = injector.instanceOf[Article]
-  lazy val headUi = injector.instanceOf[HeadWithTrackingConsent]
-  lazy val govUkTemplate = injector.instanceOf[GovUkTemplate]
-
-  lazy val header_nav = injector.instanceOf[HeaderNav]
-  lazy val footer = injector.instanceOf[Footer]
-  lazy val uiServiceInfo = injector.instanceOf[ServiceInfo]
-  lazy val reportAProblemLink = injector.instanceOf[ReportAProblemLink]
-  lazy val main_content = injector.instanceOf[MainContent]
-  lazy val main_content_header = injector.instanceOf[MainContentHeader]
-  lazy val footerLinks = injector.instanceOf[FooterLinks]
-
-  lazy val uiSidebar = injector.instanceOf[Sidebar]
-  lazy val uiInputGroup = injector.instanceOf[InputRadioGroup]
-  lazy val uiform = injector.instanceOf[FormWithCSRF]
-  lazy val uiErrorSummary = injector.instanceOf[ErrorSummary]
-
-  val uiHelpersWrapper  = UIHelpersWrapper(uiSidebar, uiInputGroup, uiform, uiErrorSummary, footerLinks)
+  lazy val costOfGoodsView = injector.instanceOf[costOfGoods]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
   implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
@@ -72,12 +49,12 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
                                                                "costOfGoods" -> "100"))
 
 
-    lazy val view = costOfGoods(appConfig ,CostOfGoodsForm, costOfGoodsPeriod, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val view = costOfGoodsView(CostOfGoodsForm, costOfGoodsPeriod)
     lazy val doc = Jsoup.parse(view.body)
 
     lazy val errorCostOfGoodsForm = mockForm.costOfGoodsForm.bind(Map("vatReturnPeriod" -> "annually"))
 
-    lazy val errorView = costOfGoods(appConfig ,errorCostOfGoodsForm, costOfGoodsPeriod, mockArticle, headUi, govUkTemplate, header_nav, footer,uiServiceInfo, reportAProblemLink, main_content, main_content_header, uiHelpersWrapper)
+    lazy val errorView = costOfGoodsView(errorCostOfGoodsForm, costOfGoodsPeriod)
     lazy val errorDoc = Jsoup.parse(errorView.body)
 
     "have the correct title" in {
@@ -89,37 +66,37 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
     }
 
     "have some introductory text" in {
-      doc.select("div > p").eq(1).text shouldBe costOfGoodsParagraph1
+      doc.select("div > p").eq(0).text shouldBe costOfGoodsParagraph1
     }
 
     "have a h2 with text" in {
-      doc.select("h2").text() shouldBe costOfGoodDontInclude
+      doc.select("#main-content > div > div > h2").text() shouldBe costOfGoodDontInclude
     }
 
     "have a list of bulletpoints" in {
-      doc.select("ul > li").eq(1).text() shouldBe costOfGoodsBullet1
-      doc.select("ul > li").eq(2).text() shouldBe costOfGoodsBullet2
-      doc.select("ul > li").eq(3).text() shouldBe costOfGoodsBullet3
-      doc.select("ul > li").eq(4).text() shouldBe costOfGoodsBullet4
-      doc.select("ul > li").eq(5).text() shouldBe costOfGoodsBullet5
-      doc.select("ul > li").eq(6).text() shouldBe costOfGoodsBullet6
-      doc.select("ul > li").eq(7).text() shouldBe costOfGoodsBullet7
-      doc.select("ul > li").eq(8).text() shouldBe costOfGoodsBullet8
-      doc.select("ul > li").eq(9).text() shouldBe costOfGoodsBullet9
+      doc.select("#main-content > div > div > ul > li:nth-child(1)").text() shouldBe costOfGoodsBullet1
+      doc.select("#main-content > div > div > ul > li:nth-child(2)").text() shouldBe costOfGoodsBullet2
+      doc.select("#main-content > div > div > ul > li:nth-child(3)").text() shouldBe costOfGoodsBullet3
+      doc.select("#main-content > div > div > ul > li:nth-child(4)").text() shouldBe costOfGoodsBullet4
+      doc.select("#main-content > div > div > ul > li:nth-child(5)").text() shouldBe costOfGoodsBullet5
+      doc.select("#main-content > div > div > ul > li:nth-child(6)").text() shouldBe costOfGoodsBullet6
+      doc.select("#main-content > div > div > ul > li:nth-child(7)").text() shouldBe costOfGoodsBullet7
+      doc.select("#main-content > div > div > ul > li:nth-child(8)").text() shouldBe costOfGoodsBullet8
+      doc.select("#main-content > div > div > ul > li:nth-child(9)").text() shouldBe costOfGoodsBullet9
     }
 
     "have text that contains a link" in {
-      doc.select("p").eq(2).text() shouldBe costOfGoodsParagraph2
+      doc.select("#main-content > div > div > div:nth-child(5) > p").text() shouldBe costOfGoodsParagraph2
       doc.select("p").eq(2).attr("href") shouldBe ""
     }
 
     "have a £ symbol present" in {
-      doc.select(".poundSign").text shouldBe "£"
+      doc.select("#main-content > div > div > form > div.govuk-form-group > div.govuk-input__wrapper > div").text shouldBe "£"
     }
 
     "display the correct error" in {
       errorCostOfGoodsForm.hasErrors shouldBe true
-      errorDoc.select("span.error-notification").eq(0).text shouldBe costOfGoodsError
+      errorDoc.select("#costOfGoods-error").text.contains(costOfGoodsError)
     }
 
     "have a continue button" in{

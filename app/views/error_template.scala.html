@@ -14,20 +14,19 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.layouts._
 
-@import layouts.GovUkTemplate
-@import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
-@import models.UIHelpersWrapper
+@import views.html.Layout
 
-@(pageTitle: String, heading: String, message: String, appConfig: config.AppConfig, headUi: HeadWithTrackingConsent, govukTemplate: GovUkTemplate, header_nav: HeaderNav, footer: Footer, uiServiceInfo: ServiceInfo, reportAProblemLink: ReportAProblemLink, main_content: MainContent, main_content_header: MainContentHeader, uiHelpersWrapper: UIHelpersWrapper)(implicit messages: Messages)
+@this(
+ layout: Layout
+)
 
-@contentHeader = {
-  <h1>@heading</h1>
+@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
+
+@layout(
+ pageTitle = messages("result.title"),
+ backLinkEnabled = false
+) {
+ <h1 class="govuk-heading-l">@heading</h1>
+ <p class="govuk-body">@message</p>
 }
-
-@mainContent = {
-  <p>@message</p>
-}
-
-@govuk_wrapper(appConfig = appConfig, title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent, headUi = headUi, govukTemplate = govukTemplate, header_nav = header_nav, footer = footer, uiServiceInfo = uiServiceInfo, reportAProblemLink =reportAProblemLink , main_content = main_content, main_content_header = main_content_header, uiHelpersWrapper = uiHelpersWrapper)
