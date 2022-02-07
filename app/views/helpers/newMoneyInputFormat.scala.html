@@ -38,9 +38,10 @@
 @govukInput(Input(
     id = elements.field.name,
     name = elements.field.name,
+    inputType = "number",
     label = Label(
         isPageHeading = true,
-        classes = "govuk-label--l",
+        classes = if (elements.args.get('_legendClass).isEmpty) "govuk-label--l" else elements.args.get('_legendClass).get.toString,
         content = Text(elements.args.get('_legend).get.toString)
     ),
     hint = Some(Hint(

@@ -31,12 +31,11 @@
     urBanner = true
 ) {
 
-<div class="transaction-banner--complete">
-    <span></span>
+<div class="govuk-panel govuk-panel--confirmation">
     @if(resultCode == 1 || resultCode == 2 || resultCode == 4 || resultCode == 5){
-    <h1 class="govuk-heading-l" id="resultOutcome">@Messages("result.1.heading")</h1>
+        <h1 class="govuk-panel__title" id="resultOutcome">@Messages("result.1.heading")</h1>
     } else {
-    <h1 class="govuk-heading-l" id="resultOutcome">@Messages("result.2.heading")</h1>
+        <h1 class="govuk-panel__title" id="resultOutcome">@Messages("result.2.heading")</h1>
     }
 </div>
 
