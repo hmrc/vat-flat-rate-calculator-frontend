@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ trait CostOfGoodsViewMessages extends MockitoSugar {
   val costOfGoodsBullet7                   = "goods you will resell or hire out unless this is your main business activity"
   val costOfGoodsBullet8                   = "training and memberships"
   val costOfGoodsBullet9                   = "capital items for example office equipment, laptops, mobile phones and tablets"
-  val costOfGoodsParagraph2                = "You can find out more about the VAT Flat Rate Scheme (opens in a new window) including examples of goods, services and how often to use this tool."
+  val costOfGoodsParagraph2                = "You can find out more about the VAT Flat Rate Scheme (opens in new tab) including examples of goods, services and how often to use this tool."
   val costOfGoodsError                     = "Enter an amount for costs"
   val costOfGoodsContinue                  = "Continue"
 }

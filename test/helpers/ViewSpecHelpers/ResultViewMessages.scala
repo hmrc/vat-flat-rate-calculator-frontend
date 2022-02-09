@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,18 @@ import play.api.i18n.Lang
 trait ResultViewMessages extends MockitoSugar {
   implicit val lang: Lang = Lang("en")
   val ResultTitle                         = "Your VAT calculation - Check your VAT flat rate - GOV.UK"
-  val ResultHeading                       = "Use the 16.5% VAT flat rate"
+  val ResultHeading                       = "You can use the 16.5% VAT flat rate"
   val ResultIntro                         = "Based on your answers, you are a limited cost business. This is because the cost of your goods for this year was under £1,000."
   val ResultProgressiveDisclosureHeader   = "You may need to do this calculation for every VAT period"
   val ResultProgressiveDisclosureTitle    = "Are you in your first year of VAT registration?"
   val ResultProgressiveDisclosureText     = "Apply a 1% discount in your first year of VAT registration."
   val ResultH2Text                        = "What happens next? "
   val ResultNextText1                     = "Use this rate from 1 April 2017 when you do your VAT return."
-  val ResultNextText2                     = "If you're doing your VAT return go to your business account (opens in a new window)"
+  val ResultNextText2                     = "If you're doing your VAT return go to your business account (opens in new tab)"
   val ResultNextText2Href                 = "http://localhost:9020/business-account"
-  val ResultNextText3                     = "You may want to join or leave the Flat Rate Scheme (opens in a new window)"
+  val ResultNextText3                     = "You may want to join or leave the Flat Rate Scheme (opens in new tab)"
   val ResultNextText3Href                 = "http://www.gov.uk/vat-flat-rate-scheme/join-or-leave-the-scheme"
-  val ResultNextText4                     = "You may want to deregister from VAT (opens in a new window)"
+  val ResultNextText4                     = "You may want to deregister from VAT (opens in new tab)"
   val ResultNextText4Href                 = "http://www.gov.uk/vat-registration/cancel-registration"
   val FeedbackSurveyText                  = "What did you think of this service?"
   val ResultBannerTitle                   = "Help improve HMRC services"

@@ -36,7 +36,7 @@ techError.para.1                   = Try again later. Your VFR registration is n
 ############################################################################
 timeout.title                      = Session closed due to inactivity
 timeout.heading                    = Your session has timed out
-timeout.para.1                     = You can <a href={0}>click here</a> to start again.
+timeout.para.1                     = You can <a href={0} class="govuk-link">click here</a> to start again.
 
 ############################################################################
 # VAT return period page
@@ -71,38 +71,38 @@ costOfGoods.bullet.6                = gifts, promotional items and donations
 costOfGoods.bullet.7                = goods you will resell or hire out unless this is your main business activity
 costOfGoods.bullet.8                = training and memberships
 costOfGoods.bullet.9                = capital items for example office equipment, laptops, mobile phones and tablets
-costOfGoods.para.2                  = You can find out more about the <a href={0} rel="external" target="_blank">VAT Flat Rate Scheme (opens in a new window)</a> including examples of goods, services and how often to use this tool.
+costOfGoods.para.2                  = You can find out more about the <a href={0} class="govuk-link" rel="noreferrer noopener" target="_blank">VAT Flat Rate Scheme (opens in new tab)</a> including examples of goods, services and how often to use this tool.
 
 ############################################################################
 # Result page
 ############################################################################
 result.title                        = Your VAT calculation
 
-result.1.heading                    = Use the 16.5% VAT flat rate
-result.2.heading                    = Use the VAT flat rate for your business type
+result.1.heading                    = You can use the 16.5% VAT flat rate
+result.2.heading                    = You can use the VAT flat rate for your business type
 
 result.1.summary                    = Based on your answers, you are a limited cost business. This is because the cost of your goods for this year was under £1,000.
 result.2.summary                    = Based on your answers, you are a limited cost business. This is because the cost of your goods is less than 2% of your turnover.
-result.3.summary                    = Based on your answers, your costs are 2% or more of your turnover. Use the <a href = {0}>VAT flat rate for your business type,</a> not the 16.5% flat rate for a limited cost business.
+result.3.summary                    = Based on your answers, your costs are 2% or more of your turnover. Use the <a href = {0} class="govuk-link">VAT flat rate for your business type,</a> not the 16.5% flat rate for a limited cost business.
 result.4.summary                    = Based on your answers, you are a limited cost business. This is because the cost of your goods for this quarter was under £250.
 result.5.summary                    = Based on your answers, you are a limited cost business. This is because the cost of your goods is less than 2% of your turnover.
-result.6.summary                    = Based on your answers, your costs are 2% or more of your turnover. Use the <a href = {0}>VAT flat rate for your business type,</a> not the 16.5% flat rate for a limited cost business.
+result.6.summary                    = Based on your answers, your costs are 2% or more of your turnover. Use the <a href = {0} class="govuk-link">VAT flat rate for your business type,</a> not the 16.5% flat rate for a limited cost business.
 
 result.para.1                       = You may need to do this calculation for every VAT period
 result.accordion.question           = Are you in your first year of VAT registration?
 result.accordion.summary            = Apply a 1% discount in your first year of VAT registration.
 result.heading.2                    = What happens next?
 result.para.2                       = Use this rate from 1 April 2017 when you do your VAT return.
-result.para.3                       = If you''re doing your VAT return <a href="{0}" rel="external" target="_blank">go to your business account (opens in a new window)</a>
-result.para.4                       = You may want to <a href="{0}" rel="external" target="_blank">join or leave the Flat Rate Scheme (opens in a new window)</a>
-result.para.5                       = You may want to <a href="{0}" rel="external" target="_blank">deregister from VAT (opens in a new window)</a>
+result.para.3                       = If you''re doing your VAT return <a href="{0}" rel="external" target="_blank">go to your business account (opens in new tab)</a>
+result.para.4                       = You may want to <a href="{0}" class="govuk-link" rel="noreferrer noopener" target="_blank">join or leave the Flat Rate Scheme (opens in new tab)</a>
+result.para.5                       = You may want to <a href="{0}" class="govuk-link" rel="noreferrer noopener" target="_blank">deregister from VAT (opens in new tab)</a>
 result.feedbackSurvey               = What did you think of this service?
 
 
 result.dismissBanner = No thanks
 result.dismissBanner.screenreader = I don’t want to answer any questions about joining the research panel
 result.userResearchLink.title = Help improve GOV.UK
-result.userResearchLink.link = Help improve this digital service by joining the HMRC user panel (opens in new window)
+result.userResearchLink.link = Help improve this digital service by joining the HMRC user panel (opens in new tab)
 result.userResearchLink.text = This link opens in a new tab. Please note that this service is not available in Welsh.
 
 service.name = Check your VAT flat rate
