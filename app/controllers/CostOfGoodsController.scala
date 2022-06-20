@@ -57,7 +57,7 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
           _        <- stateService.saveVatFlatRate(success)
           result   =  whichResult(success)
           _        <- stateService.saveResultModel(createResultModel(success, result))
-          response <- Future.successful(Redirect(controllers.routes.ResultController.result()))
+          response <- Future.successful(Redirect(controllers.routes.ResultController.result))
         } yield response
       }
     )
@@ -85,7 +85,7 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
         res match {
           case Ok =>
             logger.warn("[CostOfGoods Controller]No model found in Keystore; redirecting back to landing page")
-            Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod())
+            Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod)
           case BadRequest =>
             logger.warn("[CostOfGoods Controller]No VatFlatRate model found in Keystore")
             InternalServerError(technicalErrorView())

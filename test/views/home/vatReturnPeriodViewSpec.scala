@@ -92,7 +92,7 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
 
     "have a valid form" in{
       doc.select("form").attr("method") shouldBe "POST"
-      doc.select("form").attr("action") shouldBe controllers.routes.VatReturnPeriodController.submitVatReturnPeriod().url
+      doc.select("form").attr("action") shouldBe controllers.routes.VatReturnPeriodController.submitVatReturnPeriod.url
     }
   }
 

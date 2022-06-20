@@ -62,7 +62,7 @@ class ResultControllerSpec extends ControllerTestSpec {
     }
 
     "navigate to the Enter VAT return page" in {
-      redirectLocation(result) shouldBe Some(routes.VatReturnPeriodController.vatReturnPeriod().url)
+      redirectLocation(result) shouldBe Some(routes.VatReturnPeriodController.vatReturnPeriod.url)
     }
   }
 

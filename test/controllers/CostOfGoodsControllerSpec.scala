@@ -93,7 +93,7 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "navigate to the timeout page" in {
-        redirectLocation(result) shouldBe Some(s"${routes.TimeoutController.timeout()}")
+        redirectLocation(result) shouldBe Some(s"${routes.TimeoutController.timeout}")
       }
     }
 
@@ -109,7 +109,7 @@ class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {
       }
 
       "redirect to the landing page" in {
-        redirectLocation(result) shouldBe Some(s"${routes.VatReturnPeriodController.vatReturnPeriod()}")
+        redirectLocation(result) shouldBe Some(s"${routes.VatReturnPeriodController.vatReturnPeriod}")
       }
     }
 

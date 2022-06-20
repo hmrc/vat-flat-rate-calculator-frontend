@@ -69,7 +69,7 @@ class VatReturnPeriodController @Inject()(mcc: MessagesControllerComponents,
       },
       success => {
         stateService.saveVatFlatRate(success).map(
-          _ => Redirect(controllers.routes.TurnoverController.turnover())
+          _ => Redirect(controllers.routes.TurnoverController.turnover)
         )
       }
     )
