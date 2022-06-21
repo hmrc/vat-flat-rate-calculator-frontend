@@ -139,7 +139,7 @@ class VatReturnPeriodControllerSpec extends ControllerTestSpec {
       when(testMockStateService.saveVatFlatRate(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(CacheMap("testId", Map())))
 
-      lazy val request = FakeRequest()
+      lazy val request = FakeRequest().withMethod(POST)
         .withSession(SessionKeys.sessionId -> s"any-old-id")
         .withFormUrlEncodedBody(
           "vatReturnPeriod" -> "annually"
@@ -153,7 +153,7 @@ class VatReturnPeriodControllerSpec extends ControllerTestSpec {
       }
 
       "redirect to the cost of goods page" in {
-        redirectLocation(result) shouldBe Some(s"${controllers.routes.TurnoverController.turnover()}")
+        redirectLocation(result) shouldBe Some(s"${controllers.routes.TurnoverController.turnover}")
       }
     }
 

@@ -27,7 +27,6 @@ import play.api.inject.Injector
 import play.api.test.FakeRequest
 import views.html.home.turnover
 import play.api.mvc.MessagesControllerComponents
-import views.html.layouts.GovUkTemplate
 
 class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverViewMessages {
 
@@ -35,7 +34,6 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
   def injector: Injector = app.injector
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
   lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
-  lazy val govUkTemplate = injector.instanceOf[GovUkTemplate]
   lazy val turnoverView = injector.instanceOf[turnover]
 
   val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
@@ -82,7 +80,7 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
 
     "have a valid form" in{
       doc.select("form").attr("method") shouldBe "POST"
-      doc.select("form").attr("action") shouldBe controllers.routes.TurnoverController.submitTurnover().url
+      doc.select("form").attr("action") shouldBe controllers.routes.TurnoverController.submitTurnover.url
     }
   }
 

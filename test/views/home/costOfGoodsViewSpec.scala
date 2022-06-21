@@ -106,7 +106,7 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
 
     "have a valid form" in{
       doc.select("form").attr("method") shouldBe "POST"
-      doc.select("form").attr("action") shouldBe controllers.routes.CostOfGoodsController.submitCostOfGoods().url
+      doc.select("form").attr("action") shouldBe controllers.routes.CostOfGoodsController.submitCostOfGoods.url
     }
 
   }

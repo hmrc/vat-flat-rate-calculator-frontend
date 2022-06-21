@@ -41,7 +41,7 @@ class ResultController @Inject()(mcc: MessagesControllerComponents,
       case Some(model)  => Ok(resultView(model.result, showUserResearchPanel))
       case None         =>
         logger.warn("ResultModel could not be retrieved from Keystore")
-        Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod())
+        Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod)
     }
   }
 

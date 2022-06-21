@@ -38,7 +38,7 @@ class ValidatedSession @Inject()(config: AppConfig,
     Action.async { implicit request =>
       if(request.session.get(SessionKeys.sessionId).isEmpty) {
         logger.warn("No session ID found; timing out")
-        Future.successful(Redirect(controllers.routes.TimeoutController.timeout()))
+        Future.successful(Redirect(controllers.routes.TimeoutController.timeout))
       } else {
        action(request)
       }

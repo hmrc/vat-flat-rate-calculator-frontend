@@ -22,11 +22,10 @@ import sbt._
 object AppDependencies {
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.6.0",
-    "uk.gov.hmrc" %% "play-partials"              % "8.1.0-play-28",
-    "uk.gov.hmrc" %% "http-caching-client"        % "9.5.0-play-28",
-    "uk.gov.hmrc" %% "govuk-template"             % "5.68.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "0.88.0-play-28"
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.24.0",
+    "uk.gov.hmrc" %% "play-partials"              % "8.3.0-play-28",
+    "uk.gov.hmrc" %% "http-caching-client"        % "9.6.0-play-28",
+    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "0.94.0-play-28"
   )
 
   trait TestDependencies {
@@ -40,7 +39,7 @@ object AppDependencies {
         "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3"             % scope,
         "org.scalatest"          %% "scalatest"          % "3.0.8"             % scope,
         "org.pegdown"            %  "pegdown"            % "1.6.0"             % scope,
-        "org.jsoup"              %  "jsoup"              % "1.13.1"            % scope,
+        "org.jsoup"              %  "jsoup"              % "1.15.1"            % scope,
         "com.typesafe.play"      %% "play-test"          % PlayVersion.current % scope,
         "org.mockito"            %  "mockito-core"       % "3.3.3"             % scope
       )

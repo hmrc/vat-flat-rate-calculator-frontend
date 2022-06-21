@@ -31,7 +31,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{MessagesControllerComponents, Result}
 import services.StateService
 import utils.FakeApplication
-import views.html.layouts.GovUkTemplate
 
 import scala.language.implicitConversions
 
@@ -49,7 +48,6 @@ trait ControllerTestSpec extends PlaySpec with MockitoSugar with FakeApplication
   lazy val mockStateService: StateService = fakeApplication.injector.instanceOf[StateService]
   lazy val mockForm: VatFlatRateForm = fakeApplication.injector.instanceOf[VatFlatRateForm]
   val mockMCC: MessagesControllerComponents = fakeApplication.injector.instanceOf[MessagesControllerComponents]
-  lazy val govUkTemplate = fakeApplication.injector.instanceOf[GovUkTemplate]
 
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}

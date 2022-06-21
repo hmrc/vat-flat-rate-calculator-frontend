@@ -67,7 +67,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
 
       "redirect to the landing page" in {
         createMock(None)
-        redirectLocation(result) shouldBe Some(s"${routes.VatReturnPeriodController.vatReturnPeriod()}")
+        redirectLocation(result) shouldBe Some(s"${routes.VatReturnPeriodController.vatReturnPeriod}")
       }
     }
 
@@ -169,6 +169,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
       lazy val request = FakeRequest()
         .withSession(SessionKeys.sessionId -> s"any-old-id")
         .withFormUrlEncodedBody(("vatReturnPeriod","annually"),("turnover", "10000"))
+        .withMethod(POST)
       lazy val controller = createTestController()
       lazy val result = controller.submitTurnover(request)
 
@@ -181,7 +182,7 @@ class TurnoverControllerSpec extends ControllerTestSpec {
       }
 
       "redirect to the cost of goods page" in {
-        redirectLocation(result) shouldBe Some(s"${routes.CostOfGoodsController.costOfGoods()}")
+        redirectLocation(result) shouldBe Some(s"${routes.CostOfGoodsController.costOfGoods}")
       }
     }
 

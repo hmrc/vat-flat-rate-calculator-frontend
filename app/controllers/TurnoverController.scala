@@ -53,7 +53,7 @@ class TurnoverController @Inject()(mcc: MessagesControllerComponents,
       },
       success => {
         stateService.saveVatFlatRate(success).map(
-          _ => Redirect(controllers.routes.CostOfGoodsController.costOfGoods()))
+          _ => Redirect(controllers.routes.CostOfGoodsController.costOfGoods))
       }
     )
   }
@@ -78,7 +78,7 @@ class TurnoverController @Inject()(mcc: MessagesControllerComponents,
         res match {
           case Ok =>
             logger.warn("[Turnover Controller]No model found in Keystore; redirecting back to landing page")
-            Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod())
+            Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod)
           case BadRequest =>
             logger.warn("[Turnover Controller]No VatFlatRate model found in Keystore")
             InternalServerError(technicalErrorView())
