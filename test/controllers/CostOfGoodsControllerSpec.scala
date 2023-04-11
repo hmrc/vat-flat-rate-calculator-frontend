@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import services.StateService
 import uk.gov.hmrc.http.SessionKeys
 import views.html.errors.technicalError
 import views.html.home.costOfGoods
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CostOfGoodsControllerSpec extends ControllerTestSpec with ScalaFutures {

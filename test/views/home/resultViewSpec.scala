@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,13 +88,6 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
 
       doc.select("div.form-group > p").eq(5).text() shouldBe FeedbackSurveyText
       doc.select("div.form-group > p > a").eq(3).attr("href") shouldBe controllers.routes.FeedbackSurveyController.redirectFeedbackSurvey.url
-    }
-
-    "have a user research banner" in {
-      doc.select("div.hmrc-user-research-banner__title").text() shouldBe ResultBannerTitle
-      doc.select("a.hmrc-user-research-banner__link").text() shouldBe ResultBannerText
-      doc.select("a.hmrc-user-research-banner__link").attr("href") shouldBe ResultBannerTextHref
-      doc.select("button.hmrc-user-research-banner__close").text() shouldBe ResultBannerClose
     }
 
   }
