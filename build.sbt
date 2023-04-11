@@ -66,12 +66,12 @@ lazy val microservice: Project = Project(appName, file("."))
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     routesGenerator := InjectedRoutesGenerator,
     pipelineStages in Assets := Seq(digest),
-    scalaVersion := "2.12.12",
+    scalaVersion := "2.13.8",
     scalacOptions += "-P:silencer:lineContentFilters=^\\w",
     scalacOptions += "-P:silencer:pathFilters=views;routes;--feature",
     libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.1" cross CrossVersion.full),
-      "com.github.ghik" % "silencer-lib" % "1.7.1" % Provided cross CrossVersion.full
+      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.12" cross CrossVersion.full),
+      "com.github.ghik" % "silencer-lib" % "1.7.12" % Provided cross CrossVersion.full
     )
   )
   .configs(IntegrationTest)
@@ -87,7 +87,6 @@ lazy val microservice: Project = Project(appName, file("."))
   .settings(
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.govukfrontend.views.html.components._",
-      "uk.gov.hmrc.govukfrontend.views.html.helpers._",
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "uk.gov.hmrc.govukfrontend.views.html.components.implicits._"

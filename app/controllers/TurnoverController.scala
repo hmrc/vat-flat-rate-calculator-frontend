@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package controllers
 
 import controllers.predicates.ValidatedSession
 import forms.VatFlatRateForm
+
 import javax.inject.{Inject, Singleton}
 import models.VatFlatRateModel
 import play.api.Logging
@@ -29,8 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{errors, home => views}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TurnoverController @Inject()(mcc: MessagesControllerComponents,
@@ -38,7 +38,7 @@ class TurnoverController @Inject()(mcc: MessagesControllerComponents,
                                    session: ValidatedSession,
                                    forms: VatFlatRateForm,
                                    turnoverView: views.turnover,
-                                   technicalErrorView: errors.technicalError) extends FrontendController(mcc)
+                                   technicalErrorView: errors.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc)
   with I18nSupport with Logging {
 
   val turnover: Action[AnyContent] = session.async{ implicit request =>

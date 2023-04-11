@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package controllers
 import common.ResultCodes
 import controllers.predicates.ValidatedSession
 import forms.VatFlatRateForm
+
 import javax.inject.{Inject, Singleton}
 import models.{ResultModel, VatFlatRateModel}
 import play.api.Logging
@@ -30,8 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{errors => errs, home => views}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
@@ -39,7 +39,7 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
                                       session: ValidatedSession,
                                       forms: VatFlatRateForm,
                                       costOfGoodsView: views.costOfGoods,
-                                      technicalErrorView: errs.technicalError) extends FrontendController(mcc) with I18nSupport with Logging {
+                                      technicalErrorView: errs.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with Logging {
 
 
   val costOfGoods: Action[AnyContent] = session.async { implicit request =>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package helpers
 
 import java.nio.charset.Charset
-
 import akka.actor.TypedActor.dispatcher
 import akka.stream.Materializer
 import akka.util.ByteString
@@ -32,7 +31,7 @@ import play.api.mvc.{MessagesControllerComponents, Result}
 import services.StateService
 import utils.FakeApplication
 
-import scala.language.implicitConversions
+import scala.language.{implicitConversions, postfixOps}
 
 trait ControllerTestSpec extends PlaySpec with MockitoSugar with FakeApplication {
 
