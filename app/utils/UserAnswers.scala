@@ -16,18 +16,15 @@
 
 package utils
 
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import models.ReturnPeriod
+import uk.gov.hmrc.http.cache.client.CacheMap
 
-trait FakeApplication {
+class UserAnswers(val cacheMap: CacheMap) extends MapFormats {
 
-  protected def appBuilder: GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .configure(
-        "metrics.enabled" -> true,
-        "metrics.jvm" -> false
-      )
+  def vatReturnPeriod: Option[ReturnPeriod.Value] = cacheMap.getEntry[ReturnPeriod.Value]("vatReturnPeriod")
 
-  lazy val fakeApplication: Application = appBuilder.build()
+  def turnover: Option[BigDecimal] = cacheMap.getEntry[BigDecimal]("turnover")
+
+  def costOfGoods: Option[BigDecimal] = cacheMap.getEntry[BigDecimal]("costOfGoods")
 
 }

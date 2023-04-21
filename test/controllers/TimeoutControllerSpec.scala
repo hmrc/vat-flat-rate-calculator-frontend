@@ -16,18 +16,17 @@
 
 package controllers
 
-import helpers.ControllerTestSpec
-import org.jsoup.Jsoup
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import helpers.ControllerSpecBase
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, defaultAwaitTimeout, status}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import views.html.fallback.timeout
 
-class TimeoutControllerSpec extends ControllerTestSpec {
+class TimeoutControllerSpec extends ControllerSpecBase {
 
   class Setup {
-    lazy val timeoutView = fakeApplication.injector.instanceOf[timeout]
+    lazy val timeoutView = fakeApplication().injector.instanceOf[timeout]
     val controller = new TimeoutController(mcc, timeoutView)
   }
 
@@ -42,8 +41,7 @@ class TimeoutControllerSpec extends ControllerTestSpec {
     "navigate to the timeout page" in new Setup {
       lazy val request = FakeRequest("GET", "/")
       lazy val result = controller.timeout(request)
-      val futureResult = await(result)
-      Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("timeout.title")} - ${messages("service.name")} - GOV.UK""")
+      contentAsString(result) should include(messages(s"""${messages("timeout.title")} - ${messages("service.name")} - GOV.UK"""))
     }
   }
 

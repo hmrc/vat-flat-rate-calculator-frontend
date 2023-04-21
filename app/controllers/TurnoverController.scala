@@ -16,17 +16,15 @@
 
 package controllers
 
+import connectors.DataCacheConnector
+import controllers.actions.DataRetrievalAction
 import controllers.predicates.ValidatedSession
-import forms.VatFlatRateForm
-
+import forms.turnoverForm
 import javax.inject.{Inject, Singleton}
-import models.VatFlatRateModel
 import play.api.Logging
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Lang}
+import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.StateService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{errors, home => views}
 
@@ -34,56 +32,46 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TurnoverController @Inject()(mcc: MessagesControllerComponents,
-                                   stateService: StateService,
+                                   dataCacheConnector: DataCacheConnector,
+                                   getData: DataRetrievalAction,
                                    session: ValidatedSession,
-                                   forms: VatFlatRateForm,
                                    turnoverView: views.turnover,
                                    technicalErrorView: errors.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc)
   with I18nSupport with Logging {
 
-  val turnover: Action[AnyContent] = session.async{ implicit request =>
-    routeRequest(Ok, forms.turnoverForm)
-  }
-
-  val submitTurnover: Action[AnyContent] = session.async { implicit request =>
-  forms.turnoverForm.bindFromRequest.fold(
-      errors => {
-        logger.info("Turnover form could not be bound")
-        routeRequest(BadRequest, errors)
-      },
-      success => {
-        stateService.saveVatFlatRate(success).map(
-          _ => Redirect(controllers.routes.CostOfGoodsController.costOfGoods))
+  def onPageLoad: Action[AnyContent] = getData {
+    implicit request =>
+      val preparedForm = request.userAnswers.flatMap(x => x.turnover) match {
+        case None => turnoverForm()
+        case Some(value) =>  turnoverForm().fill(value)
       }
-    )
+      request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+        case Some(value) => Ok(turnoverView(preparedForm, value.toString))
+        case None =>
+          logger.warn("[Turnover Controller]No model found in Keystore; redirecting back to landing page")
+          Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
+      }
   }
 
-  def routeRequest(res: Status, form: Form[VatFlatRateModel])(implicit req: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    implicit val lang: Lang = req.lang
-    for {
-      vfrModel <- stateService.fetchVatFlatRate()
-    } yield vfrModel match {
-      case Some(model) =>
-        model.vatReturnPeriod match {
-          case s  if s.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.annual"))    => res(turnoverView(form.fill(model), messagesApi("common.year")))
-          case s  if s.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.quarter"))   => res(turnoverView(form.fill(model), messagesApi("common.quarter")))
-          case _ =>
-            logger.warn(
-              s"""Incorrect value found for Vat Return Period:
-                 |Should be [${messagesApi("vatReturnPeriod.option.annual")}] or [${messagesApi("vatReturnPeriod.option.quarter")}] but found ${model.vatReturnPeriod}""".stripMargin
-            )
-            InternalServerError(technicalErrorView())
-        }
-      case _ =>
-        res match {
-          case Ok =>
-            logger.warn("[Turnover Controller]No model found in Keystore; redirecting back to landing page")
-            Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod)
-          case BadRequest =>
-            logger.warn("[Turnover Controller]No VatFlatRate model found in Keystore")
-            InternalServerError(technicalErrorView())
-        }
-    }
+  def onSubmit: Action[AnyContent] = getData.async {
+    implicit request =>
+      turnoverForm().bindFromRequest().fold(
+        (formWithErrors: Form[_]) => {
+          request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+            case Some(value) => Future.successful(BadRequest(turnoverView(formWithErrors, value.toString)))
+            case _ =>
+              logger.warn("[Turnover Controller]No model found in Keystore; redirecting back to landing page")
+              Future.successful(InternalServerError(technicalErrorView()))
+          }
+        },
+        value =>
+          request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+            case Some(_) => dataCacheConnector.save[BigDecimal](request.sessionId, "turnover", value).map(cacheMap =>
+              Redirect(controllers.routes.CostOfGoodsController.onPageLoad))
+            case _ => logger.warn("[Turnover Controller]No model found in Keystore for return Period; Internal server error")
+              Future.successful(InternalServerError(technicalErrorView()))
+          }
+      )
   }
 
 }

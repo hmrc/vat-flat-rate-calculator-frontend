@@ -16,147 +16,82 @@
 
 package controllers
 
-import java.util.UUID
-
-import helpers.ControllerTestSpec
-import models.VatFlatRateModel
-import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
+import helpers.ControllerSpecBase
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
-import play.api.mvc.Result
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.StateService
+import connectors.FakeDataCacheConnector
+import forms.vatReturnPeriodForm
+import play.api.data.Form
+import play.api.libs.json.JsString
+import models.ReturnPeriod
+import org.scalatestplus.play.PlaySpec
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 import views.html.home.vatReturnPeriod
 
-class VatReturnPeriodControllerSpec extends ControllerTestSpec {
+class VatReturnPeriodControllerSpec extends PlaySpec with ControllerSpecBase {
 
-  lazy val testMockStateService = mock[StateService]
+  val view = application.injector.instanceOf[vatReturnPeriod]
 
-  def createTestController() = {
-    lazy val vatReturnPeriodView = fakeApplication.injector.instanceOf[vatReturnPeriod]
-    object TestController extends VatReturnPeriodController(mcc, testMockStateService,
-      mockValidatedSession, mockForm, vatReturnPeriodView)
-    TestController
-  }
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+    new VatReturnPeriodController(mcc, FakeDataCacheConnector, dataRetrievalAction, mockValidatedSession, view)
 
-  "Navigating to the landing page" must {
-    val sessionId =  UUID.randomUUID().toString
+  def viewAsString(form: Form[_] = vatReturnPeriodForm()) = view(form)(fakeRequest, messages).toString
 
-    "there is no sessionId" must {
-      lazy val request = FakeRequest("GET", "/")
-      lazy val controller = createTestController()
-      lazy val result = controller.vatReturnPeriod(request)
+  "VatReturnPeriodController" must {
 
-      "generate a sessionId and continue" in {
-        status(result) shouldBe Status.OK
-      }
-    }
+    "the question has previously not been answered" must {
+      lazy val result = controller().onPageLoad()(fakeRequest)
 
-    "there is no previous model in keystore" must {
-      lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"sessionId-$sessionId")
-
-      lazy val controller = createTestController()
-      lazy val result = controller.vatReturnPeriod(request)
-
-      "return 200 " in {
-        when(testMockStateService.fetchVatFlatRate()(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(Future.successful(None))
-
+      "return 200" in {
         status(result) shouldBe Status.OK
       }
 
-      "navigate to the turnover page" in {
-        val resultCompleted = await(result)
-        Jsoup.parse(bodyOf(resultCompleted)).title shouldBe messages(s"""${messages("vatReturnPeriod.title")} - ${messages("service.name")} - GOV.UK""")
+      "return the correct view" in {
+        contentAsString(result) shouldBe viewAsString()
       }
     }
 
-    "there is a model in keystore" must {
-      val data = Some(VatFlatRateModel("annually", None, None))
-      lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"sessionId-$sessionId")
-      lazy val controller = createTestController()
+    "the question has previously been answered" must {
+      val validData = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options.head.value))
+      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
+      lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-      lazy val result = controller.vatReturnPeriod(request)
-
-      "return 200 " in {
-        when(testMockStateService.fetchVatFlatRate()(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(Future.successful(data))
-        
+      "return 200" in {
         status(result) shouldBe Status.OK
       }
-      "navigate to the turnover page" in {
-        val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("vatReturnPeriod.title")} - ${messages("service.name")} - GOV.UK""")
-      }
-    }
-  }
 
-  "Calling the .submitVatReturnPeriod action" must {
-
-    "not entering any data" must {
-      lazy val request = FakeRequest()
-        .withSession(SessionKeys.sessionId -> s"any-old-id")
-      lazy val controller = createTestController()
-      lazy val result = controller.submitVatReturnPeriod(request)
-
-      "return 400" in {
-        status(result) shouldBe Status.BAD_REQUEST
-      }
-      "fail with the correct error message" in {
-        val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("govuk-error-message").text should include(messages("error.vatReturnPeriod.required"))
+      "return the correct view" in {
+        contentAsString(result) shouldBe viewAsString(vatReturnPeriodForm().fill(ReturnPeriod.ANNUALLY))
       }
     }
 
-    "entering invalid data" must {
-      lazy val request = FakeRequest()
-        .withSession(SessionKeys.sessionId -> s"any-old-id")
-        .withFormUrlEncodedBody(
-          "vatReturnPeriod" -> "annually",
-          "turnover" -> "x")
-
-      lazy val controller = createTestController()
-      lazy val result: Future[Result] = controller.submitVatReturnPeriod(request)
-
-      "return 400" in {
-        status(result) shouldBe Status.BAD_REQUEST
-      }
-      "fail with the correct error message" in {
-        val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("error-notification").text should include(messages(""))
-      }
-    }
-
-
-    "submitting a valid Vat Return Period" must {
-      when(testMockStateService.saveVatFlatRate(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(CacheMap("testId", Map())))
-
-      lazy val request = FakeRequest().withMethod(POST)
-        .withSession(SessionKeys.sessionId -> s"any-old-id")
-        .withFormUrlEncodedBody(
-          "vatReturnPeriod" -> "annually"
-        )
-
-      lazy val controller = createTestController()
-      lazy val result = controller.submitVatReturnPeriod(request)
+    "valid data is submitted" must {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("vatReturnPeriod", vatReturnPeriodForm.options.head.value)).withMethod("POST")
+      val result = controller().onSubmit()(postRequest)
 
       "return 303" in {
-        status(result) shouldBe Status.SEE_OTHER
+        status(result) shouldBe SEE_OTHER
       }
-
       "redirect to the cost of goods page" in {
-        redirectLocation(result) shouldBe Some(s"${controllers.routes.TurnoverController.turnover}")
+        redirectLocation(result) shouldBe Some(s"${controllers.routes.TurnoverController.onPageLoad}")
+      }
+    }
+
+    "not entering any data" must {
+      val postRequest = fakeRequest.withMethod("POST")
+      val result = controller().onSubmit()(postRequest)
+
+      "return 400" in {
+        status(result) shouldBe BAD_REQUEST
+      }
+      "fail with the correct error message" in {
+        contentAsString(result) should include(messages("error.vatReturnPeriod.required"))
       }
     }
 
   }
-
 }

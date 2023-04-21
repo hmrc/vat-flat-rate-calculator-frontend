@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package assets
+package models
 
-import play.api.data.Form
-import play.api.data.Forms.{bigDecimal, mapping, optional}
-import utils.Validation.{isLessThanMaximumTurnover, isPositive, isTwoDecimalPlaces}
+import play.api.mvc.{Request, WrappedRequest}
+import utils.UserAnswers
 
-object TestForm {
+case class OptionalDataRequest[A] (request: Request[A], sessionId: String, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
 
-
-  val nonEmptyCheck: String => Boolean = input => !input.isEmpty
-
-  val testForm = Form(
-    mapping (
-      "turnover" -> optional(bigDecimal.verifying(isLessThanMaximumTurnover, isPositive, isTwoDecimalPlaces)).verifying("error.required", _.isDefined)
-    )(TestModel.apply)(TestModel.unapply)
-  )
-}
-
-case class TestModel(data: Option[BigDecimal])
+case class DataRequest[A] (request: Request[A], sessionId: String, userAnswers: UserAnswers) extends WrappedRequest[A](request)

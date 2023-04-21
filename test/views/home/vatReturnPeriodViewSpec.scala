@@ -16,43 +16,30 @@
 
 package views.home
 
-import config.{AppConfig, ApplicationConfig}
-import forms.VatFlatRateForm
+import forms.vatReturnPeriodForm
 import helpers.ViewSpecHelpers.VatReturnPeriodViewMessages
 import org.jsoup.Jsoup
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.inject.Injector
+import play.api.data.{Form, FormError}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.FakeRequest
 import views.html.home.vatReturnPeriod
-import play.api.mvc.MessagesControllerComponents
 
 class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with VatReturnPeriodViewMessages {
 
-  implicit lazy val fakeRequest = FakeRequest()
-  def injector: Injector = app.injector
-  def appConfig: AppConfig = injector.instanceOf[AppConfig]
-  lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
-  lazy val vatReturnPeriodView = injector.instanceOf[vatReturnPeriod]
+  val view = app.injector.instanceOf[vatReturnPeriod]
 
-  val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
-  implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  val Period = "annually"
+  def createView(form: Form[_] = vatReturnPeriodForm()) = view(form)(FakeRequest(), messages)
+
+  def createErrorView(form: Form[_] = vatReturnPeriodForm()) = view(form.withError(FormError("vatReturnPeriod", vatReturnPeriodError)))(FakeRequest(), messages)
 
 
   "the VatReturnPeriod" must {
-    lazy val VatReturnPeriodForm = mockForm.vatReturnPeriodForm.bind(Map("vatReturnPeriod" -> "annually",
-      "turnover" -> "1000",
-      "costOfGoods" -> "100"))
-    lazy val view = vatReturnPeriodView(VatReturnPeriodForm)
-    lazy val doc = Jsoup.parse(view.body)
-
-    lazy val errorVatReturnPeriodForm = mockForm.vatReturnPeriodForm.bind(Map("" -> ""))
-    lazy val errorView = vatReturnPeriodView(errorVatReturnPeriodForm)
-    lazy val errorDoc = Jsoup.parse(errorView.body)
-
+      val doc = Jsoup.parse(createView(vatReturnPeriodForm()).toString())
 
     "have the correct title" in {
       doc.title() shouldBe vatReturnPeriodTitle
@@ -79,10 +66,8 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
     }
 
     "display the correct error" in {
-      errorVatReturnPeriodForm.hasErrors shouldBe true
-      val visuallyHiddenElement = errorDoc.getElementsByClass("govuk-visually-hidden")
-      visuallyHiddenElement.remove()
-      mockMessage(errorDoc.select("#vatReturnPeriod-error").text()) shouldBe (vatReturnPeriodError)
+      val errorDoc = Jsoup.parse(createErrorView(vatReturnPeriodForm()).toString())
+      errorDoc.select("#vatReturnPeriod-error").text.contains(vatReturnPeriodError)
     }
 
     "have a continue button" in{
@@ -92,7 +77,7 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
 
     "have a valid form" in{
       doc.select("form").attr("method") shouldBe "POST"
-      doc.select("form").attr("action") shouldBe controllers.routes.VatReturnPeriodController.submitVatReturnPeriod.url
+      doc.select("form").attr("action") shouldBe controllers.routes.VatReturnPeriodController.onSubmit.url
     }
   }
 

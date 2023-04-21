@@ -16,35 +16,26 @@
 
 package views.home
 
-import config.{AppConfig, ApplicationConfig}
 import helpers.ViewSpecHelpers.ResultViewMessages
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import org.jsoup.Jsoup
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
-import play.api.inject.Injector
+import play.api.i18n.{Messages, MessagesApi}
 import views.html.home.result
-import play.api.mvc.MessagesControllerComponents
 
 class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMessages {
 
-  implicit lazy val fakeRequest = FakeRequest()
-  def injector: Injector = app.injector
-  def appConfig: AppConfig = injector.instanceOf[AppConfig]
-  lazy val resultView = injector.instanceOf[result]
+  val view = app.injector.instanceOf[result]
 
-  val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
-  implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  val resultCode = 1
-  val showUserResearchPanel = true
-
+  def createView(resultCode: Int, showUserResearchPanel: Boolean) = view(resultCode, showUserResearchPanel)(FakeRequest(), messages)
 
   "the ResultView" must {
 
-    lazy val view = resultView(resultCode, showUserResearchPanel)
-    lazy val doc = Jsoup.parse(view.body)
+    val doc = Jsoup.parse(createView(1, true).toString())
 
     "have the correct title" in {
       doc.title() shouldBe ResultTitle
@@ -89,7 +80,5 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
       doc.select("div.form-group > p").eq(5).text() shouldBe FeedbackSurveyText
       doc.select("div.form-group > p > a").eq(3).attr("href") shouldBe controllers.routes.FeedbackSurveyController.redirectFeedbackSurvey.url
     }
-
   }
-
 }

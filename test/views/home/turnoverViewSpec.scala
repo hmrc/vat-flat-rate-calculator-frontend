@@ -16,72 +16,60 @@
 
 package views.home
 
-import config.{AppConfig, ApplicationConfig}
-import forms.VatFlatRateForm
+import forms.{costOfGoodsForm, turnoverForm}
 import helpers.ViewSpecHelpers.TurnoverViewMessages
 import org.jsoup.Jsoup
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.inject.Injector
+import play.api.data.{Form, FormError}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.FakeRequest
 import views.html.home.turnover
-import play.api.mvc.MessagesControllerComponents
 
 class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverViewMessages {
 
-  implicit lazy val fakeRequest = FakeRequest()
-  def injector: Injector = app.injector
-  def appConfig: AppConfig = injector.instanceOf[AppConfig]
-  lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
-  lazy val turnoverView = injector.instanceOf[turnover]
+  val view = app.injector.instanceOf[turnover]
 
-  val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
-  implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  val turnoverPeriodString = "year"
+  def createView(form: Form[_] = turnoverForm(), period: String) = view(form, period)(FakeRequest(), messages)
 
-  "the TurnoverView" must {
-    lazy val TurnoverForm = mockForm.turnoverForm.bind(Map("vatReturnPeriod" -> "annually",
-      "turnover" -> "1000",
-      "costOfGoods" -> "100"))
-    lazy val view = turnoverView(TurnoverForm, turnoverPeriodString)
-    lazy val doc = Jsoup.parse(view.body)
+  def createErrorView(form: Form[_] = turnoverForm(), period: String) = view(form.withError(FormError("turnover", turnoverError)), period)(FakeRequest(), messages)
 
-    lazy val errorTurnoverForm = mockForm.turnoverForm.bind(Map("vatReturnPeriod" -> "annually"))
-    lazy val errorView = turnoverView(errorTurnoverForm, turnoverPeriodString)
-    lazy val errorDoc = Jsoup.parse(errorView.body)
+    "the TurnoverView" must {
 
-    "have the correct title" in {
-      doc.title() shouldBe turnoverTitle
+      val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
+
+      "have the correct title" in {
+        doc.title() shouldBe turnoverTitle
+      }
+
+      "have the correct heading" in {
+        doc.select("h1").text() shouldBe  turnoverHeading("year")
+      }
+
+      "have some introductory text" in {
+        doc.getElementsByClass("govuk-hint").text shouldBe turnoverIntro
+      }
+
+      "have a £ symbol present" in {
+        doc.getElementsByClass("govuk-input__prefix").text shouldBe "£"
+      }
+
+      "display the correct error" in {
+        val errorDoc = Jsoup.parse(createErrorView(turnoverForm(), "annually").toString())
+        errorDoc.select("#turnover-error").text.contains(turnoverError)
+      }
+
+      "have a continue button" in{
+        doc.getElementsByClass("govuk-button").text shouldBe turnoverContinue
+        doc.getElementsByClass("govuk-button").attr("type") shouldBe "submit"
+      }
+
+      "have a valid form" in{
+        doc.select("form").attr("method") shouldBe "POST"
+        doc.select("form").attr("action") shouldBe controllers.routes.TurnoverController.onSubmit.url
+      }
     }
-
-    "have the correct heading" in {
-      doc.select("h1").text() shouldBe  turnoverHeading(turnoverPeriodString)
-    }
-
-    "have some introductory text" in {
-      doc.getElementsByClass("govuk-hint").text shouldBe turnoverIntro
-    }
-
-    "have a £ symbol present" in {
-      doc.getElementsByClass("govuk-input__prefix").text shouldBe "£"
-    }
-
-    "display the correct error" in {
-      errorTurnoverForm.hasErrors shouldBe true
-      errorDoc.getElementsByClass("govuk-error-message").first.text must include(turnoverError)
-    }
-
-    "have a continue button" in{
-      doc.getElementsByClass("govuk-button").text shouldBe turnoverContinue
-      doc.getElementsByClass("govuk-button").attr("type") shouldBe "submit"
-    }
-
-    "have a valid form" in{
-      doc.select("form").attr("method") shouldBe "POST"
-      doc.select("form").attr("action") shouldBe controllers.routes.TurnoverController.submitTurnover.url
-    }
-  }
-
 }

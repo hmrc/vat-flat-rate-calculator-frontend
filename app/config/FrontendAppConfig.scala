@@ -26,12 +26,15 @@ trait AppConfig {
   val businessTaxAccount: String
   val urBannerLink: String
   val feedbackSurvey: String
+  val cacheTtl: Int
 }
 
 @Singleton
 class ApplicationConfig @Inject()(val config: ServicesConfig) extends AppConfig {
 
   private def loadConfig(key: String): String = config.getString(key)
+
+  val appName: String = config.getString("appName")
 
   lazy val contactHost          = config.getString("contact-frontend.host")
   lazy val contactFormServiceIdentifier = "VFR"
@@ -44,5 +47,7 @@ class ApplicationConfig @Inject()(val config: ServicesConfig) extends AppConfig 
 
   //Banner
   lazy val urBannerLink: String = "https://signup.take-part-in-research.service.gov.uk/?utm_campaign=VFRS_results&utm_source=Survey_Banner&utm_medium=other&t=HMRC&id=114"
+
+  val cacheTtl: Int = config.getInt("mongodb.timeToLiveInSeconds")
 
 }
