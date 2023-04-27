@@ -22,13 +22,15 @@ import sbt._
 object AppDependencies {
 
   val bootstrapVersion = "7.15.0"
+  val mongoVersion = "1.1.0"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapVersion,
-    "uk.gov.hmrc" %% "play-partials"              % "8.3.0-play-28",
+    "uk.gov.hmrc" %% "play-partials"              % "8.4.0-play-28",
     "uk.gov.hmrc" %% "http-caching-client"        % "10.0.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "7.3.0-play-28"
+    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "7.4.0-play-28",
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"   % mongoVersion
   )
 
   trait TestDependencies {
@@ -39,11 +41,12 @@ object AppDependencies {
   object Test {
     def apply(): Seq[ModuleID] = new TestDependencies {
       override lazy val test = Seq(
-        "uk.gov.hmrc"            %% "bootstrap-test-play-28"     % bootstrapVersion,
+        "uk.gov.hmrc"            %% "bootstrap-test-play-28"     % bootstrapVersion    % scope,
+        "uk.gov.hmrc.mongo"      %% "hmrc-mongo-test-play-28"    % mongoVersion        % scope,
         "org.scalatest"          %% "scalatest"                  % "3.0.8"             % scope,
-        "org.jsoup"              %  "jsoup"                      % "1.15.1"            % scope,
-        "org.mockito"            %  "mockito-core"               % "5.2.0"             % scope,
-        "org.scalatestplus"      %% "scalatestplus-mockito"      % "1.0.0-M2"
+        "org.jsoup"              %  "jsoup"                      % "1.15.4"            % scope,
+        "org.mockito"            %  "mockito-core"               % "5.3.1"             % scope,
+        "org.scalatestplus"      %% "scalatestplus-mockito"      % "1.0.0-M2"          % scope
       )
     }.test
   }

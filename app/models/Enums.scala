@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package assets
+package models
 
-object MessageLookup {
+import play.api.libs.json.{Format, Reads, Writes}
+import utils.EnumUtils
 
-  object Error {
-    val dummyError = "Dummy error message"
-  }
+class Enums {
 
-  object VatReturnPeriod {
-    val title = "Enter your VAT return details"
-  }
+}
 
+object ReturnPeriod extends Enumeration {
+  type ReturnPeriod = Value
+  val ANNUALLY = Value("annually")
+  val MONTHLY = Value("quarterly")
+
+  val enumReads: Reads[ReturnPeriod] = EnumUtils.enumReads(ReturnPeriod)
+
+  val enumWrites: Writes[ReturnPeriod] = EnumUtils.enumWrites
+
+  implicit def enumFormats: Format[ReturnPeriod] = EnumUtils.enumFormat(ReturnPeriod)
 }

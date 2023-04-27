@@ -16,175 +16,158 @@
 
 package controllers
 
-import helpers.ControllerTestSpec
-import models.VatFlatRateModel
-import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
-import org.mockito.stubbing.OngoingStubbing
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import common.Constants.maximumTurnover
+import connectors.FakeDataCacheConnector
+import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
+import forms.{turnoverForm, vatReturnPeriodForm}
+import helpers.ControllerSpecBase
+import helpers.ViewSpecHelpers.TurnoverViewMessages
+import models.ReturnPeriod
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import play.api.data.Form
 import play.api.http.Status
-import play.api.test.FakeRequest
+import play.api.libs.json.{JsNumber, JsString}
 import play.api.test.Helpers._
-import services.StateService
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 import views.html.errors.technicalError
 import views.html.home.turnover
 
-class TurnoverControllerSpec extends ControllerTestSpec {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  lazy val testMockStateService = mock[StateService]
+class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessages {
 
-  def createTestController(): TurnoverController = {
-    lazy val turnoverView = fakeApplication.injector.instanceOf[turnover]
-    lazy val technicalErrorView = fakeApplication.injector.instanceOf[technicalError]
-    object TestController extends TurnoverController(mcc, testMockStateService,
-      mockValidatedSession, mockForm, turnoverView, technicalErrorView)
-    TestController
-  }
+  val view = application.injector.instanceOf[turnover]
+  val technicalErrorView = application.injector.instanceOf[technicalError]
 
-  def createMock(data: Option[VatFlatRateModel]): OngoingStubbing[Future[Option[VatFlatRateModel]]] ={
-    when(testMockStateService.fetchVatFlatRate()(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-      .thenReturn(Future.successful(data))
-  }
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+    new TurnoverController(mcc, FakeDataCacheConnector, dataRetrievalAction, mockValidatedSession, view, technicalErrorView)
 
+  def viewAsString(form: Form[_] = turnoverForm(), period: String) = view(form, period)(fakeRequest, messages).toString
 
-  "Calling the .turnover action" when {
+  def returnPeriodAnswer(index: Int = 0) = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options(index).value))
 
-    "there is no model in keystore" must {
-      lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
-      lazy val controller = createTestController()
+  "the question has previously not been answered" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
+    lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-      lazy val result = controller.turnover(request)
-
-      "return 303" in {
-        createMock(None)
-        status(result) shouldBe Status.SEE_OTHER
-      }
-
-      "redirect to the landing page" in {
-        createMock(None)
-        redirectLocation(result) shouldBe Some(s"${routes.VatReturnPeriodController.vatReturnPeriod}")
-      }
+    "return 200" in {
+      status(result) shouldBe Status.OK
     }
 
-    "Calling the .submitTurnover action with a badRequest and getting an Internal Server Error" when {
-
-      "there is no model in keystore" must {
-        lazy val request = FakeRequest("POST", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
-          .withFormUrlEncodedBody(("turnover", ""))
-        lazy val controller = createTestController()
-
-
-        lazy val result = controller.submitTurnover(request)
-
-        "return 500" in {
-          createMock(None)
-          status(result) shouldBe Status.INTERNAL_SERVER_ERROR
-        }
-      }
-    }
-//
-    "there is an annual model in keystore" when {
-
-      val data = Some(VatFlatRateModel("annually", None, None))
-      lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
-      lazy val controller = createTestController()
-
-      lazy val result = controller.turnover(request)
-
-      "return 200" in {
-        createMock(data)
-        status(result) shouldBe Status.OK
-      }
-
-      "navigate to the annual turnover page" in {
-        val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("turnover.title")} - ${messages("service.name")} - GOV.UK""")
-      }
-
-    }
-
-    "there is a quarterly model in keystore" when {
-
-      val data = Some(VatFlatRateModel("quarterly", None, None))
-      lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
-      lazy val controller = createTestController()
-      lazy val result = controller.turnover(request)
-
-      "return 200" in {
-        createMock(data)
-        status(result) shouldBe Status.OK
-      }
-
-      "navigate to the quarterly turnover page" in {
-        val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("turnover.title")} - ${messages("service.name")} - GOV.UK""")
-      }
-    }
-
-    "there is an incorrect model in keystore" must {
-
-      val data = Some(VatFlatRateModel("wrong-model", None, None))
-      lazy val request = FakeRequest("GET", "/").withSession(SessionKeys.sessionId -> s"any-old-id")
-      lazy val controller = createTestController()
-      lazy val result = controller.turnover(request)
-
-      "return 500" in {
-        createMock(data)
-        status(result) shouldBe Status.INTERNAL_SERVER_ERROR
-      }
-
-      "show the technical error page" in {
-        val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).title shouldBe messages(s"""${messages("techError.title")} - ${messages("service.name")} - GOV.UK""")
-      }
+    "return the correct view" in {
+      contentAsString(result) shouldBe viewAsString(period = ReturnPeriod.ANNUALLY.toString)
     }
   }
 
-  "Calling the .submitTurnover action" when {
+  "the question has previously been answered" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options(0).value), "turnover" -> JsNumber(BigDecimal(1000.00))))))
+    lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-    "not entering any data" must {
-      val data = Some(VatFlatRateModel("annually", None, None))
-      lazy val request = FakeRequest()
-          .withSession(SessionKeys.sessionId -> s"any-old-id")
-        .withFormUrlEncodedBody(("turnover", ""))
-      lazy val controller = createTestController()
-      lazy val result = controller.submitTurnover(request)
-
-      "return 400" in {
-        createMock(data)
-        status(result) shouldBe Status.BAD_REQUEST
-      }
-      "fail with the correct error message" in {
-        val futureResult = await(result)
-        Jsoup.parse(bodyOf(futureResult)).getElementsByClass("govuk-error-message").text should include(messages("error.turnover.required"))
-      }
+    "return 200" in {
+      status(result) shouldBe Status.OK
     }
 
-    "submitting a valid turnover" when {
-      lazy val request = FakeRequest()
-        .withSession(SessionKeys.sessionId -> s"any-old-id")
-        .withFormUrlEncodedBody(("vatReturnPeriod","annually"),("turnover", "10000"))
-        .withMethod(POST)
-      lazy val controller = createTestController()
-      lazy val result = controller.submitTurnover(request)
+    "return the correct view" in {
+      contentAsString(result) shouldBe viewAsString(turnoverForm().fill(BigDecimal(1000.00)), ReturnPeriod.ANNUALLY.toString)
+    }
+  }
 
+  "show the correct content" must {
+    "show the content for annual" in {
+      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer(0))))
+      lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      contentAsString(result) should include(turnoverHeading("year"))
+    }
+    "show the content for quarterly" in {
+      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer(1))))
+      lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      contentAsString(result) should include(turnoverHeading("quarter"))
+    }
+  }
 
-      "return 303" in {
-        when(testMockStateService.saveVatFlatRate(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(Future.successful(CacheMap("testId", Map())))
+  "valid data is submitted" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
+    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "1000.00")).withMethod("POST")
+    val result = controller(getRelevantData).onSubmit()(postRequest)
 
-        status(result) shouldBe Status.SEE_OTHER
-      }
+    "return 303" in {
+      status(result) shouldBe SEE_OTHER
+    }
+    "redirect to the cost of goods page" in {
+      redirectLocation(result) shouldBe Some(s"${controllers.routes.CostOfGoodsController.onPageLoad}")
+    }
+  }
 
-      "redirect to the cost of goods page" in {
-        redirectLocation(result) shouldBe Some(s"${routes.CostOfGoodsController.costOfGoods}")
-      }
+  "not entering any data" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
+    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "")).withMethod("POST")
+    val result = controller(getRelevantData).onSubmit()(postRequest)
+
+    "return 400" in {
+      status(result) shouldBe BAD_REQUEST
+    }
+    "fail with the correct error message" in {
+      contentAsString(result) should include(turnoverError)
+    }
+  }
+
+  "entering a negative number" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
+    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "-1000.00")).withMethod("POST")
+    val result = controller(getRelevantData).onSubmit()(postRequest)
+
+    "return 400" in {
+      status(result) shouldBe BAD_REQUEST
+    }
+    "fail with the correct error message" in {
+      contentAsString(result) should include(turnoverNegativeError)
+    }
+  }
+
+  "entering a number with more than 2 decimal places" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
+    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "0.001")).withMethod("POST")
+    val result = controller(getRelevantData).onSubmit()(postRequest)
+
+    "return 400" in {
+      status(result) shouldBe BAD_REQUEST
+    }
+    "fail with the correct error message" in {
+      contentAsString(result) should include(turnoverDecimalError)
+    }
+  }
+
+  "entering a number greater than the max limit" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer(0))))
+    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", (maximumTurnover+1).toString)).withMethod("POST")
+    val result = controller(getRelevantData).onSubmit()(postRequest)
+
+    "return 400" in {
+      status(result) shouldBe BAD_REQUEST
+    }
+    "fail with the correct error message" in {
+      contentAsString(result) should include(turnoverMaxError)
+    }
+  }
+
+  "loading turnover when no return period is given" must {
+    lazy val result = controller().onPageLoad()(fakeRequest)
+
+    "return 303" in {
+      status(result) shouldBe SEE_OTHER
     }
 
+    "redirect to the starting page" in {
+      redirectLocation(result) shouldBe Some(s"${controllers.routes.VatReturnPeriodController.onPageLoad}")
+    }
+  }
+
+  "submitting turnover when no return period is given" must {
+    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "1000.00")).withMethod("POST")
+    lazy val result = controller().onSubmit()(postRequest)
+
+    "return 500" in {
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
   }
 }

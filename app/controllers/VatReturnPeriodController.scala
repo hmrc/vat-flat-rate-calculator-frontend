@@ -17,16 +17,17 @@
 package controllers
 
 import java.util.UUID
-import controllers.predicates.ValidatedSession
-import forms.VatFlatRateForm
 
+import connectors.DataCacheConnector
+import controllers.actions.DataRetrievalAction
+import controllers.predicates.ValidatedSession
+import forms.vatReturnPeriodForm
 import javax.inject.{Inject, Singleton}
+import models.ReturnPeriod
 import play.api.Logging
-import play.api.data.FormError
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.data.Form
+import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.StateService
-import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{home => views}
 
@@ -34,43 +35,30 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VatReturnPeriodController @Inject()(mcc: MessagesControllerComponents,
-                                          stateService: StateService,
+                                          dataCacheConnector: DataCacheConnector,
+                                          getData: DataRetrievalAction,
                                           session: ValidatedSession,
-                                          forms: VatFlatRateForm,
                                           vatReturnPeriodView: views.vatReturnPeriod)(implicit ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with Logging {
 
-  val vatReturnPeriod: Action[AnyContent] = Action.async { implicit request =>
-
-    if(request.session.get(SessionKeys.sessionId).isEmpty){
-      val sessionId = UUID.randomUUID().toString
-      Future.successful(Ok(vatReturnPeriodView(forms.vatReturnPeriodForm))
-        .withSession(request.session + (SessionKeys.sessionId -> s"session-$sessionId")))
-    } else {
-      for {
-        vatReturnPeriod <- stateService.fetchVatFlatRate()
-      } yield vatReturnPeriod match {
-        case Some(model) => Ok(vatReturnPeriodView(forms.vatReturnPeriodForm.fill(model)))
-        case _           => Ok(vatReturnPeriodView(forms.vatReturnPeriodForm))
+  def onPageLoad: Action[AnyContent] = getData {
+    implicit request =>
+      val preparedForm = request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+        case None => vatReturnPeriodForm()
+        case Some(value) =>  vatReturnPeriodForm().fill(value)
       }
-    }
+      Ok(vatReturnPeriodView(preparedForm))
   }
 
-  val submitVatReturnPeriod: Action[AnyContent] = session.async{ implicit request =>
-
-    forms.vatReturnPeriodForm.bindFromRequest.fold(
-      errors => {
-        logger.warn("VatReturnPeriod form could not be bound")
-        val formWithErrors = errors.copy(errors = errors.errors.map {
-          errs => FormError(errs.key, if (errs.message.contains("error.required")) Messages("error.vatReturnPeriod.required") else errs.message)
-        })
-        Future.successful(BadRequest(vatReturnPeriodView(formWithErrors)))
-      },
-      success => {
-        stateService.saveVatFlatRate(success).map(
-          _ => Redirect(controllers.routes.TurnoverController.turnover)
-        )
-      }
-    )
+  def onSubmit: Action[AnyContent] = getData.async {
+    implicit request =>
+      vatReturnPeriodForm().bindFromRequest().fold(
+        (formWithErrors: Form[_]) => {
+          Future.successful(BadRequest(vatReturnPeriodView(formWithErrors)))
+          },
+        value =>
+          dataCacheConnector.save[ReturnPeriod.Value](request.sessionId, "vatReturnPeriod", value).map(cacheMap =>
+            Redirect(controllers.routes.TurnoverController.onPageLoad))
+      )
   }
 }

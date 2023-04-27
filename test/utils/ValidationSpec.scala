@@ -16,38 +16,48 @@
 
 package utils
 
-import assets.TestForm
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
+import play.api.data.validation.{Invalid, Valid}
 
-class ValidationSpec extends PlaySpec with MockitoSugar {
+class ValidationSpec extends PlaySpec with MockitoSugar with Validation {
 
-  "calling isTwoDecimalPlaces" must {
-    "return an error message if there are too many decimal places" in {
-      val data = Map(
-        "turnover" -> "10000.003"
-      )
-      val boundForm = TestForm.testForm.bind(data)
-      boundForm.errors.map(_.message) shouldBe List("error.twoDecimalPlaces")
+  "calling verifyDecimalPlaces" must {
+
+    "return false if there are too many decimal places" in {
+      verifyDecimalPlaces("0.001") shouldBe false
+    }
+
+    "return true if there are 2 or less decimal places" in {
+      verifyDecimalPlaces("0.01") shouldBe true
+      verifyDecimalPlaces("0.1") shouldBe true
     }
   }
-  "calling isLessThanMaximumTurnover" must {
+
+  "calling maximumValue" must {
+
     "return an error message if the value added is more than 9999999999.99" in {
-      val data = Map(
-        "turnover" -> "9999999999.99"
-      )
-      val boundForm = TestForm.testForm.bind(data)
-      boundForm.errors.map(_.message) shouldBe List("error.moreThanMaximumTurnover")
+      val result = maximumValue(1, "error.max").apply(2)
+      result mustEqual Invalid("error.max")
     }
+
+    "return valid if the value added is less than 9999999999.99" in {
+      val result = maximumValue(1, "error.max").apply(0)
+      result mustEqual Valid
+    }
+
   }
-  "calling isPositive" must {
-    "return an error message if the value added is negative" in {
-      val data = Map(
-        "turnover" -> "-100"
-      )
-      val boundForm = TestForm.testForm.bind(data)
-      boundForm.errors.map(_.message) shouldBe List("error.negative")
+
+  "calling minimumValue" must {
+
+    "return valid for a number greater than the threshold" in {
+      val result = minimumValue(1, "error.min").apply(2)
+      result mustEqual Valid
+    }
+    "return an error message for a number below the threshold" in {
+      val result = minimumValue(1, "error.min").apply(0)
+      result mustEqual Invalid("error.min")
     }
   }
 }

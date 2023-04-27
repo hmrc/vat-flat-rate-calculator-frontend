@@ -62,7 +62,7 @@
         headBlock = Some(head)
     )),
     headerBlock = Some(hmrcStandardHeader(
-        serviceUrl = Some(controllers.routes.VatReturnPeriodController.vatReturnPeriod.url),
+        serviceUrl = Some(controllers.routes.VatReturnPeriodController.onPageLoad.url),
         userResearchBanner = if (urBanner) {Some(UserResearchBanner(url = appConfig.urBannerLink))} else None
 )),
     scriptsBlock = Some(hmrcScripts()),

@@ -23,6 +23,8 @@ error.costOfGoods.required         = Enter an amount for costs
 error.twoDecimalPlaces             = The amount you''ve entered has too many decimal places
 error.negative                     = Enter an amount that''s £0 or more
 error.moreThanMaximumTurnover      = Enter an amount less than £9,999,999,999.98
+error.moreThanMaximumCostOfGoods   = Enter an amount less than £9,999,999,999.98
+error.invalidNumber                = Enter a numerical value of up to two decimal places
 
 ############################################################################
 # Technical errors
@@ -45,8 +47,8 @@ vatReturnPeriod.title               = Enter your VAT return details
 vatReturnPeriod.heading             = How often do you do your VAT returns?
 vatReturnPeriod.para.1              = If you''re using the Flat Rate Scheme, select the period that matches your VAT return.
 vatReturnPeriod.para.2              = If you''re thinking of joining the Flat Rate Scheme, select annually.
-vatReturnPeriod.option.annual       = Annually
-vatReturnPeriod.option.quarter      = Quarterly
+vatReturnPeriod.option.annually     = Annually
+vatReturnPeriod.option.quarterly    = Quarterly
 
 ############################################################################
 # Turnover page
@@ -93,7 +95,7 @@ result.accordion.question           = Are you in your first year of VAT registra
 result.accordion.summary            = Apply a 1% discount in your first year of VAT registration.
 result.heading.2                    = What happens next?
 result.para.2                       = Use this rate from 1 April 2017 when you do your VAT return.
-result.para.3                       = If you''re doing your VAT return <a href="{0}" rel="external" target="_blank">go to your business account (opens in new tab)</a>
+result.para.3                       = If you''re doing your VAT return <a class="govuk-link" href="{0}" rel="external" target="_blank">go to your business account (opens in new tab)</a>
 result.para.4                       = You may want to <a href="{0}" class="govuk-link" rel="noreferrer noopener" target="_blank">join or leave the Flat Rate Scheme (opens in new tab)</a>
 result.para.5                       = You may want to <a href="{0}" class="govuk-link" rel="noreferrer noopener" target="_blank">deregister from VAT (opens in new tab)</a>
 result.feedbackSurvey               = What did you think of this service?

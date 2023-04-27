@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package common
+package utils
 
-object CacheKeys extends Enumeration {
-  val vatFlatRate = Value
-  val vfrResult   = Value
+case class InputOption(id: String, value: String, messageKey: String)
+
+object InputOption {
+  def apply(keyPrefix: String, option: String): InputOption = InputOption(
+    s"$keyPrefix.$option",
+    option,
+    s"$keyPrefix.$option"
+  )
 }

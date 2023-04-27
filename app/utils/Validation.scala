@@ -16,36 +16,47 @@
 
 package utils
 
-import common.Constants
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import forms.vatReturnPeriodForm.options
+import play.api.data.FormError
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
-object Validation {
+trait Validation {
 
-  def isTwoDecimalPlaces: Constraint[BigDecimal] = Constraint("constraints.isTwoDecimalPlaces")({
-    value =>
-      val errors = value match {
-        case n if n.scale <= 2 => Nil
-        case _ => Seq(ValidationError("error.twoDecimalPlaces"))
-      }
-      if (errors.isEmpty) Valid else Invalid(errors)
-  })
+  def produceError(key: String, error: String, args: Any*): Left[Seq[FormError], Nothing] = Left(Seq(FormError(key, error, args)))
 
-  def isPositive: Constraint[BigDecimal] = Constraint("constraints.isPositive")({
-    value =>
-      val errors = value match {
-        case n if n >= 0 => Nil
-        case _ => Seq(ValidationError("error.negative"))
-      }
-      if (errors.isEmpty) Valid else Invalid(errors)
-  })
+  val decimalRegex = """^[+-]?[0-9]{1,11}(?:\.[0-9]{1,2})?$"""
 
-  def isLessThanMaximumTurnover: Constraint[BigDecimal] = Constraint("constraints.lessThanMaximumTurnover")({
-    amount =>
-      val errors = amount match {
-        case am if am < Constants.maximumTurnover => Nil
-        case _ => Seq(ValidationError("error.moreThanMaximumTurnover"))
-      }
-      if (errors.isEmpty) Valid else Invalid(errors)
-  })
+  protected def minimumValue[A](minimum: A, errorKey: String, errorArgs: Any*)(implicit ev: Ordering[A]): Constraint[A] =
+    Constraint {
+      input =>
+        import ev._
+        if (input >= minimum) {
+          Valid
+        } else {
+          Invalid(errorKey, errorArgs:_*)
+        }
+    }
 
+  protected def maximumValue[A](maximum: A, errorKey: String, errorArgs: Any*)(implicit ev: Ordering[A]): Constraint[A] =
+    Constraint {
+      input =>
+        import ev._
+        if (input < maximum) {
+          Valid
+        } else {
+          Invalid(errorKey, errorArgs:_*)
+        }
+    }
+
+  def verifyDecimalPlaces(input: String) = {
+    if (input.contains(".")) {
+      val decimalPlace = input.length - input.indexOf(".") - 1
+      if (decimalPlace <= 2) true
+      else false
+    }
+    else true
   }
+
+  def optionIsValid(value: String) = options.exists(o => o.value == value)
+
+}

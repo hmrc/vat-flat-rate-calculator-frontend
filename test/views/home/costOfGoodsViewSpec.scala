@@ -16,53 +16,36 @@
 
 package views.home
 
-import config.{AppConfig, ApplicationConfig}
-import forms.VatFlatRateForm
 import helpers.ViewSpecHelpers.CostOfGoodsViewMessages
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import org.jsoup.Jsoup
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
-import play.api.inject.Injector
-import play.api.mvc.{MessagesControllerComponents}
 import views.html.home.costOfGoods
+import forms.costOfGoodsForm
+import play.api.data.{Form, FormError}
+import play.api.i18n.{Messages, MessagesApi}
 
 
 class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfGoodsViewMessages {
 
-  implicit lazy val fakeRequest = FakeRequest()
-  def injector: Injector = app.injector
-  def appConfig: AppConfig = injector.instanceOf[AppConfig]
-  lazy val mockForm: VatFlatRateForm = injector.instanceOf[VatFlatRateForm]
-  lazy val costOfGoodsView = injector.instanceOf[costOfGoods]
+  val view = app.injector.instanceOf[costOfGoods]
 
-  val mockConfig = fakeApplication.injector.instanceOf[ApplicationConfig]
-  implicit lazy val mockMessage = fakeApplication.injector.instanceOf[MessagesControllerComponents].messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  val costOfGoodsPeriod = "annually"
+  def createView(form: Form[_] = costOfGoodsForm(), period: String) = view(form, period)(FakeRequest(), messages)
+  def createErrorView(form: Form[_] = costOfGoodsForm(), period: String) = view(form.withError(FormError("costOfGoods", costOfGoodsError)), period)(FakeRequest(), messages)
 
 
   "the CostOfGoodsView" must {
-    lazy val CostOfGoodsForm = mockForm.costOfGoodsForm.bind(Map("vatReturnPeriod" -> "annually",
-                                                                 "turnover" -> "1000",
-                                                               "costOfGoods" -> "100"))
-
-
-    lazy val view = costOfGoodsView(CostOfGoodsForm, costOfGoodsPeriod)
-    lazy val doc = Jsoup.parse(view.body)
-
-    lazy val errorCostOfGoodsForm = mockForm.costOfGoodsForm.bind(Map("vatReturnPeriod" -> "annually"))
-
-    lazy val errorView = costOfGoodsView(errorCostOfGoodsForm, costOfGoodsPeriod)
-    lazy val errorDoc = Jsoup.parse(errorView.body)
+      val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
 
     "have the correct title" in {
       doc.title() shouldBe costOfGoodTitle
     }
-
     "have the correct heading" in {
-      doc.select("h1").text() shouldBe  costOfGoodsHeading(costOfGoodsPeriod)
+      doc.select("h1").text() shouldBe  costOfGoodsHeading("year")
     }
 
     "have some introductory text" in {
@@ -95,7 +78,7 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
     }
 
     "display the correct error" in {
-      errorCostOfGoodsForm.hasErrors shouldBe true
+      val errorDoc = Jsoup.parse(createErrorView(costOfGoodsForm(), "annually").toString())
       errorDoc.select("#costOfGoods-error").text.contains(costOfGoodsError)
     }
 
@@ -106,7 +89,7 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
 
     "have a valid form" in{
       doc.select("form").attr("method") shouldBe "POST"
-      doc.select("form").attr("action") shouldBe controllers.routes.CostOfGoodsController.submitCostOfGoods.url
+      doc.select("form").attr("action") shouldBe controllers.routes.CostOfGoodsController.onSubmit.url
     }
 
   }

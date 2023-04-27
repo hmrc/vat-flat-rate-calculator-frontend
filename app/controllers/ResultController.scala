@@ -16,34 +16,43 @@
 
 package controllers
 
+import common.ResultCodes
+import connectors.DataCacheConnector
+import controllers.actions.DataRetrievalAction
 import controllers.predicates.ValidatedSession
-
 import javax.inject.Inject
+import models.VatFlatRateModel
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.StateService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{home => views}
 
-import scala.concurrent.ExecutionContext
 import scala.util.Random
 
 class ResultController @Inject()(mcc: MessagesControllerComponents,
-                                 stateService: StateService,
+                                 dataCacheConnector: DataCacheConnector,
+                                 getData: DataRetrievalAction,
                                  session: ValidatedSession,
-                                 resultView: views.result)(implicit ec: ExecutionContext) extends FrontendController(mcc)
+                                 resultView: views.result) extends FrontendController(mcc)
   with I18nSupport with Logging {
 
-  val result: Action[AnyContent] = session.async { implicit request =>
-    val showUserResearchPanel = setURPanelFlag
-    stateService.fetchResultModel.map {
-      case Some(model)  => Ok(resultView(model.result, showUserResearchPanel))
-      case None         =>
-        logger.warn("ResultModel could not be retrieved from Keystore")
-        Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod)
-    }
+  def onPageLoad: Action[AnyContent] = getData {
+    implicit request =>
+      request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+        case Some(value) =>
+          val resultModel = new VatFlatRateModel(value.toString, request.userAnswers.flatMap(x => x.turnover), request.userAnswers.flatMap(x => x.costOfGoods))
+          resultModel match {
+            case VatFlatRateModel(_, Some(_), Some(_)) =>
+              Ok(resultView(whichResult(resultModel), setURPanelFlag))
+            case _ =>
+              logger.warn("ResultModel could not be retrieved")
+              Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
+          }
+        case _ => logger.warn("vat return period could not be retrieved")
+          Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
+      }
   }
 
   private[controllers] def setURPanelFlag(implicit hc: HeaderCarrier): Boolean = {
@@ -60,6 +69,22 @@ class ResultController @Inject()(mcc: MessagesControllerComponents,
       case num => num
     }
     numericSessionValues.takeRight(10).toLong
+  }
+
+  def whichResult(model: VatFlatRateModel): Int = {
+    if(model.vatReturnPeriod.equalsIgnoreCase("annually")){
+      model match {
+        case VatFlatRateModel(_,_,Some(cost)) if cost < 1000 => ResultCodes.ONE
+        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 > cost => ResultCodes.TWO
+        case _ => ResultCodes.THREE
+      }
+    } else {
+      model match {
+        case VatFlatRateModel(_,_,Some(cost)) if cost < 250 => ResultCodes.FOUR
+        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 > cost => ResultCodes.FIVE
+        case _ => ResultCodes.SIX
+      }
+    }
   }
 
 }

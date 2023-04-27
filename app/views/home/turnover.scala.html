@@ -21,10 +21,16 @@
     formWithCSRF: FormWithCSRF,
     moneyInputFormat: newMoneyInputFormat,
     layout: Layout,
-    govukErrorSummary : GovukErrorSummary
+    govukErrorSummary : GovukErrorSummary,
+    govukInput : GovukInput
 )
 
-@(turnoverForm: Form[VatFlatRateModel], turnoverPeriodString: String)(implicit request: Request[_], messages: Messages)
+@(turnoverForm: Form[_], turnoverPeriodString: String)(implicit request: Request[_], messages: Messages)
+
+@headingSubString = @{
+    if(turnoverPeriodString == "annually") Messages("common.year")
+    else Messages("common.quarter")
+}
 
 @title = @{
     if(turnoverForm.hasErrors) messages("site.title.error", messages("turnover.title")) else messages("turnover.title")
@@ -47,20 +53,20 @@
     ))
 }
 
-@formWithCSRF(action = controllers.routes.TurnoverController.submitTurnover) {
+@formWithCSRF(action = controllers.routes.TurnoverController.onSubmit) {
 
-    @moneyInputFormat(
-        turnoverForm("turnover"),
-        'type -> "number",
-        '_legend -> Messages("turnover.heading", turnoverPeriodString),
-        '_hintText -> Messages("turnover.para.1")
-    )
+    @govukInput(Input(
+        label = Label(
+            isPageHeading = true,
+            classes = "govuk-label--l",
+            content = Text(Messages("turnover.heading", headingSubString))
+        ),
+        hint = Some(Messages("turnover.para.1")).map(hintString => Hint(content = Text(hintString))),
+        classes = "govuk-input--width-5",
+        prefix = Some(PrefixOrSuffix(content = Text("£")))
+    ).withFormField(turnoverForm("turnover")))
 
     <button id="continue-button" class="govuk-button" data-module="govuk-button" type="submit">@Messages("common.continue")</button>
-
-    <div class="govuk-visually-hidden">
-        @helper.inputText(turnoverForm("vatReturnPeriod"), 'type -> "hidden", 'class -> "visually-hidden")
-    </div>
 }
 
 }

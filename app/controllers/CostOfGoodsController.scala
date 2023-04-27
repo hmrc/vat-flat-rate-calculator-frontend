@@ -17,17 +17,16 @@
 package controllers
 
 import common.ResultCodes
+import connectors.DataCacheConnector
+import controllers.actions.DataRetrievalAction
 import controllers.predicates.ValidatedSession
-import forms.VatFlatRateForm
-
+import forms.costOfGoodsForm
 import javax.inject.{Inject, Singleton}
-import models.{ResultModel, VatFlatRateModel}
+import models.VatFlatRateModel
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.StateService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{errors => errs, home => views}
 
@@ -35,62 +34,46 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
-                                      stateService: StateService,
+                                      dataCacheConnector: DataCacheConnector,
+                                      getData: DataRetrievalAction,
                                       session: ValidatedSession,
-                                      forms: VatFlatRateForm,
                                       costOfGoodsView: views.costOfGoods,
                                       technicalErrorView: errs.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with Logging {
 
 
-  val costOfGoods: Action[AnyContent] = session.async { implicit request =>
-    routeRequest(Ok, forms.costOfGoodsForm)
-  }
-
-  val submitCostOfGoods: Action[AnyContent] = session.async { implicit request =>
-    forms.costOfGoodsForm.bindFromRequest.fold(
-      errors => {
-        logger.warn("Cost of Goods form could not be bound")
-        routeRequest(BadRequest, errors)
-      },
-      success => {
-        for {
-          _        <- stateService.saveVatFlatRate(success)
-          result   =  whichResult(success)
-          _        <- stateService.saveResultModel(createResultModel(success, result))
-          response <- Future.successful(Redirect(controllers.routes.ResultController.result))
-        } yield response
+  def onPageLoad: Action[AnyContent] = getData {
+    implicit request =>
+      val preparedForm = request.userAnswers.flatMap(x => x.costOfGoods) match {
+        case None => costOfGoodsForm()
+        case Some(value) =>  costOfGoodsForm().fill(value)
       }
-    )
+      request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+        case Some(value) => Ok(costOfGoodsView(preparedForm, value.toString))
+        case None =>
+          logger.warn("[CostOfGoods Controller]No model found in Keystore; redirecting back to landing page")
+          Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
+      }
   }
 
-  def routeRequest(res: Status, form: Form[VatFlatRateModel])(implicit req: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    implicit val lang = req.lang
-    for {
-      vfrModel <- stateService.fetchVatFlatRate()
-    } yield vfrModel match {
-      case Some(model) =>
-        model.vatReturnPeriod match {
-          case s  if s.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.annual"))    =>
-            res(costOfGoodsView(form.fill(model), messagesApi("common.year")))
-          case s  if s.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.quarter"))   =>
-            res(costOfGoodsView(form.fill(model), messagesApi("common.quarter")))
-          case _ =>
-            logger.warn(
-              s"""Incorrect value found for Vat Return Period:
-                 |Should be [${messagesApi("vatReturnPeriod.option.annual")}] or [${messagesApi("vatReturnPeriod.option.quarter")}] but found ${model.vatReturnPeriod}""".stripMargin
-            )
-            InternalServerError(technicalErrorView())
-        }
-      case _ =>
-        res match {
-          case Ok =>
-            logger.warn("[CostOfGoods Controller]No model found in Keystore; redirecting back to landing page")
-            Redirect(controllers.routes.VatReturnPeriodController.vatReturnPeriod)
-          case BadRequest =>
-            logger.warn("[CostOfGoods Controller]No VatFlatRate model found in Keystore")
-            InternalServerError(technicalErrorView())
-        }
-    }
+  def onSubmit: Action[AnyContent] = getData.async {
+    implicit request =>
+      costOfGoodsForm().bindFromRequest().fold(
+        (formWithErrors: Form[_]) => {
+          request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+            case Some(value) => Future.successful(BadRequest(costOfGoodsView(formWithErrors, value.toString)))
+            case _ =>
+              logger.warn("[CostOfGoods Controller]No model found in Keystore; Internal server error")
+              Future.successful(InternalServerError(technicalErrorView()))
+          }
+        },
+        value =>
+          request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+            case Some(_) => dataCacheConnector.save[BigDecimal] (request.sessionId, "costOfGoods", value).map (cacheMap =>
+              Redirect (controllers.routes.ResultController.onPageLoad) )
+            case _ => logger.warn("[CostOfGoods Controller]No model found in Keystore for return Period; Internal server error")
+              Future.successful(InternalServerError(technicalErrorView()))
+          }
+      )
   }
 
   def whichResult(model: VatFlatRateModel)(implicit req: Request[AnyContent]): Int = {
@@ -107,10 +90,6 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
         case _ => ResultCodes.SIX
       }
     }
-  }
-
-  def createResultModel(model: VatFlatRateModel, resultCode: Int): ResultModel = {
-    ResultModel(model, resultCode)
   }
 
 }

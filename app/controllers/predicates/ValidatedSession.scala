@@ -17,7 +17,6 @@
 package controllers.predicates
 
 import config.AppConfig
-import forms.VatFlatRateForm
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -28,8 +27,7 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class ValidatedSession @Inject()(config: AppConfig,
-                                 mcc: MessagesControllerComponents,
-                                 forms: VatFlatRateForm) extends FrontendController(mcc)
+                                 mcc: MessagesControllerComponents) extends FrontendController(mcc)
   with I18nSupport with Logging {
 
   private type AsyncRequest = Request[AnyContent] => Future[Result]

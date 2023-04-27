@@ -17,17 +17,17 @@
 package controllers
 
 import com.codahale.metrics.SharedMetricRegistries
-import helpers.ControllerTestSpec
-import org.scalatest.Matchers.convertToAnyShouldWrapper
+import helpers.ControllerSpecBase
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, status}
 
-class FeedbackSurveyControllerSpec extends ControllerTestSpec {
+class FeedbackSurveyControllerSpec extends ControllerSpecBase {
   SharedMetricRegistries.clear()
 
   class Setup {
-    val controller = new FeedbackSurveyController(mockApplicationConfig, mcc)
+    val controller = new FeedbackSurveyController(frontendAppConfig, mcc)
   }
 
   "Feedback survey controller" must {
