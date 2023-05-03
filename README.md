@@ -20,13 +20,17 @@ This service is written in [Scala](http://www.scala-lang.org/) and [Play](http:/
 To update from Nexus and start all services from the RELEASE version instead of snapshot
 
 ```
-sm --start VFR_ALL -f
+sm --start VFR_ALL -r
 ```
 
 
-##To run the application locally execute the following:
+### To run the application locally execute the following:
 
-Kill the service ```sm --stop VAT_FLAT_RATE_CAL``` and run:
+Stop the frontend running on servive manager 
+```
+sm --stop VAT_FLAT_RATE_CALC_FRONTEND
+``` 
+and from the root directory run:
 ```
 sbt 'run 9080'
 ```
