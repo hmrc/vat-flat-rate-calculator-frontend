@@ -24,6 +24,7 @@ import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.HeaderNames
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
@@ -35,7 +36,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   def mcc: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
 
-  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
+  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "").withHeaders(HeaderNames.xSessionId -> "test-session-id")
 
   def lang: Lang = Lang("en")
 

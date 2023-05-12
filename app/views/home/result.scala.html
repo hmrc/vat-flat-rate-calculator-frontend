@@ -19,7 +19,7 @@
 
 @this(
     layout: Layout,
-    appConfig: config.AppConfig
+    appConfig: config.AppConfig,
 )
 
 @(resultCode: Int, showUserResearchPanel: Boolean)(implicit request: Request[_], messages: Messages)
@@ -28,7 +28,8 @@
 @layout(
     pageTitle = messages("result.title"),
     backLinkEnabled = false,
-    urBanner = true
+    urBanner = true,
+    timeoutEnabled = false
 ) {
 
 <div class="govuk-panel govuk-panel--confirmation">

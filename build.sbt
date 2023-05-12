@@ -66,6 +66,7 @@ lazy val microservice: Project = Project(appName, file("."))
     routesGenerator := InjectedRoutesGenerator,
     pipelineStages in Assets := Seq(digest),
     scalaVersion := "2.13.8",
+    PlayKeys.playDefaultPort := 9080,
     scalacOptions += "-P:silencer:lineContentFilters=^\\w",
     scalacOptions += "-P:silencer:pathFilters=views;routes;--feature",
     libraryDependencies ++= Seq(

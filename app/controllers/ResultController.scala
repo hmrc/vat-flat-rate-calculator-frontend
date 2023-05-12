@@ -34,11 +34,11 @@ import scala.util.Random
 class ResultController @Inject()(mcc: MessagesControllerComponents,
                                  dataCacheConnector: DataCacheConnector,
                                  getData: DataRetrievalAction,
-                                 session: ValidatedSession,
+                                 validateSession: ValidatedSession,
                                  resultView: views.result) extends FrontendController(mcc)
   with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData {
+  def onPageLoad: Action[AnyContent] = (validateSession andThen getData) {
     implicit request =>
       request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
         case Some(value) =>

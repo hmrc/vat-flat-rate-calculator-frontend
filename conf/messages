@@ -39,6 +39,9 @@ techError.para.1                   = Try again later. Your VFR registration is n
 timeout.title                      = Session closed due to inactivity
 timeout.heading                    = Your session has timed out
 timeout.para.1                     = You can <a href={0} class="govuk-link">click here</a> to start again.
+timeout.message                    = For your security, we will delete your answers and you will be signed out in
+timeout.continue                   = Get another 15 minutes
+timeout.exit                       = Sign out now
 
 ############################################################################
 # VAT return period page

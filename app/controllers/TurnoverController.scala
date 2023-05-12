@@ -34,12 +34,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class TurnoverController @Inject()(mcc: MessagesControllerComponents,
                                    dataCacheConnector: DataCacheConnector,
                                    getData: DataRetrievalAction,
-                                   session: ValidatedSession,
+                                   validateSession: ValidatedSession,
                                    turnoverView: views.turnover,
                                    technicalErrorView: errors.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc)
   with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData {
+  def onPageLoad: Action[AnyContent] = (validateSession andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(x => x.turnover) match {
         case None => turnoverForm()
@@ -53,7 +53,7 @@ class TurnoverController @Inject()(mcc: MessagesControllerComponents,
       }
   }
 
-  def onSubmit: Action[AnyContent] = getData.async {
+  def onSubmit: Action[AnyContent] = (validateSession andThen getData).async {
     implicit request =>
       turnoverForm().bindFromRequest().fold(
         (formWithErrors: Form[_]) => {

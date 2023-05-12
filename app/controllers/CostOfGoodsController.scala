@@ -36,12 +36,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
                                       dataCacheConnector: DataCacheConnector,
                                       getData: DataRetrievalAction,
-                                      session: ValidatedSession,
+                                      validateSession: ValidatedSession,
                                       costOfGoodsView: views.costOfGoods,
                                       technicalErrorView: errs.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with Logging {
 
 
-  def onPageLoad: Action[AnyContent] = getData {
+  def onPageLoad: Action[AnyContent] = (validateSession andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(x => x.costOfGoods) match {
         case None => costOfGoodsForm()
@@ -55,7 +55,7 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
       }
   }
 
-  def onSubmit: Action[AnyContent] = getData.async {
+  def onSubmit: Action[AnyContent] = (validateSession andThen getData).async {
     implicit request =>
       costOfGoodsForm().bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
