@@ -16,30 +16,29 @@
 
 package controllers.predicates
 
-import config.AppConfig
-import play.api.Logging
-import play.api.i18n.I18nSupport
-import play.api.mvc._
-import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-
 import javax.inject.Inject
-import scala.concurrent.Future
+import play.api.mvc.Results._
+import play.api.mvc._
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-class ValidatedSession @Inject()(config: AppConfig,
-                                 mcc: MessagesControllerComponents) extends FrontendController(mcc)
-  with I18nSupport with Logging {
+import scala.concurrent.{ExecutionContext, Future}
 
-  private type AsyncRequest = Request[AnyContent] => Future[Result]
+class ValidatedSession @Inject()(mcc: MessagesControllerComponents,
+                                 val parser: BodyParsers.Default)
+                                (implicit ec: ExecutionContext) extends ValidatedSessionAction {
 
-  def async(action: AsyncRequest): Action[AnyContent] = {
-    Action.async { implicit request =>
-      if(request.session.get(SessionKeys.sessionId).isEmpty) {
-        logger.warn("No session ID found; timing out")
-        Future.successful(Redirect(controllers.routes.TimeoutController.timeout))
-      } else {
-       action(request)
-      }
+  override protected def executionContext: ExecutionContext = mcc.executionContext
+
+  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
+
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    hc.sessionId match {
+      case None => Future.successful(Redirect(controllers.routes.TimeoutController.timeout))
+      case Some(_) => block(request)
     }
   }
 }
+
+trait ValidatedSessionAction extends ActionBuilder[Request, AnyContent]

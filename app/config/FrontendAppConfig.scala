@@ -27,6 +27,8 @@ trait AppConfig {
   val urBannerLink: String
   val feedbackSurvey: String
   val cacheTtl: Int
+  val timeout: Int
+  val timeoutCountdown: Int
 }
 
 @Singleton
@@ -41,6 +43,8 @@ class ApplicationConfig @Inject()(val config: ServicesConfig) extends AppConfig 
   lazy val reportAProblemPartialUrl     = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl       = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   lazy val feedbackSurvey: String       = loadConfig("feedback-survey-frontend.url")
+  lazy val timeout: Int                 = config.getInt("timeoutDialog.timeout-seconds")
+  lazy val timeoutCountdown: Int        = config.getInt("timeoutDialog.timeout-countdown-seconds")
 
   //Business Tax Account
   lazy val businessTaxAccount: String = config.getString("business-tax-account.url")

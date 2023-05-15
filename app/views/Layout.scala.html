@@ -46,6 +46,16 @@
 
 @head = {
     <link rel="stylesheet" type="text/css" href ='@routes.Assets.versioned("stylesheets/vfr.css")'>
+    @if(timeoutEnabled) {
+        @hmrcTimeoutDialogHelper(
+            signOutUrl = controllers.routes.TimeoutController.timeout.url,
+            message = Some(Messages("timeout.message")),
+            keepAliveButtonText = Some(Messages("timeout.continue")),
+            signOutButtonText = Some(Messages("timeout.exit")),
+            timeout = Some(appConfig.timeout),
+            countdown = Some(appConfig.timeoutCountdown)
+        )
+    }
 }
 
 @mainContent = {
