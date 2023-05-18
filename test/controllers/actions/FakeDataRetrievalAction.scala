@@ -17,7 +17,6 @@
 package controllers.actions
 
 import models.OptionalDataRequest
-import org.joda.time.LocalDate
 import play.api.Application
 import play.api.mvc.{Request, _}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -26,7 +25,7 @@ import utils.UserAnswers
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap], timeReplacement: Option[LocalDate] = None)
+class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap])
                              (implicit app: Application) extends DataRetrievalAction {
 
   override def executionContext: ExecutionContext = global

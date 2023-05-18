@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import play.api.libs.json.{Json, OFormat}
+import helpers.SpecBase
 
-case class ResultModel(model: VatFlatRateModel, result: Int)
+class InputOptionSpec extends SpecBase {
 
-object ResultModel {
-  implicit val vfrFormat: OFormat[VatFlatRateModel] = VatFlatRateModel.format
-  implicit val format: OFormat[ResultModel] = Json.format[ResultModel]
+  "Input Option" must {
+    "build correctly from a key prefix and option" in {
+      val inputOption = InputOption("prefix", "option")
+      inputOption.id mustBe "prefix.option"
+      inputOption.value mustBe "option"
+      inputOption.messageKey mustBe "prefix.option"
+    }
+  }
 }

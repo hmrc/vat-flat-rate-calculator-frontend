@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.predicates
+package controllers.actions
 
 import connectors.FakeDataCacheConnector
 import controllers.{VatReturnPeriodController, routes}

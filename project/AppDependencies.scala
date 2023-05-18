@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import play.core.PlayVersion
 import play.sbt.PlayImport._
 
 import sbt._
@@ -22,14 +21,14 @@ import sbt._
 object AppDependencies {
 
   val bootstrapVersion = "7.15.0"
-  val mongoVersion = "1.1.0"
+  val mongoVersion = "1.2.0"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapVersion,
     "uk.gov.hmrc" %% "play-partials"              % "8.4.0-play-28",
     "uk.gov.hmrc" %% "http-caching-client"        % "10.0.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "7.4.0-play-28",
+    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "7.7.0-play-28",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"   % mongoVersion
   )
 

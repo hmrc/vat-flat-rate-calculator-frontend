@@ -17,32 +17,34 @@
 package repositories
 
 import config.ApplicationConfig
+
 import javax.inject.{Inject, Singleton}
-import org.joda.time.{DateTime, DateTimeZone}
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.Indexes.ascending
 import org.mongodb.scala.model.Updates.{combine, set}
-import org.mongodb.scala.model.{IndexModel, IndexOptions, UpdateOptions}
-import play.api.libs.json.{JsValue, Json}
+import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions, UpdateOptions}
+import play.api.libs.json.{Format, JsValue, Json, OFormat}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.mongo.play.json.{Codecs, PlayMongoRepository}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats.Implicits._
 
+import java.time.Instant
 import scala.concurrent.duration.SECONDS
 import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
-                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC))
+                         lastUpdated: Instant = Instant.now())
 
 object DatedCacheMap {
-  implicit val formats = Json.format[DatedCacheMap]
+  implicit val dateFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+  implicit val formats: OFormat[DatedCacheMap] = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 }
 
-class ReactiveMongoRepository(config: ApplicationConfig, mongo: MongoComponent)(implicit ec: ExecutionContext)
+class MongoRepository(config: ApplicationConfig, mongo: MongoComponent)(implicit ec: ExecutionContext)
   extends PlayMongoRepository[DatedCacheMap](
     collectionName = config.appName,
     mongoComponent = mongo,
@@ -57,12 +59,10 @@ class ReactiveMongoRepository(config: ApplicationConfig, mongo: MongoComponent)(
 
   def upsert(cm: CacheMap): Future[Boolean] = {
     val dcm = DatedCacheMap(cm)
-    collection.updateOne(
-      filter = equal("id", dcm.id),
-      update = combine(
-        set("data", Codecs.toBson(dcm.data)),
-        set("lastUpdated", Codecs.toBson(dcm.lastUpdated))),
-      UpdateOptions().upsert(true)
+    collection.replaceOne(
+      filter      = equal("id", dcm.id),
+      replacement = dcm,
+      options     = ReplaceOptions().upsert(true)
     ).toFuture().map(_.wasAcknowledged())
   }
 
@@ -74,8 +74,8 @@ class ReactiveMongoRepository(config: ApplicationConfig, mongo: MongoComponent)(
 @Singleton
 class SessionRepository @Inject()(config: ApplicationConfig, mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
 
-  private lazy val sessionRepository = new ReactiveMongoRepository(config, mongoComponent)
+  private lazy val sessionRepository = new MongoRepository(config, mongoComponent)
 
-  def apply(): ReactiveMongoRepository = sessionRepository
+  def apply(): MongoRepository = sessionRepository
 }
 

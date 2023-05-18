@@ -17,11 +17,10 @@
 package controllers
 
 import java.util.UUID
-
 import connectors.DataCacheConnector
-import controllers.actions.DataRetrievalAction
-import controllers.predicates.ValidatedSession
+import controllers.actions.{DataRetrievalAction, ValidatedSession}
 import forms.vatReturnPeriodForm
+
 import javax.inject.{Inject, Singleton}
 import models.ReturnPeriod
 import play.api.Logging

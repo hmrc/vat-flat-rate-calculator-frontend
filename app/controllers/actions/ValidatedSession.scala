@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.predicates
+package controllers.actions
 
-import javax.inject.Inject
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ValidatedSession @Inject()(mcc: MessagesControllerComponents,
-                                 val parser: BodyParsers.Default)
-                                (implicit ec: ExecutionContext) extends ValidatedSessionAction {
+                                 val parser: BodyParsers.Default) extends ValidatedSessionAction {
 
   override protected def executionContext: ExecutionContext = mcc.executionContext
 
