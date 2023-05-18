@@ -37,6 +37,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
   def mcc: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "").withHeaders(HeaderNames.xSessionId -> "test-session-id")
+  def fakeRequestWithoutSession: FakeRequest[AnyContent] = FakeRequest("", "")
 
   def lang: Lang = Lang("en")
 

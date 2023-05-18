@@ -18,9 +18,9 @@ package controllers
 
 import common.ResultCodes
 import connectors.DataCacheConnector
-import controllers.actions.DataRetrievalAction
-import controllers.predicates.ValidatedSession
+import controllers.actions.{DataRetrievalAction, ValidatedSession}
 import forms.costOfGoodsForm
+
 import javax.inject.{Inject, Singleton}
 import models.VatFlatRateModel
 import play.api.Logging
@@ -50,7 +50,7 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
       request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
         case Some(value) => Ok(costOfGoodsView(preparedForm, value.toString))
         case None =>
-          logger.warn("[CostOfGoods Controller]No model found in Keystore; redirecting back to landing page")
+          logger.warn("[CostOfGoods Controller] No model found in Keystore; redirecting back to landing page")
           Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
       }
   }
@@ -62,7 +62,7 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
             case Some(value) => Future.successful(BadRequest(costOfGoodsView(formWithErrors, value.toString)))
             case _ =>
-              logger.warn("[CostOfGoods Controller]No model found in Keystore; Internal server error")
+              logger.warn("[CostOfGoods Controller] No model found in Keystore; Internal server error")
               Future.successful(InternalServerError(technicalErrorView()))
           }
         },
@@ -70,26 +70,9 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
             case Some(_) => dataCacheConnector.save[BigDecimal] (request.sessionId, "costOfGoods", value).map (cacheMap =>
               Redirect (controllers.routes.ResultController.onPageLoad) )
-            case _ => logger.warn("[CostOfGoods Controller]No model found in Keystore for return Period; Internal server error")
+            case _ => logger.warn("[CostOfGoods Controller] No model found in Keystore for return Period; Internal server error")
               Future.successful(InternalServerError(technicalErrorView()))
           }
       )
   }
-
-  def whichResult(model: VatFlatRateModel)(implicit req: Request[AnyContent]): Int = {
-    if(model.vatReturnPeriod.equalsIgnoreCase(messagesApi("vatReturnPeriod.option.annual")(req.lang))){
-      model match {
-        case VatFlatRateModel(_,_,Some(cost)) if cost < 1000 => ResultCodes.ONE
-        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 > cost => ResultCodes.TWO
-        case _ => ResultCodes.THREE
-      }
-    } else {
-      model match {
-        case VatFlatRateModel(_,_,Some(cost)) if cost < 250 => ResultCodes.FOUR
-        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 > cost => ResultCodes.FIVE
-        case _ => ResultCodes.SIX
-      }
-    }
-  }
-
 }

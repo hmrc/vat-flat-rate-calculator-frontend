@@ -18,8 +18,8 @@ package controllers
 
 import common.ResultCodes
 import connectors.DataCacheConnector
-import controllers.actions.DataRetrievalAction
-import controllers.predicates.ValidatedSession
+import controllers.actions.{DataRetrievalAction, ValidatedSession}
+
 import javax.inject.Inject
 import models.VatFlatRateModel
 import play.api.Logging

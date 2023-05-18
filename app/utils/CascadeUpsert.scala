@@ -39,14 +39,9 @@ class CascadeUpsert {
   private def store[A](key:String, value: A, cacheMap: CacheMap)(implicit fmt: Format[A]) =
     cacheMap copy (data = cacheMap.data + (key -> Json.toJson(value)))
 
-  private def storeVatReturnPeriod(value: JsValue, cacheMap: CacheMap): CacheMap = {
+  def storeVatReturnPeriod(value: JsValue, cacheMap: CacheMap): CacheMap = {
     store("vatReturnPeriod", value, cacheMap)
-    }
+  }
 
-}
-
-abstract class SubCascadeUpsert {
-  def store[A](key:String, value: A, cacheMap: CacheMap)(implicit fmt: Format[A]) =
-    cacheMap copy (data = cacheMap.data + (key -> Json.toJson(value)))
 }
 

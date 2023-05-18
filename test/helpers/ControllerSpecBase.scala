@@ -16,8 +16,7 @@
 
 package helpers
 
-import controllers.actions.FakeDataRetrievalAction
-import controllers.predicates.ValidatedSession
+import controllers.actions.{FakeDataRetrievalAction, ValidatedSession}
 import play.api.libs.json.JsString
 import uk.gov.hmrc.http.cache.client.CacheMap
 

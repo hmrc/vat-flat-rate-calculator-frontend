@@ -20,7 +20,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.play.PlaySpec
 
 class RoutesSpec extends PlaySpec {
-  val baseUrl = ""
+  val baseUrl = "/check-your-vat-flat-rate"
 
   val vatReturnPeriod: String = baseUrl + "/vat-return-period"
   val turnover: String = baseUrl + "/turnover"

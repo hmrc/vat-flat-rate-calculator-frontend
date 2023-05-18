@@ -17,9 +17,9 @@
 package controllers
 
 import connectors.DataCacheConnector
-import controllers.actions.DataRetrievalAction
-import controllers.predicates.ValidatedSession
+import controllers.actions.{DataRetrievalAction, ValidatedSession}
 import forms.turnoverForm
+
 import javax.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.data.Form
@@ -48,7 +48,7 @@ class TurnoverController @Inject()(mcc: MessagesControllerComponents,
       request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
         case Some(value) => Ok(turnoverView(preparedForm, value.toString))
         case None =>
-          logger.warn("[Turnover Controller]No model found in Keystore; redirecting back to landing page")
+          logger.warn("[Turnover Controller] No model found in Keystore; redirecting back to landing page")
           Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
       }
   }
@@ -60,15 +60,15 @@ class TurnoverController @Inject()(mcc: MessagesControllerComponents,
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
             case Some(value) => Future.successful(BadRequest(turnoverView(formWithErrors, value.toString)))
             case _ =>
-              logger.warn("[Turnover Controller]No model found in Keystore; redirecting back to landing page")
+              logger.warn("[Turnover Controller] No model found in Keystore; redirecting back to landing page")
               Future.successful(InternalServerError(technicalErrorView()))
           }
         },
         value =>
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-            case Some(_) => dataCacheConnector.save[BigDecimal](request.sessionId, "turnover", value).map(cacheMap =>
+            case Some(_) => dataCacheConnector.save[BigDecimal](request.sessionId, "turnover", value).map( _ =>
               Redirect(controllers.routes.CostOfGoodsController.onPageLoad))
-            case _ => logger.warn("[Turnover Controller]No model found in Keystore for return Period; Internal server error")
+            case _ => logger.warn("[Turnover Controller] No model found in Keystore for return Period; Internal server error")
               Future.successful(InternalServerError(technicalErrorView()))
           }
       )
