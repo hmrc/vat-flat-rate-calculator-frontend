@@ -17,7 +17,8 @@
 @import views.html.Layout
 
 @this(
-   layout: Layout
+   layout: Layout,
+   formWithCSRF: FormWithCSRF
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -26,7 +27,13 @@
     pageTitle = messages("timeout.title"),
     timeoutEnabled = false
 ) {
- <h1 class="govuk-heading-l">@Messages("timeout.heading")</h1>
+ <h1 class="govuk-heading-xl">@messages("timeout.heading")</h1>
 
- <p class="govuk-body">@Html(Messages("timeout.para.1", controllers.routes.VatReturnPeriodController.onPageLoad))</p>
+ <p class="govuk-body">@messages("timeout.para.1")</p>
+
+ <p class="govuk-body">@messages("timeout.para.2")</p>
+
+ @formWithCSRF(action = controllers.routes.VatReturnPeriodController.onPageLoad) {
+  <button class="govuk-button" data-module="govuk-button" type="submit">@messages("timeout.button.message")</button>
+ }
 }
