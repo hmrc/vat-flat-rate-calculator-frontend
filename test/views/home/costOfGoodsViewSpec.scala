@@ -42,7 +42,7 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
       val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
 
     "have the correct title" in {
-      doc.title() shouldBe costOfGoodTitle
+      doc.title() shouldBe costOfGoodTitle("year")
     }
     "have the correct heading" in {
       doc.select("h1").text() shouldBe  costOfGoodsHeading("year")

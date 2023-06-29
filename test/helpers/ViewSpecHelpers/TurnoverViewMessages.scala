@@ -20,7 +20,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Lang
 
 trait TurnoverViewMessages extends MockitoSugar {
-  val turnoverTitle                         = "Enter your turnover - Check your VAT flat rate - GOV.UK"
+  def turnoverTitle(period : String)        = s"Enter your turnover for the $period including VAT - Check your VAT flat rate - GOV.UK"
   def turnoverHeading(period : String)      = s"Enter your turnover for the $period including VAT"
   val turnoverIntro                         = "This is the total sales of all goods and services. If you're estimating, give realistic figures."
   val turnoverError                         = "Enter an amount for turnover"

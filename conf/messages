@@ -48,7 +48,6 @@ timeout.exit                       = Sign out now
 ############################################################################
 # VAT return period page
 ############################################################################
-vatReturnPeriod.title               = Enter your VAT return details
 vatReturnPeriod.heading             = How often do you do your VAT returns?
 vatReturnPeriod.para.1              = If you''re using the Flat Rate Scheme, select the period that matches your VAT return.
 vatReturnPeriod.para.2              = If you''re thinking of joining the Flat Rate Scheme, select annually.
@@ -58,14 +57,12 @@ vatReturnPeriod.option.quarterly    = Quarterly
 ############################################################################
 # Turnover page
 ############################################################################
-turnover.title                      = Enter your turnover
 turnover.heading                    = Enter your turnover for the {0} including VAT
 turnover.para.1                     = This is the total sales of all goods and services. If you''re estimating, give realistic figures.
 
 ############################################################################
 # Cost of goods page
 ############################################################################
-costOfGoods.title                   = Enter your cost of goods
 costOfGoods.heading                 = Enter your cost of goods for the {0} including VAT
 costOfGoods.para.1                  = Goods are moveable items or materials exclusively used in your business. You can also include gas and electricity. If you''re estimating, give realistic figures.
 costOfGoods.doNotInclude            = Don''t include:
