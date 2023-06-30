@@ -27,7 +27,7 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @title = @{
-    if(form.errors.nonEmpty) messages("site.title.error", messages(s"vatReturnPeriod.title")) else messages(s"vatReturnPeriod.title")
+    if(form.errors.nonEmpty) messages("site.title.error", messages(s"vatReturnPeriod.heading")) else messages(s"vatReturnPeriod.heading")
 }
 
 @layout(

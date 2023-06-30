@@ -42,7 +42,7 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
       val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
 
       "have the correct title" in {
-        doc.title() shouldBe turnoverTitle
+        doc.title() shouldBe turnoverTitle("year")
       }
 
       "have the correct heading" in {

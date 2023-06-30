@@ -33,7 +33,7 @@
 }
 
 @title = @{
-    if(turnoverForm.hasErrors) messages("site.title.error", messages("turnover.title")) else messages("turnover.title")
+    if(turnoverForm.hasErrors) messages("site.title.error", messages("turnover.heading", headingSubString)) else messages("turnover.heading", headingSubString)
 }
 
 @layout(

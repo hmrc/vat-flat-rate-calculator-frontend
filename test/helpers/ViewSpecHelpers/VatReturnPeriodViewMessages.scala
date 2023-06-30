@@ -21,7 +21,7 @@ import play.api.i18n.Lang
 
 trait VatReturnPeriodViewMessages extends MockitoSugar {
   implicit val lang: Lang = Lang("en")
-  val vatReturnPeriodTitle        = "Enter your VAT return details - Check your VAT flat rate - GOV.UK"
+  val vatReturnPeriodTitle        = "How often do you do your VAT returns? - Check your VAT flat rate - GOV.UK"
   val vatReturnPeriodHeading      = "How often do you do your VAT returns?"
   val vatReturnPeriodIntro        = "If you're using the Flat Rate Scheme, select the period that matches your VAT return."
   val vatReturnPeriodPara         = "If you're thinking of joining the Flat Rate Scheme, select annually."

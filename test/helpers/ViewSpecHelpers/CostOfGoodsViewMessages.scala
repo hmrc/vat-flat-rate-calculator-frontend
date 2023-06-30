@@ -20,7 +20,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Lang
 
 trait CostOfGoodsViewMessages extends MockitoSugar {
-  val costOfGoodTitle                      = "Enter your cost of goods - Check your VAT flat rate - GOV.UK"
+  def costOfGoodTitle(period : String)     = s"Enter your cost of goods for the $period including VAT - Check your VAT flat rate - GOV.UK"
   def costOfGoodsHeading(period : String)  = s"Enter your cost of goods for the $period including VAT"
   val costOfGoodsParagraph1                = "Goods are moveable items or materials exclusively used in your business. You can also include gas and electricity. If you're estimating, give realistic figures."
   val costOfGoodDontInclude                = "Don't include:"
