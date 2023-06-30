@@ -40,25 +40,25 @@
     }
 </div>
 
-<div class="form-group">
-    <p class="panel-indent" id="resultSummary" >
+<div class="govuk-form-group">
+    <p class="govuk-inset-text" id="resultSummary" >
         @Html(Messages(s"result.${resultCode}.summary", Links.howMuchYouPay))
     </p>
 </div>
 
-<div class="form-group">
+<div class="govuk-form-group">
     <strong class="govuk-body govuk-!-font-weight-bold">@Messages("result.para.1")</strong>
 
-    <section class="form-group">
+    <section class="govuk-form-group">
         <details>
             <summary><span class="summary">@messages("result.accordion.question")</span></summary>
-            <div class="panel-indent">
+            <div class="govuk-inset-text">
                 <p class="govuk-body">@messages("result.accordion.summary")</p>
             </div>
         </details>
     </section>
 </div>
-<div class="form-group">
+<div class="govuk-form-group">
     <h2 class="govuk-heading-m">@Messages("result.heading.2")</h2>
 
     <p class="govuk-body">@Messages("result.para.2")</p>
