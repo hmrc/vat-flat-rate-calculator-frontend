@@ -58,7 +58,7 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
     }
 
     "have text within progressive disclosure" in {
-      doc.select("div.panel-indent > p").text() shouldBe ResultProgressiveDisclosureText
+      doc.select("p.govuk-body:nth-child(1)").text() shouldBe ResultProgressiveDisclosureText
     }
 
     "have a h2 with text" in {
@@ -66,19 +66,19 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
     }
 
     "have instructions on what happens next" in {
-      doc.select("div.form-group > p").eq(1).text() shouldBe ResultNextText1
+      doc.select("p.govuk-body:nth-child(2)").text() shouldBe ResultNextText1
 
-      doc.select("div.form-group > p").eq(2).text() shouldBe ResultNextText2
-      doc.select("div.form-group > p > a").eq(0).attr("href") shouldBe ResultNextText2Href
+      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(3)").text() shouldBe ResultNextText2
+      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(3) > a").attr("href") shouldBe ResultNextText2Href
 
-      doc.select("div.form-group > p").eq(3).text() shouldBe ResultNextText3
-      doc.select("div.form-group > p > a").eq(1).attr("href") shouldBe ResultNextText3Href
+      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(4)").text() shouldBe ResultNextText3
+      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(4) > a").attr("href") shouldBe ResultNextText3Href
 
-      doc.select("div.form-group > p").eq(4).text() shouldBe ResultNextText4
-      doc.select("div.form-group > p > a").eq(2).attr("href") shouldBe ResultNextText4Href
+      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(5)").text() shouldBe ResultNextText4
+      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(5) > a").attr("href") shouldBe ResultNextText4Href
 
-      doc.select("div.form-group > p").eq(5).text() shouldBe FeedbackSurveyText
-      doc.select("div.form-group > p > a").eq(3).attr("href") shouldBe controllers.routes.FeedbackSurveyController.redirectFeedbackSurvey.url
+      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(6)").text() shouldBe FeedbackSurveyText
+      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(6) > a").attr("href") shouldBe FeedbackSurveyTextHref
     }
   }
 }

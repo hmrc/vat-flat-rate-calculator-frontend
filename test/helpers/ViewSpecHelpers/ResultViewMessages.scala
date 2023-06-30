@@ -36,6 +36,7 @@ trait ResultViewMessages extends MockitoSugar {
   val ResultNextText4                     = "You may want to deregister from VAT (opens in new tab)"
   val ResultNextText4Href                 = "http://www.gov.uk/vat-registration/cancel-registration"
   val FeedbackSurveyText                  = "What did you think of this service?"
+  val FeedbackSurveyTextHref              = "/check-your-vat-flat-rate/feedback-survey"
   val ResultBannerTitle                   = "Help improve HMRC services"
   val ResultBannerText                    = "Sign up to take part in user research (opens in new tab)"
   val ResultBannerClose                   = "No thanks"
