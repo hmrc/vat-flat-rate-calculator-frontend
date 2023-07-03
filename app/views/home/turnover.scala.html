@@ -47,7 +47,7 @@
         errorList   = for(error <- turnoverForm.errors) yield {
             ErrorLink(
                 href    = Some(s"#${error.key}"),
-                content = Text(messages(error.message, error.args:_*))
+                content = Text(messages(error.message, headingSubString))
             )
         }
     ))
@@ -61,6 +61,7 @@
             classes = "govuk-label--l",
             content = Text(Messages("turnover.heading", headingSubString))
         ),
+        errorMessage = if(turnoverForm.hasErrors && turnoverForm.errors(0).message == "error.turnover.required") Some(ErrorMessage(content = Text(messages("error.turnover.required", headingSubString)))) else None,
         hint = Some(Messages("turnover.para.1")).map(hintString => Hint(content = Text(hintString))),
         classes = "govuk-input--width-5",
         prefix = Some(PrefixOrSuffix(content = Text("£")))

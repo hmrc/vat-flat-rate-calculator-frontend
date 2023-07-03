@@ -107,7 +107,7 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
       status(result) shouldBe BAD_REQUEST
     }
     "fail with the correct error message" in {
-      contentAsString(result) should include(turnoverError)
+      contentAsString(result) should include(turnoverError("year"))
     }
   }
 

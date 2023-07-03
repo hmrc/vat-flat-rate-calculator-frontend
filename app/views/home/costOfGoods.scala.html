@@ -48,7 +48,7 @@
             errorList   = for(error <- costOfGoodsForm.errors) yield {
                 ErrorLink(
                     href    = Some(s"#${error.key}"),
-                    content = Text(messages(error.message, error.args:_*))
+                    content = Text(messages(error.message, headingSubString))
                 )
             }
         ))
@@ -85,6 +85,7 @@
             classes = "govuk-visually-hidden",
             content = Text(messages("costOfGoods.heading", headingSubString))
         ),
+        errorMessage = if(costOfGoodsForm.hasErrors && costOfGoodsForm.errors(0).message == "error.costOfGoods.required") Some(ErrorMessage(content = Text(messages("error.costOfGoods.required", headingSubString)))) else None,
         classes = "govuk-input--width-5",
         prefix = Some(PrefixOrSuffix(content = Text("£")))
         ).withFormField(costOfGoodsForm("costOfGoods")))
