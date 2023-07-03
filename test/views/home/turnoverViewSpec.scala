@@ -35,7 +35,7 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
 
   def createView(form: Form[_] = turnoverForm(), period: String) = view(form, period)(FakeRequest(), messages)
 
-  def createErrorView(form: Form[_] = turnoverForm(), period: String) = view(form.withError(FormError("turnover", turnoverError)), period)(FakeRequest(), messages)
+  def createErrorView(form: Form[_] = turnoverForm(), period: String) = view(form.withError(FormError("turnover", turnoverError("year"))), period)(FakeRequest(), messages)
 
     "the TurnoverView" must {
 
@@ -59,7 +59,7 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
 
       "display the correct error" in {
         val errorDoc = Jsoup.parse(createErrorView(turnoverForm(), "annually").toString())
-        errorDoc.select("#turnover-error").text.contains(turnoverError)
+        errorDoc.select("#turnover-error").text.contains(turnoverError("year"))
       }
 
       "have a continue button" in{

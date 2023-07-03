@@ -20,8 +20,8 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Lang
 
 trait CostOfGoodsViewMessages extends MockitoSugar {
-  def costOfGoodTitle(period : String)     = s"Enter your cost of goods for the $period including VAT - Check your VAT flat rate - GOV.UK"
-  def costOfGoodsHeading(period : String)  = s"Enter your cost of goods for the $period including VAT"
+  def costOfGoodsTitle(period: String)     = s"What was your cost of goods for the $period including VAT in pounds? - Check your VAT flat rate - GOV.UK"
+  def costOfGoodsHeading(period: String)   = s"What was your cost of goods for the $period including VAT in pounds?"
   val costOfGoodsParagraph1                = "Goods are moveable items or materials exclusively used in your business. You can also include gas and electricity. If you're estimating, give realistic figures."
   val costOfGoodDontInclude                = "Don't include:"
   val costOfGoodsBullet1                   = "any services - which is anything that isn't goods"
@@ -34,7 +34,7 @@ trait CostOfGoodsViewMessages extends MockitoSugar {
   val costOfGoodsBullet8                   = "training and memberships"
   val costOfGoodsBullet9                   = "capital items for example office equipment, laptops, mobile phones and tablets"
   val costOfGoodsParagraph2                = "You can find out more about the VAT Flat Rate Scheme (opens in new tab) including examples of goods, services and how often to use this tool."
-  val costOfGoodsError                     = "Enter an amount for costs"
+  def costOfGoodsError(period : String)    = s"Enter your cost of goods for the $period including VAT in pounds"
   val costOfGoodsNegativeError             = "Enter an amount that&#x27;s £0 or more"
   val costOfGoodsDecimalError              = "The amount you&#x27;ve entered has too many decimal places"
   val costOfGoodsMaxError                  = "Enter an amount less than £9,999,999,999.98"

@@ -109,7 +109,7 @@ class CostOfGoodsControllerSpec extends ControllerSpecBase with CostOfGoodsViewM
         status(result) shouldBe BAD_REQUEST
       }
       "fail with the correct error message" in {
-        contentAsString(result) should include(costOfGoodsError)
+        contentAsString(result) should include(costOfGoodsError("year"))
       }
     }
 

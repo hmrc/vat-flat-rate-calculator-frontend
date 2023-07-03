@@ -35,14 +35,14 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
   implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   def createView(form: Form[_] = costOfGoodsForm(), period: String) = view(form, period)(FakeRequest(), messages)
-  def createErrorView(form: Form[_] = costOfGoodsForm(), period: String) = view(form.withError(FormError("costOfGoods", costOfGoodsError)), period)(FakeRequest(), messages)
+  def createErrorView(form: Form[_] = costOfGoodsForm(), period: String) = view(form.withError(FormError("costOfGoods", costOfGoodsError("year"))), period)(FakeRequest(), messages)
 
 
   "the CostOfGoodsView" must {
       val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
 
     "have the correct title" in {
-      doc.title() shouldBe costOfGoodTitle("year")
+      doc.title() shouldBe costOfGoodsTitle("year")
     }
     "have the correct heading" in {
       doc.select("h1").text() shouldBe  costOfGoodsHeading("year")
@@ -79,7 +79,7 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
 
     "display the correct error" in {
       val errorDoc = Jsoup.parse(createErrorView(costOfGoodsForm(), "annually").toString())
-      errorDoc.select("#costOfGoods-error").text.contains(costOfGoodsError)
+      errorDoc.select("#costOfGoods-error").text.contains(costOfGoodsError("year"))
     }
 
     "have a continue button" in{
