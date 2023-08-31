@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.http.Status
 import play.api.libs.json.{JsNumber, JsString}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.CacheMap
 import views.html.errors.technicalError
 import views.html.home.turnover
 

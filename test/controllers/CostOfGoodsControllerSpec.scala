@@ -26,11 +26,11 @@ import play.api.data.Form
 import play.api.http.Status
 import play.api.libs.json.{JsNumber, JsString}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.cache.client.CacheMap
 import views.html.errors.technicalError
 import views.html.home.costOfGoods
 import common.Constants.maximumCostOfGoods
 import helpers.ViewSpecHelpers.CostOfGoodsViewMessages
+import utils.CacheMap
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

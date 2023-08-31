@@ -18,7 +18,7 @@ package helpers
 
 import controllers.actions.{FakeDataRetrievalAction, ValidatedSession}
 import play.api.libs.json.JsString
-import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.CacheMap
 
 trait ControllerSpecBase extends SpecBase {
 

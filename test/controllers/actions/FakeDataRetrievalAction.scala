@@ -19,8 +19,7 @@ package controllers.actions
 import models.OptionalDataRequest
 import play.api.Application
 import play.api.mvc.{Request, _}
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.UserAnswers
+import utils.{CacheMap, UserAnswers}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}

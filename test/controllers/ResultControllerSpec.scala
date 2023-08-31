@@ -23,7 +23,7 @@ import helpers.ControllerSpecBase
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.libs.json.{JsNumber, JsString}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.CacheMap
 import views.html.home.result
 
 class ResultControllerSpec extends ControllerSpecBase {

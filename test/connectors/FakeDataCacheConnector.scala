@@ -17,9 +17,9 @@
 package connectors
 
 import play.api.libs.json.Format
-import uk.gov.hmrc.http.cache.client.CacheMap
-import scala.concurrent.ExecutionContext.Implicits.global
+import utils.CacheMap
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object FakeDataCacheConnector extends DataCacheConnector {
