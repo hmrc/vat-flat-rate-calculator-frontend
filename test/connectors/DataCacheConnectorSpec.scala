@@ -20,7 +20,7 @@ import helpers.SpecBase
 import play.api.libs.json.Json
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.CacheMap
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}

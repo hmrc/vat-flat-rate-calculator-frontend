@@ -16,14 +16,23 @@
 
 package utils
 
-import models.ReturnPeriod
+import play.api.libs.json.{JsValue, Json, Reads}
 
-class UserAnswers(val cacheMap: CacheMap) extends MapFormats {
+case class CacheMap(id: String, data: Map[String, JsValue]) {
 
-  def vatReturnPeriod: Option[ReturnPeriod.Value] = cacheMap.getEntry[ReturnPeriod.Value]("vatReturnPeriod")
+  def getEntry[T](key: String)(implicit fjs: Reads[T]): Option[T] =
+    data
+      .get(key)
+      .map(json =>
+        json
+          .validate[T]
+          .fold(
+            errors => throw new KeyStoreEntryValidationException(key, json, CacheMap.getClass, errors),
+            valid  => valid
+          )
+      )
+}
 
-  def turnover: Option[BigDecimal] = cacheMap.getEntry[BigDecimal]("turnover")
-
-  def costOfGoods: Option[BigDecimal] = cacheMap.getEntry[BigDecimal]("costOfGoods")
-
+object CacheMap {
+  implicit val formats = Json.format[CacheMap]
 }

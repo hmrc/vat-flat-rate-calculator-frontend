@@ -27,9 +27,9 @@ import play.api.data.Form
 import play.api.libs.json.JsString
 import models.ReturnPeriod
 import org.scalatestplus.play.PlaySpec
+import utils.CacheMap
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.http.cache.client.CacheMap
 import views.html.home.vatReturnPeriod
 
 class VatReturnPeriodControllerSpec extends PlaySpec with ControllerSpecBase {

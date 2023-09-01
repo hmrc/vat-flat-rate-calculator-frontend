@@ -17,10 +17,9 @@
 package connectors
 
 import com.google.inject.{ImplementedBy, Inject}
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.Format
 import repositories.SessionRepository
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.CascadeUpsert
+import utils.{CacheMap, CascadeUpsert}
 
 import scala.concurrent.{ExecutionContext, Future}
 

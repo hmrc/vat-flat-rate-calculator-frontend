@@ -21,13 +21,12 @@ import config.ApplicationConfig
 import javax.inject.{Inject, Singleton}
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.model.Indexes.ascending
-import org.mongodb.scala.model.Updates.{combine, set}
-import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions, UpdateOptions}
+import org.mongodb.scala.model.{IndexModel, IndexOptions, ReplaceOptions}
 import play.api.libs.json.{Format, JsValue, Json, OFormat}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.mongo.play.json.{Codecs, PlayMongoRepository}
+import utils.CacheMap
 
 import java.time.Instant
 import scala.concurrent.duration.SECONDS

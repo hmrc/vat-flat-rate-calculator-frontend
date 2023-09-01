@@ -21,8 +21,8 @@ import connectors.DataCacheConnectorImpl
 import helpers.SpecBase
 import play.api.libs.json.Json
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.test.{CleanMongoCollectionSupport, PlayMongoRepositorySupport, TtlIndexedMongoSupport}
+import utils.CacheMap
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.ExecutionContext
