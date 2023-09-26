@@ -20,14 +20,14 @@ import sbt._
 
 object AppDependencies {
 
-  val bootstrapVersion = "7.15.0"
-  val mongoVersion = "1.2.0"
+  val bootstrapVersion = "7.22.0"
+  val mongoVersion = "1.3.0"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapVersion,
     "uk.gov.hmrc" %% "play-partials"              % "8.4.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "7.7.0-play-28",
+    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "7.20.0-play-28",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"   % mongoVersion
   )
 
@@ -42,8 +42,8 @@ object AppDependencies {
         "uk.gov.hmrc"            %% "bootstrap-test-play-28"     % bootstrapVersion    % scope,
         "uk.gov.hmrc.mongo"      %% "hmrc-mongo-test-play-28"    % mongoVersion        % scope,
         "org.scalatest"          %% "scalatest"                  % "3.0.8"             % scope,
-        "org.jsoup"              %  "jsoup"                      % "1.15.4"            % scope,
-        "org.mockito"            %  "mockito-core"               % "5.3.1"             % scope,
+        "org.jsoup"              %  "jsoup"                      % "1.16.1"            % scope,
+        "org.mockito"            %  "mockito-core"               % "5.5.0"             % scope,
         "org.scalatestplus"      %% "scalatestplus-mockito"      % "1.0.0-M2"          % scope
       )
     }.test

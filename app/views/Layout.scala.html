@@ -29,8 +29,8 @@
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
-    backLink: playComponents.back_link,
-    appConfig: ApplicationConfig
+    appConfig: ApplicationConfig,
+    govukBackLink: GovukBackLink,
 )
 
 @(
@@ -41,7 +41,7 @@
     urBanner: Boolean = false)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @accountMenu = {
-    @if(backLinkEnabled) { @backLink() }
+    @if(backLinkEnabled) { @govukBackLink(BackLink.mimicsBrowserBackButtonViaJavaScript) }
 }
 
 @head = {
@@ -74,7 +74,8 @@
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl = Some(controllers.routes.VatReturnPeriodController.onPageLoad.url),
         userResearchBanner = if (urBanner) {Some(UserResearchBanner(url = appConfig.urBannerLink))} else None
-)),
+    )),
+    beforeContentBlock = Some(accountMenu),
     scriptsBlock = Some(hmrcScripts()),
     footerBlock = Some(hmrcStandardFooter())
 )(mainContent)
