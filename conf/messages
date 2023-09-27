@@ -3,7 +3,7 @@
 ############################################################################
 base.service.title     = Check your VAT flat rate
 base.errorSummary      = There are errors on this page
-base.back              = Back
+site.back              = Back
 
 ############################################################################
 # Common

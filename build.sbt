@@ -62,16 +62,16 @@ lazy val microservice: Project = Project(appName, file("."))
   .settings(
     libraryDependencies ++= appDependencies,
     retrieveManaged := true,
-    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
+    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     routesGenerator := InjectedRoutesGenerator,
-    pipelineStages in Assets := Seq(digest),
+    Assets / pipelineStages := Seq(digest),
     scalaVersion := "2.13.8",
     PlayKeys.playDefaultPort := 9080,
     scalacOptions += "-P:silencer:lineContentFilters=^\\w",
     scalacOptions += "-P:silencer:pathFilters=views;routes;--feature",
     libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.12" cross CrossVersion.full),
-      "com.github.ghik" % "silencer-lib" % "1.7.12" % Provided cross CrossVersion.full
+      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.17.13" cross CrossVersion.full),
+      "com.github.ghik" % "silencer-lib" % "1.17.13" % Provided cross CrossVersion.full
     )
   )
   .configs(IntegrationTest)
