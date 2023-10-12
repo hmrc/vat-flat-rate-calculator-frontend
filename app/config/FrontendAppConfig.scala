@@ -27,8 +27,8 @@ trait AppConfig {
   val urBannerLink: String
   val feedbackSurvey: String
   val cacheTtl: Int
-  val timeout: Int
-  val timeoutCountdown: Int
+  val timeoutSeconds: Int
+  val timeoutCountdownSeconds: Int
 }
 
 @Singleton
@@ -36,22 +36,21 @@ class ApplicationConfig @Inject()(val config: ServicesConfig) extends AppConfig 
 
   private def loadConfig(key: String): String = config.getString(key)
 
-  val appName: String = config.getString("appName")
+  val appName: String                   = config.getString("appName")
 
-  lazy val contactHost          = config.getString("contact-frontend.host")
+  lazy val contactHost                  = config.getString("contact-frontend.host")
   lazy val contactFormServiceIdentifier = "VFR"
   lazy val reportAProblemPartialUrl     = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl       = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   lazy val feedbackSurvey: String       = loadConfig("feedback-survey-frontend.url")
-  lazy val timeout: Int                 = config.getInt("timeoutDialog.timeout-seconds")
-  lazy val timeoutCountdown: Int        = config.getInt("timeoutDialog.timeout-countdown-seconds")
+  lazy val timeoutSeconds: Int          = config.getInt("session.timeoutSeconds")
+  lazy val timeoutCountdownSeconds: Int = config.getInt("session.timeoutCountdownSeconds")
+  val cacheTtl: Int                     = config.getInt("mongodb.timeToLiveInSeconds")
 
   //Business Tax Account
-  lazy val businessTaxAccount: String = config.getString("business-tax-account.url")
+  lazy val businessTaxAccount: String   = config.getString("business-tax-account.url")
 
   //Banner
-  lazy val urBannerLink: String = "https://signup.take-part-in-research.service.gov.uk/?utm_campaign=VFRS_results&utm_source=Survey_Banner&utm_medium=other&t=HMRC&id=114"
-
-  val cacheTtl: Int = config.getInt("mongodb.timeToLiveInSeconds")
+  lazy val urBannerLink: String         = "https://signup.take-part-in-research.service.gov.uk/?utm_campaign=VFRS_results&utm_source=Survey_Banner&utm_medium=other&t=HMRC&id=114"
 
 }

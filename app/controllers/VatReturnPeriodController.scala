@@ -16,9 +16,8 @@
 
 package controllers
 
-import java.util.UUID
 import connectors.DataCacheConnector
-import controllers.actions.{DataRetrievalAction, ValidatedSession}
+import controllers.actions.DataRetrievalAction
 import forms.vatReturnPeriodForm
 
 import javax.inject.{Inject, Singleton}
@@ -36,11 +35,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class VatReturnPeriodController @Inject()(mcc: MessagesControllerComponents,
                                           dataCacheConnector: DataCacheConnector,
                                           getData: DataRetrievalAction,
-                                          validateSession: ValidatedSession,
                                           vatReturnPeriodView: views.vatReturnPeriod)(implicit ec: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = (validateSession andThen getData) {
+  def onPageLoad: Action[AnyContent] = getData {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
         case None => vatReturnPeriodForm()
@@ -49,7 +47,7 @@ class VatReturnPeriodController @Inject()(mcc: MessagesControllerComponents,
       Ok(vatReturnPeriodView(preparedForm))
   }
 
-  def onSubmit: Action[AnyContent] = (validateSession andThen getData).async {
+  def onSubmit: Action[AnyContent] = getData.async {
     implicit request =>
       vatReturnPeriodForm().bindFromRequest().fold(
         (formWithErrors: Form[_]) => {

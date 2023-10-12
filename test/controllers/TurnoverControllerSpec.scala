@@ -40,7 +40,7 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
   val technicalErrorView = application.injector.instanceOf[technicalError]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new TurnoverController(mcc, FakeDataCacheConnector, dataRetrievalAction, mockValidatedSession, view, technicalErrorView)
+    new TurnoverController(mcc, FakeDataCacheConnector, dataRetrievalAction, view, technicalErrorView)
 
   def viewAsString(form: Form[_] = turnoverForm(), period: String) = view(form, period)(fakeRequest, messages).toString
 

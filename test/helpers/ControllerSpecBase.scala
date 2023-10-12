@@ -16,15 +16,13 @@
 
 package helpers
 
-import controllers.actions.{FakeDataRetrievalAction, ValidatedSession}
+import controllers.actions.FakeDataRetrievalAction
 import play.api.libs.json.JsString
 import utils.CacheMap
 
 trait ControllerSpecBase extends SpecBase {
 
   val cacheMapId = "id"
-
-  val mockValidatedSession: ValidatedSession = fakeApplication().injector.instanceOf[ValidatedSession]
 
   def emptyCacheMap = CacheMap(cacheMapId, Map())
 

@@ -17,8 +17,7 @@
 package controllers
 
 import common.ResultCodes
-import connectors.DataCacheConnector
-import controllers.actions.{DataRetrievalAction, ValidatedSession}
+import controllers.actions.DataRetrievalAction
 
 import javax.inject.Inject
 import models.VatFlatRateModel
@@ -32,13 +31,11 @@ import views.html.{home => views}
 import scala.util.Random
 
 class ResultController @Inject()(mcc: MessagesControllerComponents,
-                                 dataCacheConnector: DataCacheConnector,
                                  getData: DataRetrievalAction,
-                                 validateSession: ValidatedSession,
                                  resultView: views.result) extends FrontendController(mcc)
   with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = (validateSession andThen getData) {
+  def onPageLoad: Action[AnyContent] = getData {
     implicit request =>
       request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
         case Some(value) =>

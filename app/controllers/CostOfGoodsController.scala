@@ -16,13 +16,11 @@
 
 package controllers
 
-import common.ResultCodes
 import connectors.DataCacheConnector
-import controllers.actions.{DataRetrievalAction, ValidatedSession}
+import controllers.actions.DataRetrievalAction
 import forms.costOfGoodsForm
 
 import javax.inject.{Inject, Singleton}
-import models.VatFlatRateModel
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -36,12 +34,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
                                       dataCacheConnector: DataCacheConnector,
                                       getData: DataRetrievalAction,
-                                      validateSession: ValidatedSession,
                                       costOfGoodsView: views.costOfGoods,
                                       technicalErrorView: errs.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with Logging {
 
 
-  def onPageLoad: Action[AnyContent] = (validateSession andThen getData) {
+  def onPageLoad: Action[AnyContent] = getData {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(x => x.costOfGoods) match {
         case None => costOfGoodsForm()
@@ -55,7 +52,7 @@ class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
       }
   }
 
-  def onSubmit: Action[AnyContent] = (validateSession andThen getData).async {
+  def onSubmit: Action[AnyContent] = getData.async {
     implicit request =>
       costOfGoodsForm().bindFromRequest().fold(
         (formWithErrors: Form[_]) => {

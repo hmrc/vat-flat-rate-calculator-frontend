@@ -37,7 +37,7 @@ class VatReturnPeriodControllerSpec extends PlaySpec with ControllerSpecBase {
   val view = application.injector.instanceOf[vatReturnPeriod]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new VatReturnPeriodController(mcc, FakeDataCacheConnector, dataRetrievalAction, mockValidatedSession, view)
+    new VatReturnPeriodController(mcc, FakeDataCacheConnector, dataRetrievalAction, view)
 
   def viewAsString(form: Form[_] = vatReturnPeriodForm()) = view(form)(fakeRequest, messages).toString
 
