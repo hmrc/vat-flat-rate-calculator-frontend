@@ -40,7 +40,7 @@ class CostOfGoodsControllerSpec extends ControllerSpecBase with CostOfGoodsViewM
   val technicalErrorView = application.injector.instanceOf[technicalError]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new CostOfGoodsController(mcc, FakeDataCacheConnector, dataRetrievalAction, mockValidatedSession, view, technicalErrorView)
+    new CostOfGoodsController(mcc, FakeDataCacheConnector, dataRetrievalAction, view, technicalErrorView)
 
   def viewAsString(form: Form[_] = costOfGoodsForm(), period: String) = view(form, period)(fakeRequest, messages).toString
 

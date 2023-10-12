@@ -31,10 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class DataRetrievalActionImpl @Inject()(val dataCacheConnector: DataCacheConnector,
                                         val mcc: MessagesControllerComponents,
                                         val appConfig: ApplicationConfig)
-                                       (implicit ec: ExecutionContext) extends DataRetrievalAction
+                                       (implicit val executionContext: ExecutionContext) extends DataRetrievalAction
   with Logging {
 
-  override protected def executionContext: ExecutionContext = mcc.executionContext
   override def parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
 
   override protected def transform[A](request: Request[A]): Future[OptionalDataRequest[A]] = {

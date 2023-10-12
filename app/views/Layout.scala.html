@@ -52,8 +52,8 @@
             message = Some(Messages("timeout.message")),
             keepAliveButtonText = Some(Messages("timeout.continue")),
             signOutButtonText = Some(Messages("timeout.exit")),
-            timeout = Some(appConfig.timeout),
-            countdown = Some(appConfig.timeoutCountdown)
+            timeout = Some(appConfig.timeoutSeconds),
+            countdown = Some(appConfig.timeoutCountdownSeconds)
         )
     }
 }

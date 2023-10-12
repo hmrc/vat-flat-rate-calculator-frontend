@@ -31,7 +31,7 @@ class ResultControllerSpec extends ControllerSpecBase {
   val view = application.injector.instanceOf[result]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new ResultController(mcc, FakeDataCacheConnector, dataRetrievalAction, mockValidatedSession, view)
+    new ResultController(mcc, dataRetrievalAction, view)
 
   def viewAsString(resultCode: Int, showUserResearchPanel: Boolean) =
     view(resultCode, showUserResearchPanel)(fakeRequest, messages).toString
