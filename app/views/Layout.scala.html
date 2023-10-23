@@ -15,17 +15,11 @@
  *@
 
 @import config.ApplicationConfig
-@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
 
 @this(
-    govukLayout: GovukLayout,
+    hmrcStandardPage: HmrcStandardPage,
     hmrcAccountMenu: HmrcAccountMenu,
-    hmrcHead: HmrcHead,
-    hmrcStandardHeader: HmrcStandardHeader,
-    hmrcStandardFooter: HmrcStandardFooter,
-    hmrcScripts: HmrcScripts,
-    hmrcStandardBetaBanner: StandardBetaBanner,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
@@ -66,16 +60,16 @@
     ))
 }
 
-@govukLayout(
-    pageTitle = Some(s"""$pageTitle - ${messages("service.name")} - GOV.UK"""),
-    headBlock = Some(hmrcHead(
-        headBlock = Some(head)
-    )),
-    headerBlock = Some(hmrcStandardHeader(
-        serviceUrl = Some(controllers.routes.VatReturnPeriodController.onPageLoad.url),
-        userResearchBanner = if (urBanner) {Some(UserResearchBanner(url = appConfig.urBannerLink))} else None
-    )),
-    beforeContentBlock = Some(accountMenu),
-    scriptsBlock = Some(hmrcScripts()),
-    footerBlock = Some(hmrcStandardFooter())
+@hmrcStandardPage(
+    HmrcStandardPageParams(
+        serviceURLs = ServiceURLs(
+            serviceUrl = Some(controllers.routes.VatReturnPeriodController.onPageLoad.url)
+        ),
+        templateOverrides = TemplateOverrides(
+        additionalHeadBlock = Some(head),
+        beforeContentBlock = Some(accountMenu)
+    ),
+    serviceName = Some(messages("service.name")),
+    pageTitle = Some(s"""$pageTitle - ${messages("service.name")} - GOV.UK""")
+    )
 )(mainContent)
