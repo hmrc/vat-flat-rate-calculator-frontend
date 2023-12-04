@@ -102,12 +102,5 @@ result.para.4                       = You may want to <a href="{0}" class="govuk
 result.para.5                       = You may want to <a href="{0}" class="govuk-link" rel="noreferrer noopener" target="_blank">deregister from VAT (opens in new tab)</a>
 result.feedbackSurvey               = What did you think of this service?
 
-
-result.dismissBanner = No thanks
-result.dismissBanner.screenreader = I don’t want to answer any questions about joining the research panel
-result.userResearchLink.title = Help improve GOV.UK
-result.userResearchLink.link = Help improve this digital service by joining the HMRC user panel (opens in new tab)
-result.userResearchLink.text = This link opens in a new tab. Please note that this service is not available in Welsh.
-
 service.name = Check your VAT flat rate
 site.title.error = Error: {0}

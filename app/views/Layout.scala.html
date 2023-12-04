@@ -34,7 +34,9 @@
     accountMenuEnabled: Boolean = true,
     urBanner: Boolean = false)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
+
 @accountMenu = {
+    @hmrcLanguageSelectHelper()
     @if(backLinkEnabled) { @govukBackLink(BackLink.mimicsBrowserBackButtonViaJavaScript) }
 }
 
@@ -70,6 +72,7 @@
         beforeContentBlock = Some(accountMenu)
     ),
     serviceName = Some(messages("service.name")),
+    isWelshTranslationAvailable = true,
     pageTitle = Some(s"""$pageTitle - ${messages("service.name")} - GOV.UK""")
     )
 )(mainContent)

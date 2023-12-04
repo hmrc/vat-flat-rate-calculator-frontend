@@ -102,12 +102,5 @@ result.para.4                       = Mae’n bosibl yr hoffech <a href="{0}" cl
 result.para.5                       = Mae’n bosibl yr hoffech <a href="{0}" class="govuk-link" rel="noreferrer noopener" target="_blank">ddatgofrestru rhag TAW (yn agor tab newydd)</a>
 result.feedbackSurvey               = Beth oedd eich barn am y gwasanaeth hwn?
 
-
-result.dismissBanner = Dim diolch
-result.dismissBanner.screenreader = Dydw i ddim eisiau ateb cwestiynau ynglŷn ag ymuno â’r panel ymchwil
-result.userResearchLink.title = Helpwch i wella GOV.UK
-result.userResearchLink.link = Helpwch i wella’r gwasanaeth digidol hwn drwy ymuno â phanel defnyddwyr CThEF (yn agor tab newydd)
-result.userResearchLink.text = Mae’r cysylltiad hwn yn agor tab newydd. Sylwer – nid yw’r gwasanaeth hwn ar gael yn Gymraeg.
-
 service.name = Gwirio’ch cyfradd unffurf ar gyfer TAW
 site.title.error = Gwall: {0}
