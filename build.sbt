@@ -21,7 +21,6 @@ import com.typesafe.sbt.digest.Import.digest
 import com.typesafe.sbt.web.Import.pipelineStages
 import com.typesafe.sbt.web.Import.Assets
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
-import com.timushev.sbt.updates.UpdatesPlugin.autoImport.moduleFilterRemoveValue
 import uk.gov.hmrc._
 import DefaultBuildSettings._
 import uk.gov.hmrc.SbtAutoBuildPlugin
@@ -34,6 +33,8 @@ val appName = "vat-flat-rate-calculator-frontend"
 lazy val appDependencies : Seq[ModuleID] = AppDependencies()
 lazy val plugins : Seq[Plugins] = Seq.empty
 lazy val playSettings : Seq[Setting[_]] = Seq.empty
+
+scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s"
 
 lazy val scoverageSettings = {
   import scoverage.ScoverageKeys
@@ -65,25 +66,12 @@ lazy val microservice: Project = Project(appName, file("."))
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     routesGenerator := InjectedRoutesGenerator,
     Assets / pipelineStages := Seq(digest),
-    scalaVersion := "2.13.8",
-    PlayKeys.playDefaultPort := 9080,
-    scalacOptions += "-P:silencer:lineContentFilters=^\\w",
-    scalacOptions += "-P:silencer:pathFilters=views;routes;--feature",
-    libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.17.13" cross CrossVersion.full),
-      "com.github.ghik" % "silencer-lib" % "1.17.13" % Provided cross CrossVersion.full
-    )
+    scalaVersion := "2.13.12",
+    PlayKeys.playDefaultPort := 9080
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(integrationTestSettings())
-  .settings(dependencyUpdatesFilter -= moduleFilter(organization = "org.scala-lang"))
-  .settings(dependencyUpdatesFilter -= moduleFilter(organization = "com.typesafe.play"))
-  .settings(dependencyUpdatesFilter -= moduleFilter(organization = "org.scalatest"))
-  .settings(dependencyUpdatesFilter -= moduleFilter(organization = "org.scalameta"))
-  .settings(dependencyUpdatesFilter -= moduleFilter(organization = "org.scalatestplus.play"))
-  .settings(dependencyUpdatesFilter -= moduleFilter(organization = "org.scoverage"))
-  .settings(dependencyUpdatesFailBuild := false)
   .settings(
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.govukfrontend.views.html.components._",
