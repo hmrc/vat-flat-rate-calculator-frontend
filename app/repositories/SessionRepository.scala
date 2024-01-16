@@ -52,8 +52,8 @@ class MongoRepository(config: ApplicationConfig, mongo: MongoComponent)(implicit
       IndexModel(ascending("lastUpdated"), IndexOptions()
         .name("userAnswersExpiry")
         .expireAfter(config.cacheTtl.toLong, SECONDS))
-    )
-    , extraCodecs = Seq(Codecs.playFormatCodec(CacheMap.formats))
+    ),
+    extraCodecs = Seq(Codecs.playFormatCodec(CacheMap.formats))
   ) {
 
   def upsert(cm: CacheMap): Future[Boolean] = {
