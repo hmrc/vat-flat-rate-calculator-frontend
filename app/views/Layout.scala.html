@@ -16,13 +16,14 @@
 
 @import config.ApplicationConfig
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 
 @this(
     hmrcStandardPage: HmrcStandardPage,
     hmrcAccountMenu: HmrcAccountMenu,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-    hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     appConfig: ApplicationConfig,
     govukBackLink: GovukBackLink,
 )
@@ -56,10 +57,7 @@
 
 @mainContent = {
     @contentBlock
-    @hmrcReportTechnicalIssue(ReportTechnicalIssue(
-        serviceId = appConfig.contactFormServiceIdentifier,
-        baseUrl = Some(appConfig.contactHost)
-    ))
+    @hmrcReportTechnicalIssueHelper()
 }
 
 @hmrcStandardPage(

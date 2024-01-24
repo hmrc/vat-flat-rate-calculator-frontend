@@ -70,7 +70,7 @@ costOfGoods.bullet.1                = unrhyw wasanaethau – hynny yw, unrhyw be
 costOfGoods.bullet.2                = treuliau, megis teithio a llety
 costOfGoods.bullet.3                = bwyd a diod wedi’u bwyta gennych chi neu’ch staff
 costOfGoods.bullet.4                = costau cerbyd, gan gynnwys tanwydd, oni bai eich bod yn y busnes trafnidiaeth ac yn defnyddio’ch cerbyd eich hunain, neu gerbyd ar brydles
-costOfGoods.bullet.5                = rhent, llog, biliau ffôn a ffioedd cyfrifyddiaeth
+costOfGoods.bullet.5                = rhent, rhyngrwyd, biliau ffôn a ffioedd cyfrifyddiaeth
 costOfGoods.bullet.6                = rhoddion, eitemau hyrwyddol a chyfraniadau
 costOfGoods.bullet.7                = nwyddau y byddwch yn eu hailwerthu neu’n eu rhoi ar log, oni bai mai dyma brif weithgaredd eich busnes
 costOfGoods.bullet.8                = hyfforddiant ac aelodaethau
@@ -93,7 +93,7 @@ result.5.summary                    = Ar sail eich atebion, rydych yn fusnes cos
 result.6.summary                    = Ar sail eich atebion, mae’ch costau yn cyfrif am 2% neu’n fwy o’ch trosiant. Defnyddiwch <a href = {0} class="govuk-link">y gyfradd unffurf ar gyfer TAW o ran y math o fusnes sydd gennych,</a> nid y gyfradd safonol o 16.5% ar gyfer busnes cost gyfyngedig.
 
 result.para.1                       = Mae’n bosibl y bydd angen i chi wneud y cyfrifiad hwn ar gyfer pob cyfnod TAW
-result.accordion.question           = A ydych o fewn blwyddyn gyntaf eich cofrestriad TAW?
+result.accordion.question           = A ydych o fewn flwyddyn gyntaf eich cofrestriad TAW?
 result.accordion.summary            = Rhowch ostyngiad o 1% ym mlwyddyn gyntaf eich cofrestriad TAW.
 result.heading.2                    = Beth sy’n digwydd nesaf?
 result.para.2                       = Defnyddiwch y gyfradd hon o 1 Ebill 2017 wrth i chi gyflwyno’ch Ffurflen TAW.
