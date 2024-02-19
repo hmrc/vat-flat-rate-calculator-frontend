@@ -22,7 +22,7 @@ object AppDependencies {
 
   val bootstrapVersion = "8.4.0"
   val mongoVersion = "1.7.0"
-  val playFrontendVersion = "8.3.0"
+  val playFrontendVersion = "8.5.0"
 
   val compile = Seq(
     ws,
