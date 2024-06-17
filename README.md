@@ -1,8 +1,6 @@
 # vat-flat-rate-calculator-frontend
 
 [![Apache-2.0 license](http://img.shields.io/badge/license-Apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Build Status](https://api.travis-ci.org/hmrc/vat-flat-rate-calculator-frontend.svg?branch=master)](https://travis-ci.org/hmrc/vat-flat-rate-calculator-frontend)
-[![Download](https://api.bintray.com/packages/hmrc/releases/vat-flat-rate-calculator-frontend/images/download.svg)](https://bintray.com/hmrc/releases/vat-flat-rate-calculator-frontend/_latestVersion)
 
 ### Vat Flat Rate Calculator Frontend
 
@@ -20,7 +18,7 @@ This service is written in [Scala](http://www.scala-lang.org/) and [Play](http:/
 To update from Nexus and start all services from the RELEASE version instead of snapshot
 
 ```
-sm --start VFR_ALL -r
+sm2 -start VFR_ALL
 ```
 
 
@@ -28,7 +26,7 @@ sm --start VFR_ALL -r
 
 Stop the frontend running on servive manager 
 ```
-sm --stop VAT_FLAT_RATE_CALC_FRONTEND
+sm2 -stop VAT_FLAT_RATE_CALC_FRONTEND
 ``` 
 and from the root directory run:
 ```
