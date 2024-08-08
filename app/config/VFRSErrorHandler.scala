@@ -18,24 +18,24 @@ package config
 
 import javax.inject.Inject
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.{Configuration, mvc}
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.error_template
+import scala.concurrent.{ExecutionContext, Future}
 
 class VFRSErrorHandler @Inject()(val messagesApi: MessagesApi,
-                                 val configuration: Configuration,
-                                 errorTemplate: error_template) extends FrontendErrorHandler {
+                                 errorTemplate: error_template)(implicit val ec: ExecutionContext) extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: mvc.Request[_]): Html = {
-    errorTemplate(pageTitle, heading, message)
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+    Future.successful(errorTemplate(pageTitle, heading, message))
   }
 
-  override def internalServerErrorTemplate(implicit request: mvc.Request[_]): Html =
+  override def internalServerErrorTemplate(implicit request: RequestHeader): Future[Html] =
     standardErrorTemplate(
       Messages("techError.title"),
       Messages("techError.heading"),
       Messages("techError.para.1")
-    )
+      )
 
 }
