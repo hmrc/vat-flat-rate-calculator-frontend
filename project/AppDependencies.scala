@@ -20,9 +20,9 @@ import sbt._
 
 object AppDependencies {
 
-  val bootstrapVersion = "9.1.0"
-  val mongoVersion = "2.2.0"
-  val playFrontendVersion = "10.5.0"
+  val bootstrapVersion = "9.6.0"
+  val mongoVersion = "2.3.0"
+  val playFrontendVersion = "11.8.0"
 
   val compile = Seq(
     ws,
