@@ -18,7 +18,7 @@ This service is written in [Scala](http://www.scala-lang.org/) and [Play](http:/
 To update from Nexus and start all services from the RELEASE version instead of snapshot
 
 ```
-sm2 -start VFR_ALL
+sm2 --start VFR_ALL
 ```
 
 
@@ -26,7 +26,7 @@ sm2 -start VFR_ALL
 
 Stop the frontend running on servive manager 
 ```
-sm2 -stop VAT_FLAT_RATE_CALC_FRONTEND
+sm2 --stop VAT_FLAT_RATE_CALC_FRONTEND
 ``` 
 and from the root directory run:
 ```
