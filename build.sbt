@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import sbt.Keys.{scalacOptions, _}
-import sbt._
+import sbt.Keys.{scalacOptions, *}
+import sbt.*
 import play.routes.compiler.InjectedRoutesGenerator
 import com.typesafe.sbt.digest.Import.digest
 import com.typesafe.sbt.web.Import.pipelineStages
 import com.typesafe.sbt.web.Import.Assets
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
-import uk.gov.hmrc._
-import DefaultBuildSettings._
+import uk.gov.hmrc.*
+import DefaultBuildSettings.*
 import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 import play.sbt.routes.RoutesKeys.routesGenerator
@@ -30,9 +30,8 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 
 val appName = "vat-flat-rate-calculator-frontend"
 
-lazy val appDependencies : Seq[ModuleID] = AppDependencies()
 lazy val plugins : Seq[Plugins] = Seq.empty
-lazy val playSettings : Seq[Setting[_]] = Seq.empty
+lazy val playSettings : Seq[Setting[?]] = Seq.empty
 
 scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s"
 
@@ -55,13 +54,13 @@ lazy val microservice: Project = Project(appName, file("."))
       SbtGitVersioning,
     ) ++ plugins : _*)
   .disablePlugins(JUnitXmlReportPlugin)
-  .settings(playSettings : _*)
-  .settings(scoverageSettings: _*)
-  .settings(scalaSettings: _*)
-  .settings(defaultSettings(): _*)
+  .settings(playSettings *)
+  .settings(scoverageSettings *)
+  .settings(scalaSettings *)
+  .settings(defaultSettings() *)
   .settings(majorVersion := 0 )
   .settings(
-    libraryDependencies ++= appDependencies,
+    libraryDependencies ++= AppDependencies.all,
     retrieveManaged := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     routesGenerator := InjectedRoutesGenerator,
@@ -69,9 +68,6 @@ lazy val microservice: Project = Project(appName, file("."))
     scalaVersion := "2.13.12",
     PlayKeys.playDefaultPort := 9080
   )
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-  .settings(integrationTestSettings())
   .settings(
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.govukfrontend.views.html.components._",
