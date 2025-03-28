@@ -65,7 +65,7 @@ lazy val microservice: Project = Project(appName, file("."))
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     routesGenerator := InjectedRoutesGenerator,
     Assets / pipelineStages := Seq(digest),
-    scalaVersion := "2.13.12",
+    scalaVersion := "2.13.16",
     PlayKeys.playDefaultPort := 9080
   )
   .settings(
