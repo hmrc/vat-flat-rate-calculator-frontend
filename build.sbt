@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import sbt.Keys.{scalacOptions, *}
+import sbt.Keys.*
+import sbt.Keys.scalacOptions
 import sbt.*
 import play.routes.compiler.InjectedRoutesGenerator
 import com.typesafe.sbt.digest.Import.digest
