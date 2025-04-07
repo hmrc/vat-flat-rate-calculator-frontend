@@ -23,16 +23,17 @@ class RoutesSpec extends PlaySpec {
   val baseUrl = "/check-your-vat-flat-rate"
 
   val vatReturnPeriod: String = baseUrl + "/vat-return-period"
-  val turnover: String = baseUrl + "/turnover"
-  val costOfGoods: String = baseUrl + "/cost-of-goods"
-  val result: String = baseUrl + "/result"
-  val feedbackSurvey = baseUrl + "/feedback-survey"
+  val turnover: String        = baseUrl + "/turnover"
+  val costOfGoods: String     = baseUrl + "/cost-of-goods"
+  val result: String          = baseUrl + "/result"
+  val feedbackSurvey          = baseUrl + "/feedback-survey"
 
   "The route for the vatReturnPeriod action on the vatReturnPeriod controller" must {
     "be /check-your-vat-flat-rate/vat-return-period" in {
       controllers.routes.VatReturnPeriodController.onPageLoad.url shouldBe s"$vatReturnPeriod"
     }
   }
+
   "The route for the submitVatReturnPeriod action on the vatReturnPeriod controller" must {
     " be /check-your-vat-flat-rate/vat-return-period" in {
       controllers.routes.VatReturnPeriodController.onSubmit.url shouldBe s"$vatReturnPeriod"
@@ -56,11 +57,13 @@ class RoutesSpec extends PlaySpec {
       controllers.routes.CostOfGoodsController.onPageLoad.url shouldBe s"$costOfGoods"
     }
   }
+
   "The route for the submit action on the costOfGoods controller" must {
     "be /check-your-vat-flat-rate/cost-of-goods" in {
       controllers.routes.CostOfGoodsController.onSubmit.url shouldBe s"$costOfGoods"
     }
   }
+
   "The route for the result action on the result controller" must {
     "be /check-your-vat-flat-rate/cost-of-goods" in {
       controllers.routes.ResultController.onPageLoad.url shouldBe s"$result"
@@ -72,4 +75,5 @@ class RoutesSpec extends PlaySpec {
       controllers.routes.FeedbackSurveyController.redirectFeedbackSurvey.url shouldBe s"$feedbackSurvey"
     }
   }
+
 }

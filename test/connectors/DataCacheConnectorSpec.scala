@@ -29,25 +29,25 @@ class DataCacheConnectorSpec extends SpecBase with FutureAwaits with DefaultAwai
 
   implicit val ec: ExecutionContext = global
 
-  def remove(cacheId: String, key: String): Future[Boolean] = {
+  def remove(cacheId: String, key: String): Future[Boolean] =
     mockSessionRepository().get(cacheId).flatMap { optionalCacheMap =>
       optionalCacheMap.fold(Future(false)) { cacheMap =>
-        val newCacheMap = cacheMap copy (data = cacheMap.data - key)
+        val newCacheMap = cacheMap.copy(data = cacheMap.data - key)
         mockSessionRepository().upsert(newCacheMap)
       }
     }
-  }
 
   lazy val mockDataCacheConnector: DataCacheConnector = app.injector.instanceOf[DataCacheConnector]
-  lazy val mockSessionRepository: SessionRepository = app.injector.instanceOf[SessionRepository]
+  lazy val mockSessionRepository: SessionRepository   = app.injector.instanceOf[SessionRepository]
 
-  val userId = "user-id"
+  val userId        = "user-id"
   val anotherUserId = "another-user-id"
 
   lazy val costOfGoodsRecord: CacheMap = CacheMap(userId, Map("costOfGoods" -> Json.toJson("costOfGoodsValue")))
-  lazy val turnoverRecord: CacheMap = CacheMap(userId, Map("turnover" -> Json.toJson("turnoverValue")))
+  lazy val turnoverRecord: CacheMap    = CacheMap(userId, Map("turnover" -> Json.toJson("turnoverValue")))
 
-  lazy val storedCache: CacheMap = CacheMap(userId, Map("costOfGoods" -> Json.toJson("costOfGoodsValue"), "turnover" -> Json.toJson("turnoverValue")))
+  lazy val storedCache: CacheMap =
+    CacheMap(userId, Map("costOfGoods" -> Json.toJson("costOfGoodsValue"), "turnover" -> Json.toJson("turnoverValue")))
 
   "DataCacheConnector" should {
     "save a CacheMap object" in {
@@ -74,4 +74,5 @@ class DataCacheConnectorSpec extends SpecBase with FutureAwaits with DefaultAwai
       await(mockDataCacheConnector.fetch(anotherUserId)) mustBe None
     }
   }
+
 }

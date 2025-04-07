@@ -30,31 +30,38 @@ import views.html.{home => views}
 
 import scala.util.Random
 
-class ResultController @Inject()(mcc: MessagesControllerComponents,
-                                 getData: DataRetrievalAction,
-                                 resultView: views.result) extends FrontendController(mcc)
-  with I18nSupport with Logging {
+class ResultController @Inject() (
+    mcc: MessagesControllerComponents,
+    getData: DataRetrievalAction,
+    resultView: views.result
+) extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData {
-    implicit request =>
-      request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-        case Some(value) =>
-          val resultModel = new VatFlatRateModel(value.toString, request.userAnswers.flatMap(x => x.turnover), request.userAnswers.flatMap(x => x.costOfGoods))
-          resultModel match {
-            case VatFlatRateModel(_, Some(_), Some(_)) =>
-              Ok(resultView(whichResult(resultModel), setURPanelFlag))
-            case _ =>
-              logger.warn("ResultModel could not be retrieved")
-              Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
-          }
-        case _ => logger.warn("vat return period could not be retrieved")
-          Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
-      }
+  def onPageLoad: Action[AnyContent] = getData { implicit request =>
+    request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+      case Some(value) =>
+        val resultModel = new VatFlatRateModel(
+          value.toString,
+          request.userAnswers.flatMap(x => x.turnover),
+          request.userAnswers.flatMap(x => x.costOfGoods)
+        )
+        resultModel match {
+          case VatFlatRateModel(_, Some(_), Some(_)) =>
+            Ok(resultView(whichResult(resultModel), setURPanelFlag))
+          case _ =>
+            logger.warn("ResultModel could not be retrieved")
+            Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
+        }
+      case _ =>
+        logger.warn("vat return period could not be retrieved")
+        Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
+    }
   }
 
   private[controllers] def setURPanelFlag(implicit hc: HeaderCarrier): Boolean = {
     val random = new Random()
-    val seed = getLongFromSessionID(hc)
+    val seed   = getLongFromSessionID(hc)
     random.setSeed(seed)
     random.nextInt(3) == 0
   }
@@ -62,26 +69,25 @@ class ResultController @Inject()(mcc: MessagesControllerComponents,
   private[controllers] def getLongFromSessionID(hc: HeaderCarrier): Long = {
     val session = hc.sessionId.map(_.value).getOrElse("0")
     val numericSessionValues = session.replaceAll("[^0-9]", "") match {
-      case "" => "0"
+      case ""  => "0"
       case num => num
     }
     numericSessionValues.takeRight(10).toLong
   }
 
-  def whichResult(model: VatFlatRateModel): Int = {
-    if(model.vatReturnPeriod.equalsIgnoreCase("annually")){
+  def whichResult(model: VatFlatRateModel): Int =
+    if (model.vatReturnPeriod.equalsIgnoreCase("annually")) {
       model match {
-        case VatFlatRateModel(_,_,Some(cost)) if cost < 1000 => ResultCodes.ONE
-        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 > cost => ResultCodes.TWO
-        case _ => ResultCodes.THREE
+        case VatFlatRateModel(_, _, Some(cost)) if cost < 1000                         => ResultCodes.ONE
+        case VatFlatRateModel(_, Some(turnover), Some(cost)) if turnover * 0.02 > cost => ResultCodes.TWO
+        case _                                                                         => ResultCodes.THREE
       }
     } else {
       model match {
-        case VatFlatRateModel(_,_,Some(cost)) if cost < 250 => ResultCodes.FOUR
-        case VatFlatRateModel(_,Some(turnover),Some(cost)) if turnover*0.02 > cost => ResultCodes.FIVE
-        case _ => ResultCodes.SIX
+        case VatFlatRateModel(_, _, Some(cost)) if cost < 250                          => ResultCodes.FOUR
+        case VatFlatRateModel(_, Some(turnover), Some(cost)) if turnover * 0.02 > cost => ResultCodes.FIVE
+        case _                                                                         => ResultCodes.SIX
       }
     }
-  }
 
 }

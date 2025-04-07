@@ -23,7 +23,7 @@ import play.api.libs.json._
 class CascadeUpsert {
 
   def apply[A](key: String, value: A, originalCacheMap: CacheMap)(implicit fmt: Format[A]): CacheMap =
-    funcMap.get(key).fold(store(key, value, originalCacheMap)) { fn => fn(Json.toJson(value), originalCacheMap)}
+    funcMap.get(key).fold(store(key, value, originalCacheMap))(fn => fn(Json.toJson(value), originalCacheMap))
 
   val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
     Map(
@@ -32,15 +32,13 @@ class CascadeUpsert {
 
   def addRepeatedValue[A](key: String, value: A, originalCacheMap: CacheMap)(implicit fmt: Format[A]): CacheMap = {
     val values = originalCacheMap.getEntry[Seq[A]](key).getOrElse(Seq()) :+ value
-    originalCacheMap copy(data = originalCacheMap.data + (key -> Json.toJson(values)))
+    originalCacheMap.copy(data = originalCacheMap.data + (key -> Json.toJson(values)))
   }
 
-  private def store[A](key:String, value: A, cacheMap: CacheMap)(implicit fmt: Format[A]) =
-    cacheMap copy (data = cacheMap.data + (key -> Json.toJson(value)))
+  private def store[A](key: String, value: A, cacheMap: CacheMap)(implicit fmt: Format[A]) =
+    cacheMap.copy(data = cacheMap.data + (key -> Json.toJson(value)))
 
-  def storeVatReturnPeriod(value: JsValue, cacheMap: CacheMap): CacheMap = {
+  def storeVatReturnPeriod(value: JsValue, cacheMap: CacheMap): CacheMap =
     store("vatReturnPeriod", value, cacheMap)
-  }
 
 }
-

@@ -20,14 +20,14 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Lang
 
 trait VatReturnPeriodViewMessages extends MockitoSugar {
-  implicit val lang: Lang = Lang("en")
-  val vatReturnPeriodTitle        = "How often do you do your VAT returns? - Check your VAT flat rate - GOV.UK"
-  val vatReturnPeriodHeading      = "How often do you do your VAT returns?"
-  val vatReturnPeriodIntro        = "If you're using the Flat Rate Scheme, select the period that matches your VAT return."
-  val vatReturnPeriodPara         = "If you're thinking of joining the Flat Rate Scheme, select annually."
-  val vatReturnPeriodAnnually     = "Annually"
-  val vatReturnPeriodQuarterly    = "Quarterly"
-  val vatReturnPeriodContinue     = "Continue"
-  val vatReturnPeriodError        = "This field is required"
+  implicit val lang: Lang      = Lang("en")
+  val vatReturnPeriodTitle     = "How often do you do your VAT returns? - Check your VAT flat rate - GOV.UK"
+  val vatReturnPeriodHeading   = "How often do you do your VAT returns?"
+  val vatReturnPeriodIntro     = "If you're using the Flat Rate Scheme, select the period that matches your VAT return."
+  val vatReturnPeriodPara      = "If you're thinking of joining the Flat Rate Scheme, select annually."
+  val vatReturnPeriodAnnually  = "Annually"
+  val vatReturnPeriodQuarterly = "Quarterly"
+  val vatReturnPeriodContinue  = "Continue"
+  val vatReturnPeriodError     = "This field is required"
 
 }

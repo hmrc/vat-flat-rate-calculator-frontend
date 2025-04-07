@@ -15,6 +15,7 @@
  */
 
 package common
+
 // $COVERAGE-OFF$
 object ResultCodes {
 

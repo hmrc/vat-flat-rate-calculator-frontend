@@ -31,45 +31,53 @@ import views.html.{errors => errs, home => views}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CostOfGoodsController @Inject()(mcc: MessagesControllerComponents,
-                                      dataCacheConnector: DataCacheConnector,
-                                      getData: DataRetrievalAction,
-                                      costOfGoodsView: views.costOfGoods,
-                                      technicalErrorView: errs.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport with Logging {
+class CostOfGoodsController @Inject() (
+    mcc: MessagesControllerComponents,
+    dataCacheConnector: DataCacheConnector,
+    getData: DataRetrievalAction,
+    costOfGoodsView: views.costOfGoods,
+    technicalErrorView: errs.technicalError
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
-
-  def onPageLoad: Action[AnyContent] = getData {
-    implicit request =>
-      val preparedForm = request.userAnswers.flatMap(x => x.costOfGoods) match {
-        case None => costOfGoodsForm()
-        case Some(value) =>  costOfGoodsForm().fill(value)
-      }
-      request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-        case Some(value) => Ok(costOfGoodsView(preparedForm, value.toString))
-        case None =>
-          logger.warn("[CostOfGoods Controller] No model found in Keystore; redirecting back to landing page")
-          Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
-      }
+  def onPageLoad: Action[AnyContent] = getData { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(x => x.costOfGoods) match {
+      case None        => costOfGoodsForm()
+      case Some(value) => costOfGoodsForm().fill(value)
+    }
+    request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+      case Some(value) => Ok(costOfGoodsView(preparedForm, value.toString))
+      case None =>
+        logger.warn("[CostOfGoods Controller] No model found in Keystore; redirecting back to landing page")
+        Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
+    }
   }
 
-  def onSubmit: Action[AnyContent] = getData.async {
-    implicit request =>
-      costOfGoodsForm().bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
+  def onSubmit: Action[AnyContent] = getData.async { implicit request =>
+    costOfGoodsForm()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
             case Some(value) => Future.successful(BadRequest(costOfGoodsView(formWithErrors, value.toString)))
             case _ =>
               logger.warn("[CostOfGoods Controller] No model found in Keystore; Internal server error")
               Future.successful(InternalServerError(technicalErrorView()))
-          }
-        },
+          },
         value =>
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-            case Some(_) => dataCacheConnector.save[BigDecimal] (request.sessionId, "costOfGoods", value).map (cacheMap =>
-              Redirect (controllers.routes.ResultController.onPageLoad) )
-            case _ => logger.warn("[CostOfGoods Controller] No model found in Keystore for return Period; Internal server error")
+            case Some(_) =>
+              dataCacheConnector
+                .save[BigDecimal](request.sessionId, "costOfGoods", value)
+                .map(cacheMap => Redirect(controllers.routes.ResultController.onPageLoad))
+            case _ =>
+              logger
+                .warn("[CostOfGoods Controller] No model found in Keystore for return Period; Internal server error")
               Future.successful(InternalServerError(technicalErrorView()))
           }
       )
   }
+
 }

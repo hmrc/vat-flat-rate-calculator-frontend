@@ -22,7 +22,7 @@ import play.api.data.Forms._
 import play.api.data.format.Formatter
 import utils.{InputOption, Validation}
 
-object vatReturnPeriodForm extends Validation{
+object vatReturnPeriodForm extends Validation {
 
   def apply(): Form[ReturnPeriod.Value] =
     Form(single("vatReturnPeriod" -> of(ReturnPeriodFormatter)))
@@ -32,21 +32,21 @@ object vatReturnPeriodForm extends Validation{
     returnPeriodInputOption(ReturnPeriod.MONTHLY.toString, "vatReturnPeriod-2")
   )
 
-  private def returnPeriodInputOption(option: String, id: String) = {
+  private def returnPeriodInputOption(option: String, id: String) =
     new InputOption(
-      id =  id,
+      id = id,
       value = option,
       messageKey = s"vatReturnPeriod.option.$option"
     )
-  }
 
   private def ReturnPeriodFormatter = new Formatter[ReturnPeriod.Value] {
     def bind(key: String, data: Map[String, String]) = data.get(key) match {
       case Some(s) if optionIsValid(s) => Right(ReturnPeriod.withName(s))
-      case None => produceError(key, "error.vatReturnPeriod.required")
-      case _ => produceError(key, "unknownErrorKey")
+      case None                        => produceError(key, "error.vatReturnPeriod.required")
+      case _                           => produceError(key, "unknownErrorKey")
     }
 
     def unbind(key: String, value: ReturnPeriod.Value) = Map(key -> value.toString)
   }
+
 }

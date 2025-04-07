@@ -34,123 +34,131 @@ import utils.CacheMap
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CostOfGoodsControllerSpec extends ControllerSpecBase with CostOfGoodsViewMessages{
+class CostOfGoodsControllerSpec extends ControllerSpecBase with CostOfGoodsViewMessages {
 
-  val view = application.injector.instanceOf[costOfGoods]
+  val view               = application.injector.instanceOf[costOfGoods]
   val technicalErrorView = application.injector.instanceOf[technicalError]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new CostOfGoodsController(mcc, FakeDataCacheConnector, dataRetrievalAction, view, technicalErrorView)
 
-  def viewAsString(form: Form[_] = costOfGoodsForm(), period: String) = view(form, period)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = costOfGoodsForm(), period: String) =
+    view(form, period)(fakeRequest, messages).toString
 
   def previousAnswer(index: Int) = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options(index).value))
 
-    "the question has previously not been answered" must {
-      val validData = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options.head.value))
-      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
-      lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+  "the question has previously not been answered" must {
+    val validData       = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options.head.value))
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
+    lazy val result     = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-      "return 200" in {
-        status(result) shouldBe Status.OK
-      }
-
-      "return the correct view" in {
-        contentAsString(result) shouldBe viewAsString(period = ReturnPeriod.ANNUALLY.toString)
-      }
+    "return 200" in {
+      status(result) shouldBe Status.OK
     }
 
-    "the question has previously been answered" must {
-      val validData = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options.head.value), "costOfGoods" -> JsNumber(BigDecimal(1000.00)))
-      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
-      lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+    "return the correct view" in {
+      contentAsString(result) shouldBe viewAsString(period = ReturnPeriod.ANNUALLY.toString)
+    }
+  }
 
-      "return 200" in {
-        status(result) shouldBe Status.OK
-      }
+  "the question has previously been answered" must {
+    val validData = Map(
+      "vatReturnPeriod" -> JsString(vatReturnPeriodForm.options.head.value),
+      "costOfGoods"     -> JsNumber(BigDecimal(1000.00))
+    )
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
+    lazy val result     = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-      "return the correct view" in {
-        contentAsString(result) shouldBe viewAsString(costOfGoodsForm().fill(BigDecimal(1000.00)), ReturnPeriod.ANNUALLY.toString)
-      }
+    "return 200" in {
+      status(result) shouldBe Status.OK
     }
 
-    "show the correct content" must {
-      "show the content for annual" in {
-        val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
-        lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
-        contentAsString(result) should include(costOfGoodsHeading("year"))
-      }
-      "show the content for quarterly" in {
-        val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(1))))
-        lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
-        contentAsString(result) should include(costOfGoodsHeading("quarter"))
-      }
+    "return the correct view" in {
+      contentAsString(result) shouldBe viewAsString(
+        costOfGoodsForm().fill(BigDecimal(1000.00)),
+        ReturnPeriod.ANNUALLY.toString
+      )
     }
+  }
 
-    "valid data is submitted" must {
+  "show the correct content" must {
+    "show the content for annual" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("costOfGoods", "1000.00")).withMethod("POST")
-      val result = controller(getRelevantData).onSubmit()(postRequest)
-
-      "return 303" in {
-        status(result) shouldBe SEE_OTHER
-      }
-      "redirect to the results page" in {
-        redirectLocation(result) shouldBe Some(s"${controllers.routes.ResultController.onPageLoad}")
-      }
+      lazy val result     = controller(getRelevantData).onPageLoad()(fakeRequest)
+      contentAsString(result) should include(costOfGoodsHeading("year"))
     }
-
-    "not entering any data" must {
-      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("costOfGoods", "")).withMethod("POST")
-      val result = controller(getRelevantData).onSubmit()(postRequest)
-
-      "return 400" in {
-        status(result) shouldBe BAD_REQUEST
-      }
-      "fail with the correct error message" in {
-        contentAsString(result) should include(costOfGoodsError("year"))
-      }
+    "show the content for quarterly" in {
+      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(1))))
+      lazy val result     = controller(getRelevantData).onPageLoad()(fakeRequest)
+      contentAsString(result) should include(costOfGoodsHeading("quarter"))
     }
+  }
 
-    "entering a negative number" must {
-      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("costOfGoods", "-1000.00")).withMethod("POST")
-      val result = controller(getRelevantData).onSubmit()(postRequest)
+  "valid data is submitted" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
+    val postRequest     = fakeRequest.withFormUrlEncodedBody(("costOfGoods", "1000.00")).withMethod("POST")
+    val result          = controller(getRelevantData).onSubmit()(postRequest)
 
-      "return 400" in {
-        status(result) shouldBe BAD_REQUEST
-      }
-      "fail with the correct error message" in {
-        contentAsString(result) should include(costOfGoodsNegativeError)
-      }
+    "return 303" in {
+      status(result) shouldBe SEE_OTHER
     }
-
-    "entering a number with more than 2 decimal places" must {
-      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("costOfGoods", "0.001")).withMethod("POST")
-      val result = controller(getRelevantData).onSubmit()(postRequest)
-
-      "return 400" in {
-        status(result) shouldBe BAD_REQUEST
-      }
-      "fail with the correct error message" in {
-        contentAsString(result) should include(costOfGoodsDecimalError)
-      }
+    "redirect to the results page" in {
+      redirectLocation(result) shouldBe Some(s"${controllers.routes.ResultController.onPageLoad}")
     }
+  }
 
-    "entering a number greater than the max limit" must {
-      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("costOfGoods", (maximumCostOfGoods+1).toString)).withMethod("POST")
-      val result = controller(getRelevantData).onSubmit()(postRequest)
+  "not entering any data" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
+    val postRequest     = fakeRequest.withFormUrlEncodedBody(("costOfGoods", "")).withMethod("POST")
+    val result          = controller(getRelevantData).onSubmit()(postRequest)
 
-      "return 400" in {
-        status(result) shouldBe BAD_REQUEST
-      }
-      "fail with the correct error message" in {
-        contentAsString(result) should include(costOfGoodsMaxError)
-      }
+    "return 400" in {
+      status(result) shouldBe BAD_REQUEST
     }
+    "fail with the correct error message" in {
+      contentAsString(result) should include(costOfGoodsError("year"))
+    }
+  }
+
+  "entering a negative number" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
+    val postRequest     = fakeRequest.withFormUrlEncodedBody(("costOfGoods", "-1000.00")).withMethod("POST")
+    val result          = controller(getRelevantData).onSubmit()(postRequest)
+
+    "return 400" in {
+      status(result) shouldBe BAD_REQUEST
+    }
+    "fail with the correct error message" in {
+      contentAsString(result) should include(costOfGoodsNegativeError)
+    }
+  }
+
+  "entering a number with more than 2 decimal places" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
+    val postRequest     = fakeRequest.withFormUrlEncodedBody(("costOfGoods", "0.001")).withMethod("POST")
+    val result          = controller(getRelevantData).onSubmit()(postRequest)
+
+    "return 400" in {
+      status(result) shouldBe BAD_REQUEST
+    }
+    "fail with the correct error message" in {
+      contentAsString(result) should include(costOfGoodsDecimalError)
+    }
+  }
+
+  "entering a number greater than the max limit" must {
+    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, previousAnswer(0))))
+    val postRequest =
+      fakeRequest.withFormUrlEncodedBody(("costOfGoods", (maximumCostOfGoods + 1).toString)).withMethod("POST")
+    val result = controller(getRelevantData).onSubmit()(postRequest)
+
+    "return 400" in {
+      status(result) shouldBe BAD_REQUEST
+    }
+    "fail with the correct error message" in {
+      contentAsString(result) should include(costOfGoodsMaxError)
+    }
+  }
 
   "loading costOfGoods when no return period is given" must {
     lazy val result = controller().onPageLoad()(fakeRequest)
@@ -172,4 +180,5 @@ class CostOfGoodsControllerSpec extends ControllerSpecBase with CostOfGoodsViewM
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
+
 }

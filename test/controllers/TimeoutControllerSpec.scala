@@ -27,21 +27,23 @@ class TimeoutControllerSpec extends ControllerSpecBase {
 
   class Setup {
     lazy val timeoutView = fakeApplication().injector.instanceOf[timeout]
-    val controller = new TimeoutController(mcc, timeoutView)
+    val controller       = new TimeoutController(mcc, timeoutView)
   }
 
   "Calling the .timeout action" must {
 
     "return 200" in new Setup {
       lazy val request = FakeRequest("GET", "/")
-      lazy val result = controller.timeout(request)
+      lazy val result  = controller.timeout(request)
       status(result) shouldBe Status.OK
     }
 
     "navigate to the timeout page" in new Setup {
       lazy val request = FakeRequest("GET", "/")
-      lazy val result = controller.timeout(request)
-      contentAsString(result) should include(messages(s"""${messages("timeout.title")} - ${messages("service.name")} - GOV.UK"""))
+      lazy val result  = controller.timeout(request)
+      contentAsString(result) should include(
+        messages(s"""${messages("timeout.title")} - ${messages("service.name")} - GOV.UK""")
+      )
     }
   }
 

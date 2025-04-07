@@ -60,4 +60,5 @@ class ValidationSpec extends PlaySpec with MockitoSugar with Validation {
       result mustEqual Invalid("error.min")
     }
   }
+
 }

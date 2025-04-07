@@ -25,11 +25,9 @@ import views.html.fallback
 import scala.concurrent.Future
 
 @Singleton
-class TimeoutController @Inject()(mcc: MessagesControllerComponents,
-                                  timeoutView: fallback.timeout) extends FrontendController(mcc) with I18nSupport {
+class TimeoutController @Inject() (mcc: MessagesControllerComponents, timeoutView: fallback.timeout)
+    extends FrontendController(mcc)
+    with I18nSupport {
 
-
-  val timeout: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(timeoutView()))
-  }
+  val timeout: Action[AnyContent] = Action.async(implicit request => Future.successful(Ok(timeoutView())))
 }

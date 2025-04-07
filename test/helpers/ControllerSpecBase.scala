@@ -32,7 +32,7 @@ trait ControllerSpecBase extends SpecBase {
 
   val statutoryType = "maternity"
 
-  def buildFakeRequest(x: Map[String, JsString]) = {
+  def buildFakeRequest(x: Map[String, JsString]) =
     new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, x)))
-  }
+
 }

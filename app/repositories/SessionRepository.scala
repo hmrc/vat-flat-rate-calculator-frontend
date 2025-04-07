@@ -32,37 +32,41 @@ import java.time.Instant
 import scala.concurrent.duration.SECONDS
 import scala.concurrent.{ExecutionContext, Future}
 
-case class DatedCacheMap(id: String,
-                         data: Map[String, JsValue],
-                         lastUpdated: Instant = Instant.now())
+case class DatedCacheMap(id: String, data: Map[String, JsValue], lastUpdated: Instant = Instant.now())
 
 object DatedCacheMap {
-  implicit val dateFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+  implicit val dateFormat: Format[Instant]     = MongoJavatimeFormats.instantFormat
   implicit val formats: OFormat[DatedCacheMap] = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 }
 
 class MongoRepository(config: ApplicationConfig, mongo: MongoComponent)(implicit ec: ExecutionContext)
-  extends PlayMongoRepository[DatedCacheMap](
-    collectionName = config.appName,
-    mongoComponent = mongo,
-    domainFormat = DatedCacheMap.formats,
-    indexes = Seq(
-      IndexModel(ascending("lastUpdated"), IndexOptions()
-        .name("userAnswersExpiry")
-        .expireAfter(config.cacheTtl.toLong, SECONDS))
-    ),
-    extraCodecs = Seq(Codecs.playFormatCodec(CacheMap.formats))
-  ) {
+    extends PlayMongoRepository[DatedCacheMap](
+      collectionName = config.appName,
+      mongoComponent = mongo,
+      domainFormat = DatedCacheMap.formats,
+      indexes = Seq(
+        IndexModel(
+          ascending("lastUpdated"),
+          IndexOptions()
+            .name("userAnswersExpiry")
+            .expireAfter(config.cacheTtl.toLong, SECONDS)
+        )
+      ),
+      extraCodecs = Seq(Codecs.playFormatCodec(CacheMap.formats))
+    ) {
 
   def upsert(cm: CacheMap): Future[Boolean] = {
     val dcm = DatedCacheMap(cm)
-    collection.replaceOne(
-      filter      = equal("id", dcm.id),
-      replacement = dcm,
-      options     = ReplaceOptions().upsert(true)
-    ).toFuture().map(_.wasAcknowledged())
+    collection
+      .replaceOne(
+        filter = equal("id", dcm.id),
+        replacement = dcm,
+        options = ReplaceOptions().upsert(true)
+      )
+      .toFuture()
+      .map(_.wasAcknowledged())
   }
 
   def get(id: String): Future[Option[CacheMap]] =
@@ -71,10 +75,11 @@ class MongoRepository(config: ApplicationConfig, mongo: MongoComponent)(implicit
 }
 
 @Singleton
-class SessionRepository @Inject()(config: ApplicationConfig, mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
+class SessionRepository @Inject() (config: ApplicationConfig, mongoComponent: MongoComponent)(
+    implicit ec: ExecutionContext
+) {
 
   private lazy val sessionRepository = new MongoRepository(config, mongoComponent)
 
   def apply(): MongoRepository = sessionRepository
 }
-

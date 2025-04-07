@@ -35,41 +35,43 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
 
   def createView(form: Form[_] = turnoverForm(), period: String) = view(form, period)(FakeRequest(), messages)
 
-  def createErrorView(form: Form[_] = turnoverForm(), period: String) = view(form.withError(FormError("turnover", turnoverError("year"))), period)(FakeRequest(), messages)
+  def createErrorView(form: Form[_] = turnoverForm(), period: String) =
+    view(form.withError(FormError("turnover", turnoverError("year"))), period)(FakeRequest(), messages)
 
-    "the TurnoverView" must {
+  "the TurnoverView" must {
 
-      val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
+    val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
 
-      "have the correct title" in {
-        doc.title() shouldBe turnoverTitle("year")
-      }
-
-      "have the correct heading" in {
-        doc.select("h1").text() shouldBe  turnoverHeading("year")
-      }
-
-      "have some introductory text" in {
-        doc.getElementsByClass("govuk-hint").text shouldBe turnoverIntro
-      }
-
-      "have a £ symbol present" in {
-        doc.getElementsByClass("govuk-input__prefix").text shouldBe "£"
-      }
-
-      "display the correct error" in {
-        val errorDoc = Jsoup.parse(createErrorView(turnoverForm(), "annually").toString())
-        errorDoc.select("#turnover-error").text.contains(turnoverError("year"))
-      }
-
-      "have a continue button" in{
-        doc.getElementsByClass("govuk-button").text shouldBe turnoverContinue
-        doc.getElementsByClass("govuk-button").attr("type") shouldBe "submit"
-      }
-
-      "have a valid form" in{
-        doc.select("form").attr("method") shouldBe "POST"
-        doc.select("form").attr("action") shouldBe controllers.routes.TurnoverController.onSubmit.url
-      }
+    "have the correct title" in {
+      doc.title() shouldBe turnoverTitle("year")
     }
+
+    "have the correct heading" in {
+      doc.select("h1").text() shouldBe turnoverHeading("year")
+    }
+
+    "have some introductory text" in {
+      doc.getElementsByClass("govuk-hint").text shouldBe turnoverIntro
+    }
+
+    "have a £ symbol present" in {
+      doc.getElementsByClass("govuk-input__prefix").text shouldBe "£"
+    }
+
+    "display the correct error" in {
+      val errorDoc = Jsoup.parse(createErrorView(turnoverForm(), "annually").toString())
+      errorDoc.select("#turnover-error").text.contains(turnoverError("year"))
+    }
+
+    "have a continue button" in {
+      doc.getElementsByClass("govuk-button").text shouldBe turnoverContinue
+      doc.getElementsByClass("govuk-button").attr("type") shouldBe "submit"
+    }
+
+    "have a valid form" in {
+      doc.select("form").attr("method") shouldBe "POST"
+      doc.select("form").attr("action") shouldBe controllers.routes.TurnoverController.onSubmit.url
+    }
+  }
+
 }

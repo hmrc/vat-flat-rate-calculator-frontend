@@ -18,7 +18,7 @@ package common
 
 object Constants {
 
-  final val maximumTurnover : BigDecimal     = BigDecimal(9999999999.99)
-  final val maximumCostOfGoods : BigDecimal  = BigDecimal(9999999999.99)
+  final val maximumTurnover: BigDecimal    = BigDecimal(9999999999.99)
+  final val maximumCostOfGoods: BigDecimal = BigDecimal(9999999999.99)
 
 }

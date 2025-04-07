@@ -22,9 +22,8 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-class FeedbackSurveyController @Inject() (applicationConfig: ApplicationConfig,
-                                          mcc: MessagesControllerComponents) extends FrontendController(mcc) {
+class FeedbackSurveyController @Inject() (applicationConfig: ApplicationConfig, mcc: MessagesControllerComponents)
+    extends FrontendController(mcc) {
 
-  def redirectFeedbackSurvey : Action[AnyContent] = Action { Redirect(applicationConfig.feedbackSurvey)
-  }
+  def redirectFeedbackSurvey: Action[AnyContent] = Action(Redirect(applicationConfig.feedbackSurvey))
 }

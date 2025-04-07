@@ -33,8 +33,9 @@ class FeedbackSurveyControllerSpec extends ControllerSpecBase {
   "Feedback survey controller" must {
     "Redirect to feedback survey page when survey link is clicked" in new Setup {
       lazy val request = FakeRequest("GET", "/")
-      lazy val result = controller.redirectFeedbackSurvey(request)
+      lazy val result  = controller.redirectFeedbackSurvey(request)
       status(result) shouldBe Status.SEE_OTHER
     }
   }
+
 }

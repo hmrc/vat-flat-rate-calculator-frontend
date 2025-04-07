@@ -25,7 +25,8 @@ class MapFormatsSpec extends AnyWordSpec with Matchers with MapFormats {
   "mapWrites" must {
     "write correctly formatted JSON" in {
       val testMap: Map[Int, Int] = Map(
-        1 -> 2, 3 -> 28
+        1 -> 2,
+        3 -> 28
       )
       val expectedData = Json.obj(
         "1" -> JsNumber(2),
@@ -43,7 +44,8 @@ class MapFormatsSpec extends AnyWordSpec with Matchers with MapFormats {
         "3" -> JsNumber(28)
       )
       val objResult: Map[Int, Int] = Map(
-        1 -> 2, 3 -> 28
+        1 -> 2,
+        3 -> 28
       )
 
       Json.fromJson[Map[Int, Int]](testJson).get mustEqual objResult
@@ -57,4 +59,5 @@ class MapFormatsSpec extends AnyWordSpec with Matchers with MapFormats {
       Json.fromJson[Map[Int, Int]](testJson) mustEqual JsError("Failed to convert map keys into ints")
     }
   }
+
 }

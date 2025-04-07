@@ -21,9 +21,11 @@ object Links {
   final val baseGovUrl    = "http://www.gov.uk/"
   final val taxServiceUrl = "https://www.tax.service.gov.uk/"
   // $COVERAGE-ON$
-  val flatRateScheme: String      = baseGovUrl + "vat-flat-rate-scheme/join-or-leave-the-scheme"
-  val vatRegistration: String     = baseGovUrl + "vat-registration/cancel-registration"
-  val howMuchYouPay: String       = baseGovUrl + "vat-flat-rate-scheme/how-much-you-pay"
-  val capitalExpenditureGoods: String = baseGovUrl + "government/publications/vat-notice-733-flat-rate-scheme-for-small-businesses/vat-notice-733-flat-rate-scheme-for-small-businesses#section4"
+  val flatRateScheme: String  = baseGovUrl + "vat-flat-rate-scheme/join-or-leave-the-scheme"
+  val vatRegistration: String = baseGovUrl + "vat-registration/cancel-registration"
+  val howMuchYouPay: String   = baseGovUrl + "vat-flat-rate-scheme/how-much-you-pay"
+
+  val capitalExpenditureGoods: String =
+    baseGovUrl + "government/publications/vat-notice-733-flat-rate-scheme-for-small-businesses/vat-notice-733-flat-rate-scheme-for-small-businesses#section4"
 
 }

@@ -30,8 +30,8 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 
 val appName = "vat-flat-rate-calculator-frontend"
 
-lazy val plugins : Seq[Plugins] = Seq.empty
-lazy val playSettings : Seq[Setting[?]] = Seq.empty
+lazy val plugins: Seq[Plugins]         = Seq.empty
+lazy val playSettings: Seq[Setting[?]] = Seq.empty
 
 scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s"
 
@@ -41,7 +41,7 @@ lazy val scoverageSettings = {
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;" +
       "filters.*;.handlers.*;components.*;.*BuildInfo.*;.*FrontendAuditConnector.*;.*Routes.*;views.html.*;config.*;.*EnumUtils",
     ScoverageKeys.coverageFailOnMinimum := false,
-    ScoverageKeys.coverageHighlighting := true
+    ScoverageKeys.coverageHighlighting  := true
   )
 }
 
@@ -51,22 +51,23 @@ lazy val microservice: Project = Project(appName, file("."))
       play.sbt.PlayScala,
       SbtAutoBuildPlugin,
       SbtDistributablesPlugin,
-      SbtGitVersioning,
-    ) ++ plugins : _*)
+      SbtGitVersioning
+    ) ++ plugins: _*
+  )
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(playSettings *)
   .settings(scoverageSettings *)
   .settings(scalaSettings *)
   .settings(defaultSettings() *)
-  .settings(majorVersion := 0 )
+  .settings(majorVersion := 0)
   .settings(
     libraryDependencies ++= AppDependencies.all,
-    retrieveManaged := true,
+    retrieveManaged                 := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-    routesGenerator := InjectedRoutesGenerator,
-    Assets / pipelineStages := Seq(digest),
-    scalaVersion := "2.13.16",
-    PlayKeys.playDefaultPort := 9080
+    routesGenerator                 := InjectedRoutesGenerator,
+    Assets / pipelineStages         := Seq(digest),
+    scalaVersion                    := "2.13.16",
+    PlayKeys.playDefaultPort        := 9080
   )
   .settings(
     TwirlKeys.templateImports ++= Seq(
