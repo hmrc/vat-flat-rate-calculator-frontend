@@ -56,9 +56,9 @@ class VatReturnPeriodControllerSpec extends PlaySpec with ControllerSpecBase {
     }
 
     "the question has previously been answered" must {
-      val validData = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options.head.value))
+      val validData       = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options.head.value))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
-      lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      lazy val result     = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       "return 200" in {
         status(result) shouldBe Status.OK
@@ -70,7 +70,9 @@ class VatReturnPeriodControllerSpec extends PlaySpec with ControllerSpecBase {
     }
 
     "valid data is submitted" must {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("vatReturnPeriod", vatReturnPeriodForm.options.head.value)).withMethod("POST")
+      val postRequest = fakeRequest
+        .withFormUrlEncodedBody(("vatReturnPeriod", vatReturnPeriodForm.options.head.value))
+        .withMethod("POST")
       val result = controller().onSubmit()(postRequest)
 
       "return 303" in {
@@ -83,7 +85,7 @@ class VatReturnPeriodControllerSpec extends PlaySpec with ControllerSpecBase {
 
     "not entering any data" must {
       val postRequest = fakeRequest.withMethod("POST")
-      val result = controller().onSubmit()(postRequest)
+      val result      = controller().onSubmit()(postRequest)
 
       "return 400" in {
         status(result) shouldBe BAD_REQUEST
@@ -94,4 +96,5 @@ class VatReturnPeriodControllerSpec extends PlaySpec with ControllerSpecBase {
     }
 
   }
+
 }

@@ -24,20 +24,20 @@ import utils.{CacheMap, UserAnswers}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap])
-                             (implicit app: Application) extends DataRetrievalAction {
+class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap])(implicit app: Application)
+    extends DataRetrievalAction {
 
   override def executionContext: ExecutionContext = global
-  override def parser: BodyParser[AnyContent]     = app.injector.instanceOf[MessagesControllerComponents].parsers.defaultBodyParser
+
+  override def parser: BodyParser[AnyContent] =
+    app.injector.instanceOf[MessagesControllerComponents].parsers.defaultBodyParser
 
   override protected def transform[A](request: Request[A]): Future[OptionalDataRequest[A]] = {
-    val userAnswers: Option[UserAnswers] = cacheMapToReturn map {
-      new UserAnswers(_) {
-      }
+    val userAnswers: Option[UserAnswers] = cacheMapToReturn.map {
+      new UserAnswers(_) {}
     }
 
     Future(OptionalDataRequest(request, "id", userAnswers))
   }
+
 }
-
-

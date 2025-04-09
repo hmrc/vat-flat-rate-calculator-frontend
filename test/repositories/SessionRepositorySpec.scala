@@ -28,15 +28,16 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
 
-class SessionRepositorySpec extends SpecBase
-  with FutureAwaits
-  with DefaultAwaitTimeout
-  with PlayMongoRepositorySupport[DatedCacheMap]
-  with CleanMongoCollectionSupport {
+class SessionRepositorySpec
+    extends SpecBase
+    with FutureAwaits
+    with DefaultAwaitTimeout
+    with PlayMongoRepositorySupport[DatedCacheMap]
+    with CleanMongoCollectionSupport {
 
   implicit val ec: ExecutionContext = global
 
-  protected def checkTtlIndex: Boolean = true
+  protected def checkTtlIndex: Boolean                 = true
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(timeout = 30.seconds, interval = 100.millis)
 
   lazy val repository: MongoRepository = new MongoRepository(
@@ -46,28 +47,29 @@ class SessionRepositorySpec extends SpecBase
 
   lazy val mockDataCacheConnector = app.injector.instanceOf[DataCacheConnectorImpl]
 
-  val userId = "user-id"
+  val userId        = "user-id"
   val anotherUserId = "another-user-id"
 
   lazy val costOfGoodsRecord: CacheMap = CacheMap(userId, Map("costOfGoods" -> Json.toJson("")))
-  lazy val turnoverRecord: CacheMap = CacheMap(anotherUserId, Map("turnover" -> Json.toJson("")))
+  lazy val turnoverRecord: CacheMap    = CacheMap(anotherUserId, Map("turnover" -> Json.toJson("")))
 
   "SessionRepository" must {
-      "return None when the repository is empty" in {
-        await(repository.get(anotherUserId)) mustBe None
-      }
-      "populate the repository correctly" in {
-        await(repository.upsert(costOfGoodsRecord)) mustBe true
-        await(repository.get(userId)) mustBe Some(costOfGoodsRecord)
-
-        await(repository.get(anotherUserId)) mustBe None
-      }
-      "populate the repository correctly with multiple records" in {
-        await(repository.upsert(costOfGoodsRecord)) mustBe true
-        await(repository.upsert(turnoverRecord)) mustBe true
-
-        await(repository.get(userId)) mustBe Some(costOfGoodsRecord)
-        await(repository.get(anotherUserId)) mustBe Some(turnoverRecord)
-      }
+    "return None when the repository is empty" in {
+      await(repository.get(anotherUserId)) mustBe None
     }
+    "populate the repository correctly" in {
+      await(repository.upsert(costOfGoodsRecord)) mustBe true
+      await(repository.get(userId)) mustBe Some(costOfGoodsRecord)
+
+      await(repository.get(anotherUserId)) mustBe None
+    }
+    "populate the repository correctly with multiple records" in {
+      await(repository.upsert(costOfGoodsRecord)) mustBe true
+      await(repository.upsert(turnoverRecord)) mustBe true
+
+      await(repository.get(userId)) mustBe Some(costOfGoodsRecord)
+      await(repository.get(anotherUserId)) mustBe Some(turnoverRecord)
+    }
+  }
+
 }

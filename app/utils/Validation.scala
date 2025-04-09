@@ -22,40 +22,42 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 
 trait Validation {
 
-  def produceError(key: String, error: String, args: Any*): Left[Seq[FormError], Nothing] = Left(Seq(FormError(key, error, args)))
+  def produceError(key: String, error: String, args: Any*): Left[Seq[FormError], Nothing] = Left(
+    Seq(FormError(key, error, args))
+  )
 
   val decimalRegex = """^[+-]?[0-9]{1,11}(?:\.[0-9]{1,2})?$"""
 
-  protected def minimumValue[A](minimum: A, errorKey: String, errorArgs: Any*)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
-        import ev._
-        if (input >= minimum) {
-          Valid
-        } else {
-          Invalid(errorKey, errorArgs:_*)
-        }
+  protected def minimumValue[A](minimum: A, errorKey: String, errorArgs: Any*)(
+      implicit ev: Ordering[A]
+  ): Constraint[A] =
+    Constraint { input =>
+      import ev._
+      if (input >= minimum) {
+        Valid
+      } else {
+        Invalid(errorKey, errorArgs: _*)
+      }
     }
 
-  protected def maximumValue[A](maximum: A, errorKey: String, errorArgs: Any*)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
-        import ev._
-        if (input < maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, errorArgs:_*)
-        }
+  protected def maximumValue[A](maximum: A, errorKey: String, errorArgs: Any*)(
+      implicit ev: Ordering[A]
+  ): Constraint[A] =
+    Constraint { input =>
+      import ev._
+      if (input < maximum) {
+        Valid
+      } else {
+        Invalid(errorKey, errorArgs: _*)
+      }
     }
 
-  def verifyDecimalPlaces(input: String) = {
+  def verifyDecimalPlaces(input: String) =
     if (input.contains(".")) {
       val decimalPlace = input.length - input.indexOf(".") - 1
       if (decimalPlace <= 2) true
       else false
-    }
-    else true
-  }
+    } else true
 
   def optionIsValid(value: String) = options.exists(o => o.value == value)
 

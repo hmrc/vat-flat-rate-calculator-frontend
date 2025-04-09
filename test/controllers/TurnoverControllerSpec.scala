@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessages {
 
-  val view = application.injector.instanceOf[turnover]
+  val view               = application.injector.instanceOf[turnover]
   val technicalErrorView = application.injector.instanceOf[technicalError]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
@@ -48,7 +48,7 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
 
   "the question has previously not been answered" must {
     val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
-    lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+    lazy val result     = controller(getRelevantData).onPageLoad()(fakeRequest)
 
     "return 200" in {
       status(result) shouldBe Status.OK
@@ -60,7 +60,17 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
   }
 
   "the question has previously been answered" must {
-    val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options(0).value), "turnover" -> JsNumber(BigDecimal(1000.00))))))
+    val getRelevantData = new FakeDataRetrievalAction(
+      Some(
+        CacheMap(
+          cacheMapId,
+          Map(
+            "vatReturnPeriod" -> JsString(vatReturnPeriodForm.options(0).value),
+            "turnover"        -> JsNumber(BigDecimal(1000.00))
+          )
+        )
+      )
+    )
     lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
     "return 200" in {
@@ -68,27 +78,30 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
     }
 
     "return the correct view" in {
-      contentAsString(result) shouldBe viewAsString(turnoverForm().fill(BigDecimal(1000.00)), ReturnPeriod.ANNUALLY.toString)
+      contentAsString(result) shouldBe viewAsString(
+        turnoverForm().fill(BigDecimal(1000.00)),
+        ReturnPeriod.ANNUALLY.toString
+      )
     }
   }
 
   "show the correct content" must {
     "show the content for annual" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer(0))))
-      lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      lazy val result     = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) should include(turnoverHeading("year"))
     }
     "show the content for quarterly" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer(1))))
-      lazy val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      lazy val result     = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) should include(turnoverHeading("quarter"))
     }
   }
 
   "valid data is submitted" must {
     val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
-    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "1000.00")).withMethod("POST")
-    val result = controller(getRelevantData).onSubmit()(postRequest)
+    val postRequest     = fakeRequest.withFormUrlEncodedBody(("turnover", "1000.00")).withMethod("POST")
+    val result          = controller(getRelevantData).onSubmit()(postRequest)
 
     "return 303" in {
       status(result) shouldBe SEE_OTHER
@@ -100,8 +113,8 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
 
   "not entering any data" must {
     val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
-    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "")).withMethod("POST")
-    val result = controller(getRelevantData).onSubmit()(postRequest)
+    val postRequest     = fakeRequest.withFormUrlEncodedBody(("turnover", "")).withMethod("POST")
+    val result          = controller(getRelevantData).onSubmit()(postRequest)
 
     "return 400" in {
       status(result) shouldBe BAD_REQUEST
@@ -113,8 +126,8 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
 
   "entering a negative number" must {
     val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
-    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "-1000.00")).withMethod("POST")
-    val result = controller(getRelevantData).onSubmit()(postRequest)
+    val postRequest     = fakeRequest.withFormUrlEncodedBody(("turnover", "-1000.00")).withMethod("POST")
+    val result          = controller(getRelevantData).onSubmit()(postRequest)
 
     "return 400" in {
       status(result) shouldBe BAD_REQUEST
@@ -126,8 +139,8 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
 
   "entering a number with more than 2 decimal places" must {
     val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer())))
-    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", "0.001")).withMethod("POST")
-    val result = controller(getRelevantData).onSubmit()(postRequest)
+    val postRequest     = fakeRequest.withFormUrlEncodedBody(("turnover", "0.001")).withMethod("POST")
+    val result          = controller(getRelevantData).onSubmit()(postRequest)
 
     "return 400" in {
       status(result) shouldBe BAD_REQUEST
@@ -139,7 +152,8 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
 
   "entering a number greater than the max limit" must {
     val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, returnPeriodAnswer(0))))
-    val postRequest = fakeRequest.withFormUrlEncodedBody(("turnover", (maximumTurnover+1).toString)).withMethod("POST")
+    val postRequest =
+      fakeRequest.withFormUrlEncodedBody(("turnover", (maximumTurnover + 1).toString)).withMethod("POST")
     val result = controller(getRelevantData).onSubmit()(postRequest)
 
     "return 400" in {
@@ -170,4 +184,5 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
+
 }

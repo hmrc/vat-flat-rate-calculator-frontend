@@ -37,8 +37,11 @@ class ResultControllerSpec extends ControllerSpecBase {
     view(resultCode, showUserResearchPanel)(fakeRequest, messages).toString
 
   def createAnswers(index: Int, turnover: Double, costofGoods: Double) =
-    Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options(index).value), "turnover" -> JsNumber(BigDecimal(turnover)), "costOfGoods" -> JsNumber(BigDecimal(costofGoods)))
-
+    Map(
+      "vatReturnPeriod" -> JsString(vatReturnPeriodForm.options(index).value),
+      "turnover"        -> JsNumber(BigDecimal(turnover)),
+      "costOfGoods"     -> JsNumber(BigDecimal(costofGoods))
+    )
 
   "the previous question have not been answered" must {
     lazy val result = controller().onPageLoad()(fakeRequest)
@@ -54,47 +57,50 @@ class ResultControllerSpec extends ControllerSpecBase {
 
   "the previous questions have been answered" must {
     val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, createAnswers(0, 1000.00, 1000.00))))
-    val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+    val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
 
     "return 200" in {
       status(result) shouldBe OK
     }
 
     "return the results view" in {
-      contentAsString(result) should include(messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK"""))
+      contentAsString(result) should include(
+        messages(s"""${messages("result.title")} - ${messages("service.name")} - GOV.UK""")
+      )
     }
   }
 
   "show the correct results" must {
     "show result code 1" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, createAnswers(0, 2000, 500))))
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) shouldBe viewAsString(1, false)
     }
     "show result code 2" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, createAnswers(0, 50001, 1000))))
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) shouldBe viewAsString(2, false)
     }
     "show result code 3" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, createAnswers(0, 5000, 1000))))
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) shouldBe viewAsString(3, false)
     }
     "show result code 4" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, createAnswers(1, 2000, 100))))
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) shouldBe viewAsString(4, false)
     }
     "show result code 5" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, createAnswers(1, 12501, 250))))
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) shouldBe viewAsString(5, false)
     }
     "show result code 6" in {
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, createAnswers(1, 12500, 250))))
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) shouldBe viewAsString(6, false)
     }
   }
+
 }

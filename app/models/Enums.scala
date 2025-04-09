@@ -19,14 +19,12 @@ package models
 import play.api.libs.json.{Format, Reads, Writes}
 import utils.EnumUtils
 
-class Enums {
-
-}
+class Enums {}
 
 object ReturnPeriod extends Enumeration {
   type ReturnPeriod = Value
   val ANNUALLY = Value("annually")
-  val MONTHLY = Value("quarterly")
+  val MONTHLY  = Value("quarterly")
 
   val enumReads: Reads[ReturnPeriod] = EnumUtils.enumReads(ReturnPeriod)
 

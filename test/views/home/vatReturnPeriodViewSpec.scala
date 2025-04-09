@@ -35,18 +35,18 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
 
   def createView(form: Form[_] = vatReturnPeriodForm()) = view(form)(FakeRequest(), messages)
 
-  def createErrorView(form: Form[_] = vatReturnPeriodForm()) = view(form.withError(FormError("vatReturnPeriod", vatReturnPeriodError)))(FakeRequest(), messages)
-
+  def createErrorView(form: Form[_] = vatReturnPeriodForm()) =
+    view(form.withError(FormError("vatReturnPeriod", vatReturnPeriodError)))(FakeRequest(), messages)
 
   "the VatReturnPeriod" must {
-      val doc = Jsoup.parse(createView(vatReturnPeriodForm()).toString())
+    val doc = Jsoup.parse(createView(vatReturnPeriodForm()).toString())
 
     "have the correct title" in {
       doc.title() shouldBe vatReturnPeriodTitle
     }
 
     "have the correct heading" in {
-      doc.getElementsByClass("govuk-heading-l").text() shouldBe  vatReturnPeriodHeading
+      doc.getElementsByClass("govuk-heading-l").text() shouldBe vatReturnPeriodHeading
     }
 
     "have some introductory text" in {
@@ -54,7 +54,9 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
     }
 
     "have a paragraph text" in {
-      doc.select("#main-content > div > div > div.form-group.govuk-body > p:nth-child(2)").text shouldBe vatReturnPeriodPara
+      doc
+        .select("#main-content > div > div > div.form-group.govuk-body > p:nth-child(2)")
+        .text shouldBe vatReturnPeriodPara
     }
 
     "have a 'annually' label on radio button" in {
@@ -70,12 +72,12 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
       errorDoc.select("#vatReturnPeriod-error").text.contains(vatReturnPeriodError)
     }
 
-    "have a continue button" in{
+    "have a continue button" in {
       doc.select("button").text shouldBe vatReturnPeriodContinue
       doc.select("button").attr("type") shouldBe "submit"
     }
 
-    "have a valid form" in{
+    "have a valid form" in {
       doc.select("form").attr("method") shouldBe "POST"
       doc.select("form").attr("action") shouldBe controllers.routes.VatReturnPeriodController.onSubmit.url
     }

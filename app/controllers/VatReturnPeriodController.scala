@@ -32,30 +32,34 @@ import views.html.{home => views}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class VatReturnPeriodController @Inject()(mcc: MessagesControllerComponents,
-                                          dataCacheConnector: DataCacheConnector,
-                                          getData: DataRetrievalAction,
-                                          vatReturnPeriodView: views.vatReturnPeriod)(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with Logging {
+class VatReturnPeriodController @Inject() (
+    mcc: MessagesControllerComponents,
+    dataCacheConnector: DataCacheConnector,
+    getData: DataRetrievalAction,
+    vatReturnPeriodView: views.vatReturnPeriod
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData {
-    implicit request =>
-      val preparedForm = request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-        case None => vatReturnPeriodForm()
-        case Some(value) =>  vatReturnPeriodForm().fill(value)
-      }
-      Ok(vatReturnPeriodView(preparedForm))
+  def onPageLoad: Action[AnyContent] = getData { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+      case None        => vatReturnPeriodForm()
+      case Some(value) => vatReturnPeriodForm().fill(value)
+    }
+    Ok(vatReturnPeriodView(preparedForm))
   }
 
-  def onSubmit: Action[AnyContent] = getData.async {
-    implicit request =>
-      vatReturnPeriodForm().bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(vatReturnPeriodView(formWithErrors)))
-          },
+  def onSubmit: Action[AnyContent] = getData.async { implicit request =>
+    vatReturnPeriodForm()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(vatReturnPeriodView(formWithErrors))),
         value =>
-          dataCacheConnector.save[ReturnPeriod.Value](request.sessionId, "vatReturnPeriod", value).map(cacheMap =>
-            Redirect(controllers.routes.TurnoverController.onPageLoad))
+          dataCacheConnector
+            .save[ReturnPeriod.Value](request.sessionId, "vatReturnPeriod", value)
+            .map(cacheMap => Redirect(controllers.routes.TurnoverController.onPageLoad))
       )
   }
+
 }

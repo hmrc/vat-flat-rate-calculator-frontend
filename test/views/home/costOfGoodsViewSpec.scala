@@ -27,7 +27,6 @@ import forms.costOfGoodsForm
 import play.api.data.{Form, FormError}
 import play.api.i18n.{Messages, MessagesApi}
 
-
 class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfGoodsViewMessages {
 
   val view = app.injector.instanceOf[costOfGoods]
@@ -35,17 +34,18 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
   implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   def createView(form: Form[_] = costOfGoodsForm(), period: String) = view(form, period)(FakeRequest(), messages)
-  def createErrorView(form: Form[_] = costOfGoodsForm(), period: String) = view(form.withError(FormError("costOfGoods", costOfGoodsError("year"))), period)(FakeRequest(), messages)
 
+  def createErrorView(form: Form[_] = costOfGoodsForm(), period: String) =
+    view(form.withError(FormError("costOfGoods", costOfGoodsError("year"))), period)(FakeRequest(), messages)
 
   "the CostOfGoodsView" must {
-      val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
+    val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
 
     "have the correct title" in {
       doc.title() shouldBe costOfGoodsTitle("year")
     }
     "have the correct heading" in {
-      doc.select("h1").text() shouldBe  costOfGoodsHeading("year")
+      doc.select("h1").text() shouldBe costOfGoodsHeading("year")
     }
 
     "have some introductory text" in {
@@ -74,7 +74,9 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
     }
 
     "have a £ symbol present" in {
-      doc.select("#main-content > div > div > form > div.govuk-form-group > div.govuk-input__wrapper > div").text shouldBe "£"
+      doc
+        .select("#main-content > div > div > form > div.govuk-form-group > div.govuk-input__wrapper > div")
+        .text shouldBe "£"
     }
 
     "display the correct error" in {
@@ -82,12 +84,12 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
       errorDoc.select("#costOfGoods-error").text.contains(costOfGoodsError("year"))
     }
 
-    "have a continue button" in{
+    "have a continue button" in {
       doc.select("button").text shouldBe costOfGoodsContinue
       doc.select("button").attr("type") shouldBe "submit"
     }
 
-    "have a valid form" in{
+    "have a valid form" in {
       doc.select("form").attr("method") shouldBe "POST"
       doc.select("form").attr("action") shouldBe controllers.routes.CostOfGoodsController.onSubmit.url
     }

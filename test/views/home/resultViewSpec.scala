@@ -31,7 +31,8 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
 
   implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  def createView(resultCode: Int, showUserResearchPanel: Boolean) = view(resultCode, showUserResearchPanel)(FakeRequest(), messages)
+  def createView(resultCode: Int, showUserResearchPanel: Boolean) =
+    view(resultCode, showUserResearchPanel)(FakeRequest(), messages)
 
   "the ResultView" must {
 
@@ -42,7 +43,7 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
     }
 
     "have the correct heading" in {
-      doc.select("h1").text() shouldBe  ResultHeading
+      doc.select("h1").text() shouldBe ResultHeading
     }
 
     "have some introductory text" in {
@@ -69,16 +70,25 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
       doc.select("p.govuk-body:nth-child(2)").text() shouldBe ResultNextText1
 
       doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(3)").text() shouldBe ResultNextText2
-      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(3) > a").attr("href") shouldBe ResultNextText2Href
+      doc
+        .select("#main-content > div > div > div:nth-child(4) > p:nth-child(3) > a")
+        .attr("href") shouldBe ResultNextText2Href
 
       doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(4)").text() shouldBe ResultNextText3
-      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(4) > a").attr("href") shouldBe ResultNextText3Href
+      doc
+        .select("#main-content > div > div > div:nth-child(4) > p:nth-child(4) > a")
+        .attr("href") shouldBe ResultNextText3Href
 
       doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(5)").text() shouldBe ResultNextText4
-      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(5) > a").attr("href") shouldBe ResultNextText4Href
+      doc
+        .select("#main-content > div > div > div:nth-child(4) > p:nth-child(5) > a")
+        .attr("href") shouldBe ResultNextText4Href
 
       doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(6)").text() shouldBe FeedbackSurveyText
-      doc.select("#main-content > div > div > div:nth-child(4) > p:nth-child(6) > a").attr("href") shouldBe FeedbackSurveyTextHref
+      doc
+        .select("#main-content > div > div > div:nth-child(4) > p:nth-child(6) > a")
+        .attr("href") shouldBe FeedbackSurveyTextHref
     }
   }
+
 }

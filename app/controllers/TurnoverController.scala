@@ -31,43 +31,49 @@ import views.html.{errors, home => views}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TurnoverController @Inject()(mcc: MessagesControllerComponents,
-                                   dataCacheConnector: DataCacheConnector,
-                                   getData: DataRetrievalAction,
-                                   turnoverView: views.turnover,
-                                   technicalErrorView: errors.technicalError)(implicit ec: ExecutionContext) extends FrontendController(mcc)
-  with I18nSupport with Logging {
+class TurnoverController @Inject() (
+    mcc: MessagesControllerComponents,
+    dataCacheConnector: DataCacheConnector,
+    getData: DataRetrievalAction,
+    turnoverView: views.turnover,
+    technicalErrorView: errors.technicalError
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc)
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData {
-    implicit request =>
-      val preparedForm = request.userAnswers.flatMap(x => x.turnover) match {
-        case None => turnoverForm()
-        case Some(value) =>  turnoverForm().fill(value)
-      }
-      request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-        case Some(value) => Ok(turnoverView(preparedForm, value.toString))
-        case None =>
-          logger.warn("[Turnover Controller] No model found in Keystore; redirecting back to landing page")
-          Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
-      }
+  def onPageLoad: Action[AnyContent] = getData { implicit request =>
+    val preparedForm = request.userAnswers.flatMap(x => x.turnover) match {
+      case None        => turnoverForm()
+      case Some(value) => turnoverForm().fill(value)
+    }
+    request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
+      case Some(value) => Ok(turnoverView(preparedForm, value.toString))
+      case None =>
+        logger.warn("[Turnover Controller] No model found in Keystore; redirecting back to landing page")
+        Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
+    }
   }
 
-  def onSubmit: Action[AnyContent] = getData.async {
-    implicit request =>
-      turnoverForm().bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
+  def onSubmit: Action[AnyContent] = getData.async { implicit request =>
+    turnoverForm()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
             case Some(value) => Future.successful(BadRequest(turnoverView(formWithErrors, value.toString)))
             case _ =>
               logger.warn("[Turnover Controller] No model found in Keystore; redirecting back to landing page")
               Future.successful(InternalServerError(technicalErrorView()))
-          }
-        },
+          },
         value =>
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-            case Some(_) => dataCacheConnector.save[BigDecimal](request.sessionId, "turnover", value).map( _ =>
-              Redirect(controllers.routes.CostOfGoodsController.onPageLoad))
-            case _ => logger.warn("[Turnover Controller] No model found in Keystore for return Period; Internal server error")
+            case Some(_) =>
+              dataCacheConnector
+                .save[BigDecimal](request.sessionId, "turnover", value)
+                .map(_ => Redirect(controllers.routes.CostOfGoodsController.onPageLoad))
+            case _ =>
+              logger.warn("[Turnover Controller] No model found in Keystore for return Period; Internal server error")
               Future.successful(InternalServerError(technicalErrorView()))
           }
       )

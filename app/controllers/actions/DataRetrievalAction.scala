@@ -28,11 +28,13 @@ import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalActionImpl @Inject()(val dataCacheConnector: DataCacheConnector,
-                                        val mcc: MessagesControllerComponents,
-                                        val appConfig: ApplicationConfig)
-                                       (implicit val executionContext: ExecutionContext) extends DataRetrievalAction
-  with Logging {
+class DataRetrievalActionImpl @Inject() (
+    val dataCacheConnector: DataCacheConnector,
+    val mcc: MessagesControllerComponents,
+    val appConfig: ApplicationConfig
+)(implicit val executionContext: ExecutionContext)
+    extends DataRetrievalAction
+    with Logging {
 
   override def parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
 
@@ -48,7 +50,10 @@ class DataRetrievalActionImpl @Inject()(val dataCacheConnector: DataCacheConnect
         }
     }
   }
+
 }
 
 @ImplementedBy(classOf[DataRetrievalActionImpl])
-trait DataRetrievalAction extends ActionTransformer[Request, OptionalDataRequest] with ActionBuilder[OptionalDataRequest, AnyContent]
+trait DataRetrievalAction
+    extends ActionTransformer[Request, OptionalDataRequest]
+    with ActionBuilder[OptionalDataRequest, AnyContent]
