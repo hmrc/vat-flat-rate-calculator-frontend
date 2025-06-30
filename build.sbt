@@ -36,6 +36,7 @@ lazy val playSettings: Seq[Setting[?]] = Seq.empty
 
 scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s"
 
+
 lazy val scoverageSettings = {
   import scoverage.ScoverageKeys
   Seq(
@@ -76,5 +77,12 @@ lazy val microservice: Project = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "uk.gov.hmrc.govukfrontend.views.html.components.implicits._"
+    )
+  )
+  .settings(
+    scalacOptions ++= Seq(
+      "-feature",
+      "-Wconf:cat=unused&src=routes/.*:s",
+      "-Wconf:cat=unused&src=views/.*:s"
     )
   )
