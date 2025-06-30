@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import forms.vatReturnPeriodForm
 import helpers.ControllerSpecBase

@@ -53,7 +53,7 @@
         <p>@messages("vatReturnPeriod.para.2")</p>
     </div>
 
-    @formWithCSRF(action = controllers.routes.VatReturnPeriodController.onSubmit, 'autoComplete -> "off") {
+    @formWithCSRF(action = controllers.routes.VatReturnPeriodController.onSubmit, Symbol("autoComplete") -> "off") {
 
         @govukRadios(
             Radios(

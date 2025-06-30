@@ -18,6 +18,7 @@ package utils
 
 import play.api.Logging
 import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
+import scala.language.implicitConversions
 
 object EnumUtils extends Logging {
 
