@@ -34,9 +34,6 @@ val appName = "vat-flat-rate-calculator-frontend"
 lazy val plugins: Seq[Plugins]         = Seq.empty
 lazy val playSettings: Seq[Setting[?]] = Seq.empty
 
-scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s"
-
-
 lazy val scoverageSettings = {
   import scoverage.ScoverageKeys
   Seq(
@@ -51,9 +48,7 @@ lazy val microservice: Project = Project(appName, file("."))
   .enablePlugins(
     Seq(
       play.sbt.PlayScala,
-      SbtAutoBuildPlugin,
-      SbtDistributablesPlugin,
-      SbtGitVersioning
+      SbtDistributablesPlugin
     ) ++ plugins: _*
   )
   .disablePlugins(JUnitXmlReportPlugin)
@@ -64,12 +59,11 @@ lazy val microservice: Project = Project(appName, file("."))
   .settings(majorVersion := 0)
   .settings(
     libraryDependencies ++= AppDependencies.all,
-    retrieveManaged                 := true,
-    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-    routesGenerator                 := InjectedRoutesGenerator,
-    Assets / pipelineStages         := Seq(digest),
-    scalaVersion                    := "2.13.16",
-    PlayKeys.playDefaultPort        := 9080
+    retrieveManaged          := true,
+    routesGenerator          := InjectedRoutesGenerator,
+    Assets / pipelineStages  := Seq(digest),
+    scalaVersion             := "2.13.16",
+    PlayKeys.playDefaultPort := 9080
   )
   .settings(
     TwirlKeys.templateImports ++= Seq(
@@ -83,6 +77,7 @@ lazy val microservice: Project = Project(appName, file("."))
     scalacOptions ++= Seq(
       "-feature",
       "-Wconf:cat=unused&src=routes/.*:s",
-      "-Wconf:cat=unused&src=views/.*:s"
+      "-Wconf:cat=unused&src=views/.*:s",
+      "-Wconf:cat=unused-imports&src=html/.*:s"
     )
   )

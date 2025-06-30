@@ -29,11 +29,11 @@
 
 
 @elements = @{ new FieldElements(field.id, field, null, args.toMap, messages) }
-@parentField = @{args.toMap.get('parentField).asInstanceOf[Option[Field]]}
+@parentField = @{args.toMap.get(Symbol("parentField")).asInstanceOf[Option[Field]]}
 @parentElements = @{parentField.map(pf => new FieldElements(pf.id, pf, null, Map(), messages) )}
 @value = @{ field.value match { case Some(x) => x case None => "" case x => x }}
-@labelAfter = @{ elements.args.get('_labelAfter).getOrElse(false).asInstanceOf[Boolean] }
-@labelHighlight = @{ elements.args.get('_labelHighlight).getOrElse(false).asInstanceOf[Boolean] }
+@labelAfter = @{ elements.args.get(Symbol("_labelAfter")).getOrElse(false).asInstanceOf[Boolean] }
+@labelHighlight = @{ elements.args.get(Symbol("_labelHighlight")).getOrElse(false).asInstanceOf[Boolean] }
 
 @govukInput(Input(
     id = elements.field.name,
@@ -41,11 +41,11 @@
     inputType = "number",
     label = Label(
         isPageHeading = true,
-        classes = if (elements.args.get('_legendClass).isEmpty) "govuk-label--l" else elements.args.get('_legendClass).get.toString,
-        content = Text(elements.args.get('_legend).get.toString)
+        classes = if (elements.args.get(Symbol("_legendClass")).isEmpty) "govuk-label--l" else elements.args.get(Symbol("_legendClass")).get.toString,
+        content = Text(elements.args.get(Symbol("_legend")).get.toString)
     ),
     hint = Some(Hint(
-        content = Text(elements.args.get('_hintText).get.toString)
+        content = Text(elements.args.get(Symbol("_hintText")).get.toString)
     )),
     errorMessage = if (elements.errors.nonEmpty) Some(ErrorMessage(
         content = Text(elements.errors(0).toString)
