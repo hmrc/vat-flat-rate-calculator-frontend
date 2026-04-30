@@ -55,7 +55,7 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
     }
 
     "have a progressive disclosure" in {
-      doc.select("span.summary").text() shouldBe ResultProgressiveDisclosureTitle
+      doc.select("span.govuk-details__summary-text").text() shouldBe ResultProgressiveDisclosureTitle
     }
 
     "have text within progressive disclosure" in {
