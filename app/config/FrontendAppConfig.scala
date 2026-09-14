@@ -38,20 +38,25 @@ class ApplicationConfig @Inject() (val config: ServicesConfig) extends AppConfig
 
   val appName: String = config.getString("appName")
 
-  lazy val contactHost                  = config.getString("contact-frontend.host")
-  lazy val contactFormServiceIdentifier = "VFR"
-  lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  lazy val feedbackSurvey: String = loadConfig("feedback-survey-frontend.url")
-  lazy val timeoutSeconds: Int    = config.getInt("session.timeoutSeconds")
-  lazy val timeoutCountdownSeconds: Int = config.getInt("session.timeoutCountdownSeconds")
-  val cacheTtl: Int                     = config.getInt("mongodb.timeToLiveInSeconds")
+  val contactHost: String                   = config.getString("contact-frontend.host")
+  override val contactFormServiceIdentifier = "VFR"
+
+  override val reportAProblemPartialUrl =
+    s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+
+  override val reportAProblemNonJSUrl =
+    s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  override val feedbackSurvey: String       = loadConfig("feedback-survey-frontend.url")
+  override val timeoutSeconds: Int          = config.getInt("session.timeoutSeconds")
+  override val timeoutCountdownSeconds: Int = config.getInt("session.timeoutCountdownSeconds")
+  val cacheTtl: Int                         = config.getInt("mongodb.timeToLiveInSeconds")
 
   // Business Tax Account
-  lazy val businessTaxAccount: String = config.getString("business-tax-account.url")
+  override val businessTaxAccount: String = config.getString("business-tax-account.url")
 
   // Banner
-  lazy val urBannerLink: String =
+  override val urBannerLink: String =
     "https://signup.take-part-in-research.service.gov.uk/?utm_campaign=VFRS_results&utm_source=Survey_Banner&utm_medium=other&t=HMRC&id=114"
 
 }

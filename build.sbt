@@ -62,7 +62,7 @@ lazy val microservice: Project = Project(appName, file("."))
     retrieveManaged          := true,
     routesGenerator          := InjectedRoutesGenerator,
     Assets / pipelineStages  := Seq(digest),
-    scalaVersion             := "2.13.18",
+    scalaVersion             := "3.3.7",
     PlayKeys.playDefaultPort := 9080
   )
   .settings(
@@ -76,8 +76,10 @@ lazy val microservice: Project = Project(appName, file("."))
   .settings(
     scalacOptions ++= Seq(
       "-feature",
-      "-Wconf:cat=unused&src=routes/.*:s",
-      "-Wconf:cat=unused&src=views/.*:s",
-      "-Wconf:cat=unused-imports&src=html/.*:s"
+      "-Wconf:msg=unused&src=routes/.*:s",
+      "-Wconf:msg=unused&src=views/.*:s",
+      "-Wconf:msg=unused-imports&src=html/.*:s",
+      "-Wconf:msg=Flag.*repeatedly:s",
+      "-Wconf:msg=Setting -Wunused set to all redundantly:s"
     )
   )

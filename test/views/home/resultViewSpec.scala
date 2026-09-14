@@ -20,14 +20,15 @@ import helpers.ViewSpecHelpers.ResultViewMessages
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import org.jsoup.Jsoup
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
 import play.api.i18n.{Messages, MessagesApi}
+import play.twirl.api.HtmlFormat
 import views.html.home.result
 
 class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMessages {
 
-  val view = app.injector.instanceOf[result]
+  val view: result = app.injector.instanceOf[result]
 
   implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -36,7 +37,7 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
 
   "the ResultView" must {
 
-    val doc = Jsoup.parse(createView(1, true).toString())
+    val doc = Jsoup.parse(createView(1, true).toString)
 
     "have the correct title" in {
       doc.title() shouldBe ResultTitle

@@ -29,7 +29,7 @@ trait MapFormats {
         }) match {
           case Success(v) =>
             JsSuccess(v)
-          case Failure(e) =>
+          case Failure(_) =>
             JsError("Failed to convert map keys into ints")
         }
       }

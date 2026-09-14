@@ -24,12 +24,12 @@ import utils.{InputOption, Validation}
 
 object vatReturnPeriodForm extends Validation {
 
-  def apply(): Form[ReturnPeriod.Value] =
+  def apply(): Form[ReturnPeriod] =
     Form(single("vatReturnPeriod" -> of(ReturnPeriodFormatter)))
 
   def options: Seq[InputOption] = Seq(
-    returnPeriodInputOption(ReturnPeriod.ANNUALLY.toString, "vatReturnPeriod"),
-    returnPeriodInputOption(ReturnPeriod.MONTHLY.toString, "vatReturnPeriod-2")
+    returnPeriodInputOption(ReturnPeriod.ANNUALLY.value, "vatReturnPeriod"),
+    returnPeriodInputOption(ReturnPeriod.MONTHLY.value, "vatReturnPeriod-2")
   )
 
   private def returnPeriodInputOption(option: String, id: String) =
@@ -39,14 +39,14 @@ object vatReturnPeriodForm extends Validation {
       messageKey = s"vatReturnPeriod.option.$option"
     )
 
-  private def ReturnPeriodFormatter = new Formatter[ReturnPeriod.Value] {
+  private def ReturnPeriodFormatter: Formatter[ReturnPeriod] = new Formatter[ReturnPeriod] {
     def bind(key: String, data: Map[String, String]) = data.get(key) match {
       case Some(s) if optionIsValid(s) => Right(ReturnPeriod.withName(s))
       case None                        => produceError(key, "error.vatReturnPeriod.required")
       case _                           => produceError(key, "unknownErrorKey")
     }
 
-    def unbind(key: String, value: ReturnPeriod.Value) = Map(key -> value.toString)
+    def unbind(key: String, value: ReturnPeriod) = Map(key -> value.value)
   }
 
 }

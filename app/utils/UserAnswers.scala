@@ -20,7 +20,7 @@ import models.ReturnPeriod
 
 class UserAnswers(val cacheMap: CacheMap) extends MapFormats {
 
-  def vatReturnPeriod: Option[ReturnPeriod.Value] = cacheMap.getEntry[ReturnPeriod.Value]("vatReturnPeriod")
+  def vatReturnPeriod: Option[ReturnPeriod] = cacheMap.getEntry[ReturnPeriod]("vatReturnPeriod")
 
   def turnover: Option[BigDecimal] = cacheMap.getEntry[BigDecimal]("turnover")
 

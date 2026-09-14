@@ -20,7 +20,7 @@ import helpers.ViewSpecHelpers.CostOfGoodsViewMessages
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import org.jsoup.Jsoup
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import org.scalatestplus.play.PlaySpec
 import views.html.home.costOfGoods
 import forms.costOfGoodsForm

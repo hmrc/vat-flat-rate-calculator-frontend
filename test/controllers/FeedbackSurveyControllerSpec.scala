@@ -18,7 +18,7 @@ package controllers
 
 import com.codahale.metrics.SharedMetricRegistries
 import helpers.ControllerSpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, status}

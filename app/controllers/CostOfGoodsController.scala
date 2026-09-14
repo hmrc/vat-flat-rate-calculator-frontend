@@ -48,7 +48,7 @@ class CostOfGoodsController @Inject() (
       case Some(value) => costOfGoodsForm().fill(value)
     }
     request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-      case Some(value) => Ok(costOfGoodsView(preparedForm, value.toString))
+      case Some(value) => Ok(costOfGoodsView(preparedForm, value.value))
       case None =>
         logger.warn("[CostOfGoods Controller] No model found in Keystore; redirecting back to landing page")
         Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
@@ -61,7 +61,7 @@ class CostOfGoodsController @Inject() (
       .fold(
         (formWithErrors: Form[_]) =>
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-            case Some(value) => Future.successful(BadRequest(costOfGoodsView(formWithErrors, value.toString)))
+            case Some(value) => Future.successful(BadRequest(costOfGoodsView(formWithErrors, value.value)))
             case _ =>
               logger.warn("[CostOfGoods Controller] No model found in Keystore; Internal server error")
               Future.successful(InternalServerError(technicalErrorView()))
@@ -71,7 +71,7 @@ class CostOfGoodsController @Inject() (
             case Some(_) =>
               dataCacheConnector
                 .save[BigDecimal](request.sessionId, "costOfGoods", value)
-                .map(cacheMap => Redirect(controllers.routes.ResultController.onPageLoad))
+                .map(_ => Redirect(controllers.routes.ResultController.onPageLoad))
             case _ =>
               logger
                 .warn("[CostOfGoods Controller] No model found in Keystore for return Period; Internal server error")

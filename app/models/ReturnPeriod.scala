@@ -19,16 +19,29 @@ package models
 import play.api.libs.json.{Format, Reads, Writes}
 import utils.EnumUtils
 
-class Enums {}
+enum ReturnPeriod(val value: String) {
+  case ANNUALLY extends ReturnPeriod("annually")
+  case MONTHLY  extends ReturnPeriod("quarterly")
+}
 
-object ReturnPeriod extends Enumeration {
-  type ReturnPeriod = Value
-  val ANNUALLY = Value("annually")
-  val MONTHLY  = Value("quarterly")
+object ReturnPeriod {
 
-  val enumReads: Reads[ReturnPeriod] = EnumUtils.enumReads(ReturnPeriod)
+  def withName(value: String): ReturnPeriod =
+    ReturnPeriod.values
+      .find(_.value == value)
+      .getOrElse(
+        throw new NoSuchElementException(
+          s"No ReturnPeriod found for value '$value'"
+        )
+      )
 
-  val enumWrites: Writes[ReturnPeriod] = EnumUtils.enumWrites
+  val enumReads: Reads[ReturnPeriod] =
+    EnumUtils.enumReads(ReturnPeriod.values)(_.value)
 
-  implicit def enumFormats: Format[ReturnPeriod] = EnumUtils.enumFormat(ReturnPeriod)
+  val enumWrites: Writes[ReturnPeriod] =
+    EnumUtils.enumWrites(_.value)
+
+  given enumFormats: Format[ReturnPeriod] =
+    EnumUtils.enumFormat(ReturnPeriod.values)(_.value)
+
 }

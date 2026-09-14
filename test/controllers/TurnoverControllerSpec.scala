@@ -23,7 +23,7 @@ import forms.{turnoverForm, vatReturnPeriodForm}
 import helpers.ControllerSpecBase
 import helpers.ViewSpecHelpers.TurnoverViewMessages
 import models.ReturnPeriod
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.*
 import play.api.data.Form
 import play.api.http.Status
 import play.api.libs.json.{JsNumber, JsString}
@@ -55,7 +55,7 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
     }
 
     "return the correct view" in {
-      contentAsString(result) shouldBe viewAsString(period = ReturnPeriod.ANNUALLY.toString)
+      contentAsString(result) shouldBe viewAsString(period = ReturnPeriod.ANNUALLY.value)
     }
   }
 
@@ -80,7 +80,7 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
     "return the correct view" in {
       contentAsString(result) shouldBe viewAsString(
         turnoverForm().fill(BigDecimal(1000.00)),
-        ReturnPeriod.ANNUALLY.toString
+        ReturnPeriod.ANNUALLY.value
       )
     }
   }

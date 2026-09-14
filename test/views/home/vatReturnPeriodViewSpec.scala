@@ -19,7 +19,7 @@ package views.home
 import forms.vatReturnPeriodForm
 import helpers.ViewSpecHelpers.VatReturnPeriodViewMessages
 import org.jsoup.Jsoup
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}

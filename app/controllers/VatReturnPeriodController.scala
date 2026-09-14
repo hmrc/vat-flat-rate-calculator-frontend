@@ -57,8 +57,8 @@ class VatReturnPeriodController @Inject() (
         (formWithErrors: Form[_]) => Future.successful(BadRequest(vatReturnPeriodView(formWithErrors))),
         value =>
           dataCacheConnector
-            .save[ReturnPeriod.Value](request.sessionId, "vatReturnPeriod", value)
-            .map(cacheMap => Redirect(controllers.routes.TurnoverController.onPageLoad))
+            .save[ReturnPeriod](request.sessionId, "vatReturnPeriod", value)
+            .map(_ => Redirect(controllers.routes.TurnoverController.onPageLoad))
       )
   }
 

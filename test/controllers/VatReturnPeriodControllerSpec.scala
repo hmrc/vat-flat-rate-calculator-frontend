@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import helpers.ControllerSpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.*
 import play.api.http.Status
 import play.api.test.Helpers._
 import connectors.FakeDataCacheConnector

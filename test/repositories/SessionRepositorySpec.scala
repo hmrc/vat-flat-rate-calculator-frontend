@@ -40,7 +40,7 @@ class SessionRepositorySpec
   protected def checkTtlIndex: Boolean                 = true
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(timeout = 30.seconds, interval = 100.millis)
 
-  lazy val repository: MongoRepository = new MongoRepository(
+  override val repository: MongoRepository = new MongoRepository(
     config = app.injector.instanceOf[ApplicationConfig],
     mongo = mongoComponent
   )

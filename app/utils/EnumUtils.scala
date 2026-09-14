@@ -17,38 +17,38 @@
 package utils
 
 import play.api.Logging
-import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
-import scala.language.implicitConversions
+import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Reads, Writes}
 
 object EnumUtils extends Logging {
 
-  def enumReads[E <: Enumeration](`enum`: E): Reads[E#Value] =
-    new Reads[E#Value] {
-      def reads(json: JsValue): JsResult[E#Value] = json match {
-        case JsString(s) =>
-          try
-            JsSuccess(enum.withName(s))
-          catch {
-            case _: NoSuchElementException =>
-              logger.warn(
-                s"EnumUtils.enumReads - Enumeration expected of type: '${enum.getClass}', but it does not appear to contain the value: '$s'"
-              )
-              JsError(
-                s"Enumeration expected of type: '${enum.getClass}', but it does not appear to contain the value: '$s'"
-              )
-          }
-        case _ =>
-          logger.warn("EnumUtils.enumReads - String value expected")
-          JsError("String value expected")
-      }
+  def enumReads[E](values: Array[E])(asString: E => String): Reads[E] =
+    Reads {
+      case JsString(value) =>
+        values.find(enumValue => asString(enumValue) == value) match {
+          case Some(enumValue) =>
+            JsSuccess(enumValue)
+
+          case None =>
+            logger.warn(
+              s"EnumUtils.enumReads - Enum does not contain the value: '$value'"
+            )
+            JsError(
+              s"Enum does not contain the value: '$value'"
+            )
+        }
+
+      case _ =>
+        logger.warn("EnumUtils.enumReads - String value expected")
+        JsError("String value expected")
     }
 
-  implicit def enumFormat[E <: Enumeration](`enum`: E): Format[E#Value] =
-    Format(enumReads(enum), enumWrites)
+  def enumWrites[E](asString: E => String): Writes[E] =
+    Writes(value => JsString(asString(value)))
 
-  implicit def enumWrites[E <: Enumeration]: Writes[E#Value] =
-    new Writes[E#Value] {
-      def writes(v: E#Value): JsValue = JsString(v.toString)
-    }
+  def enumFormat[E](values: Array[E])(asString: E => String): Format[E] =
+    Format(
+      enumReads(values)(asString),
+      enumWrites(asString)
+    )
 
 }
