@@ -20,7 +20,7 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import helpers.ControllerSpecBase
 import org.scalatest.matchers.should.Matchers.*
 import play.api.http.Status
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import connectors.FakeDataCacheConnector
 import forms.vatReturnPeriodForm
 import play.api.data.Form
@@ -39,7 +39,7 @@ class VatReturnPeriodControllerSpec extends PlaySpec with ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new VatReturnPeriodController(mcc, FakeDataCacheConnector, dataRetrievalAction, view)
 
-  def viewAsString(form: Form[_] = vatReturnPeriodForm()) = view(form)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = vatReturnPeriodForm()) = view(form)(using fakeRequest, messages).toString
 
   "VatReturnPeriodController" must {
 

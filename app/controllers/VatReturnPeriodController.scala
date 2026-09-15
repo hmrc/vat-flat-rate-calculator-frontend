@@ -25,9 +25,10 @@ import models.ReturnPeriod
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{home => views}
+import views.html.home as views
+import models.OptionalDataRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,12 +38,13 @@ class VatReturnPeriodController @Inject() (
     dataCacheConnector: DataCacheConnector,
     getData: DataRetrievalAction,
     vatReturnPeriodView: views.vatReturnPeriod
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport
     with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData { implicit request =>
+  def onPageLoad: Action[AnyContent] = getData { request =>
+    given OptionalDataRequest[AnyContent] = request
     val preparedForm = request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
       case None        => vatReturnPeriodForm()
       case Some(value) => vatReturnPeriodForm().fill(value)
@@ -50,11 +52,12 @@ class VatReturnPeriodController @Inject() (
     Ok(vatReturnPeriodView(preparedForm))
   }
 
-  def onSubmit: Action[AnyContent] = getData.async { implicit request =>
+  def onSubmit: Action[AnyContent] = getData.async { request =>
+    given OptionalDataRequest[AnyContent] = request
     vatReturnPeriodForm()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) => Future.successful(BadRequest(vatReturnPeriodView(formWithErrors))),
+        (formWithErrors: Form[?]) => Future.successful(BadRequest(vatReturnPeriodView(formWithErrors))),
         value =>
           dataCacheConnector
             .save[ReturnPeriod](request.sessionId, "vatReturnPeriod", value)

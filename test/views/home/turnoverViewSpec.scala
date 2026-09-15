@@ -31,16 +31,16 @@ class TurnoverViewSpec extends PlaySpec with GuiceOneAppPerSuite with TurnoverVi
 
   val view = app.injector.instanceOf[turnover]
 
-  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  given messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  def createView(form: Form[_] = turnoverForm(), period: String) = view(form, period)(FakeRequest(), messages)
+  def createView(form: Form[?] = turnoverForm(), period: String) = view(form, period)(using FakeRequest(), messages)
 
-  def createErrorView(form: Form[_] = turnoverForm(), period: String) =
-    view(form.withError(FormError("turnover", turnoverError("year"))), period)(FakeRequest(), messages)
+  def createErrorView(form: Form[?] = turnoverForm(), period: String) =
+    view(form.withError(FormError("turnover", turnoverError("year"))), period)(using FakeRequest(), messages)
 
   "the TurnoverView" must {
 
-    val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
+    val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString)
 
     "have the correct title" in {
       doc.title() shouldBe turnoverTitle("year")

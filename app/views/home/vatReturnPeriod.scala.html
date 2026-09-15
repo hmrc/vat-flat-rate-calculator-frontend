@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
 @import forms.vatReturnPeriodForm
 
 @this(
@@ -24,7 +24,7 @@
     govukErrorSummary : GovukErrorSummary,
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[?])(using request: Request[?], messages: Messages)
 
 @title = @{
     if(form.errors.nonEmpty) messages("site.title.error", messages(s"vatReturnPeriod.heading")) else messages(s"vatReturnPeriod.heading")
@@ -40,7 +40,7 @@
             errorList   = for(error <- form.errors) yield {
                 ErrorLink(
                     href    = Some(s"#${error.key}"),
-                    content = Text(messages(error.message, error.args:_*))
+                    content = Text(messages(error.message, error.args*))
                 )
             }
         ))

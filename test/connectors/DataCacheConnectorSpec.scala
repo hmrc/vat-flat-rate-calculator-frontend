@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DataCacheConnectorSpec extends SpecBase with FutureAwaits with DefaultAwaitTimeout {
 
-  implicit val ec: ExecutionContext = global
+  given ExecutionContext = global
 
   def remove(cacheId: String, key: String): Future[Boolean] =
     mockSessionRepository().get(cacheId).flatMap { optionalCacheMap =>

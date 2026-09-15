@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with RecoverMethods {
 
-  implicit val ec: ExecutionContext = global
+  given ExecutionContext = global
 
   class Harness(dataCacheConnector: DataCacheConnector)
       extends DataRetrievalActionImpl(dataCacheConnector, mcc, frontendAppConfig) {

@@ -35,13 +35,13 @@ import scala.concurrent.{ExecutionContext, Future}
 case class DatedCacheMap(id: String, data: Map[String, JsValue], lastUpdated: Instant = Instant.now())
 
 object DatedCacheMap {
-  implicit val dateFormat: Format[Instant]     = MongoJavatimeFormats.instantFormat
-  implicit val formats: OFormat[DatedCacheMap] = Json.format[DatedCacheMap]
+  given Format[Instant]                 = MongoJavatimeFormats.instantFormat
+  given formats: OFormat[DatedCacheMap] = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 }
 
-class MongoRepository(config: ApplicationConfig, mongo: MongoComponent)(implicit ec: ExecutionContext)
+class MongoRepository(config: ApplicationConfig, mongo: MongoComponent)(using ExecutionContext)
     extends PlayMongoRepository[DatedCacheMap](
       collectionName = config.appName,
       mongoComponent = mongo,
@@ -76,7 +76,7 @@ class MongoRepository(config: ApplicationConfig, mongo: MongoComponent)(implicit
 
 @Singleton
 class SessionRepository @Inject() (config: ApplicationConfig, mongoComponent: MongoComponent)(
-    implicit ec: ExecutionContext
+    using ExecutionContext
 ) {
 
   private lazy val sessionRepository = new MongoRepository(config, mongoComponent)

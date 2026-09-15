@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json, OFormat, Reads}
 
 case class CacheMap(id: String, data: Map[String, JsValue]) {
 
-  def getEntry[T](key: String)(implicit fjs: Reads[T]): Option[T] =
+  def getEntry[T](key: String)(using Reads[T]): Option[T] =
     data
       .get(key)
       .map(json =>
@@ -35,5 +35,5 @@ case class CacheMap(id: String, data: Map[String, JsValue]) {
 }
 
 object CacheMap {
-  implicit val formats: OFormat[CacheMap] = Json.format[CacheMap]
+  given formats: OFormat[CacheMap] = Json.format[CacheMap]
 }

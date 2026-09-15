@@ -18,14 +18,13 @@ package controllers.actions
 
 import models.OptionalDataRequest
 import play.api.Application
-import play.api.mvc.{Request, _}
+import play.api.mvc.*
 import utils.{CacheMap, UserAnswers}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap])(implicit app: Application)
-    extends DataRetrievalAction {
+class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap])(using app: Application) extends DataRetrievalAction {
 
   override def executionContext: ExecutionContext = global
 

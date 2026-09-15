@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.fallback
 
@@ -29,5 +29,9 @@ class TimeoutController @Inject() (mcc: MessagesControllerComponents, timeoutVie
     extends FrontendController(mcc)
     with I18nSupport {
 
-  val timeout: Action[AnyContent] = Action.async(implicit request => Future.successful(Ok(timeoutView())))
+  val timeout: Action[AnyContent] = Action.async { request =>
+    given Request[AnyContent] = request
+    Future.successful(Ok(timeoutView()))
+  }
+
 }

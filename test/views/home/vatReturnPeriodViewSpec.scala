@@ -31,15 +31,15 @@ class VatReturnPeriodViewSpec extends PlaySpec with GuiceOneAppPerSuite with Vat
 
   val view = app.injector.instanceOf[vatReturnPeriod]
 
-  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  given messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  def createView(form: Form[_] = vatReturnPeriodForm()) = view(form)(FakeRequest(), messages)
+  def createView(form: Form[?] = vatReturnPeriodForm()) = view(form)(using FakeRequest(), messages)
 
-  def createErrorView(form: Form[_] = vatReturnPeriodForm()) =
-    view(form.withError(FormError("vatReturnPeriod", vatReturnPeriodError)))(FakeRequest(), messages)
+  def createErrorView(form: Form[?] = vatReturnPeriodForm()) =
+    view(form.withError(FormError("vatReturnPeriod", vatReturnPeriodError)))(using FakeRequest(), messages)
 
   "the VatReturnPeriod" must {
-    val doc = Jsoup.parse(createView(vatReturnPeriodForm()).toString())
+    val doc = Jsoup.parse(createView(vatReturnPeriodForm()).toString)
 
     "have the correct title" in {
       doc.title() shouldBe vatReturnPeriodTitle

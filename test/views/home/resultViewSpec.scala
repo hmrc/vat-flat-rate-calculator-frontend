@@ -30,10 +30,10 @@ class ResultViewSpec extends PlaySpec with GuiceOneAppPerSuite with ResultViewMe
 
   val view: result = app.injector.instanceOf[result]
 
-  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  given messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   def createView(resultCode: Int, showUserResearchPanel: Boolean) =
-    view(resultCode, showUserResearchPanel)(FakeRequest(), messages)
+    view(resultCode, showUserResearchPanel)(using FakeRequest(), messages)
 
   "the ResultView" must {
 

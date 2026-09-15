@@ -26,7 +26,8 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{home => views}
+import views.html.home as views
+import models.OptionalDataRequest
 
 import scala.util.Random
 
@@ -38,7 +39,8 @@ class ResultController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData { implicit request =>
+  def onPageLoad: Action[AnyContent] = getData { request =>
+    given OptionalDataRequest[AnyContent] = request
     request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
       case Some(value) =>
         val resultModel = new VatFlatRateModel(
@@ -59,7 +61,7 @@ class ResultController @Inject() (
     }
   }
 
-  private[controllers] def setURPanelFlag(implicit hc: HeaderCarrier): Boolean = {
+  private[controllers] def setURPanelFlag(using hc: HeaderCarrier): Boolean = {
     val random = new Random()
     val seed   = getLongFromSessionID(hc)
     random.setSeed(seed)

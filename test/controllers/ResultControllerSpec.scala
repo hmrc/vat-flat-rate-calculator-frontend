@@ -21,7 +21,7 @@ import forms.vatReturnPeriodForm
 import helpers.ControllerSpecBase
 import org.scalatest.matchers.should.Matchers.*
 import play.api.libs.json.{JsNumber, JsString}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.CacheMap
 import views.html.home.result
 
@@ -33,7 +33,7 @@ class ResultControllerSpec extends ControllerSpecBase {
     new ResultController(mcc, dataRetrievalAction, view)
 
   def viewAsString(resultCode: Int, showUserResearchPanel: Boolean) =
-    view(resultCode, showUserResearchPanel)(fakeRequest, messages).toString
+    view(resultCode, showUserResearchPanel)(using fakeRequest, messages).toString
 
   def createAnswers(index: Int, turnover: Double, costofGoods: Double) =
     Map(

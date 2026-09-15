@@ -27,7 +27,7 @@ inputType: String = "text",
 autoComplete: Option[String] = None,
 shortAnswer: Boolean = false,
 field: Field
-)(implicit messages: Messages)
+)(using messages: Messages)
 
 @govukInput(Input(
         label = Label(

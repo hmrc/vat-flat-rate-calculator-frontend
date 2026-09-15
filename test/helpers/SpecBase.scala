@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.HeaderNames
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
-  implicit val application: Application = app
+  given application: Application = app
 
   def injector: Injector = app.injector
 
@@ -45,5 +45,5 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+  given messages: Messages = messagesApi.preferred(fakeRequest)
 }

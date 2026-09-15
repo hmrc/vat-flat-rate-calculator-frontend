@@ -17,7 +17,7 @@
 package utils
 
 import helpers.SpecBase
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class CascadeUpsertSpec extends SpecBase {
 

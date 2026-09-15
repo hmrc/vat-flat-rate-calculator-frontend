@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.helpers.*
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
 
 @this(
     formWithCSRF: FormWithCSRF,
@@ -25,7 +25,7 @@
     govukInput : GovukInput
 )
 
-@(turnoverForm: Form[_], turnoverPeriodString: String)(implicit request: Request[_], messages: Messages)
+@(turnoverForm: Form[?], turnoverPeriodString: String)(using request: Request[?], messages: Messages)
 
 @headingSubString = @{
     if(turnoverPeriodString == "annually") Messages("common.year")

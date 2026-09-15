@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers._
+@import views.html.helpers.*
 @import common.Links
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
 
 @this(
     formWithCSRF: FormWithCSRF,
@@ -26,7 +26,7 @@
     govukInput : GovukInput
 )
 
-@(costOfGoodsForm: Form[_], costOfGoodsPeriodString: String)(implicit request: Request[_], messages: Messages)
+@(costOfGoodsForm: Form[?], costOfGoodsPeriodString: String)(using request: Request[?], messages: Messages)
 
 @headingSubString = @{
     if(costOfGoodsPeriodString == "annually") Messages("common.year")

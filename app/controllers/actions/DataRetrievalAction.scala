@@ -32,14 +32,14 @@ class DataRetrievalActionImpl @Inject() (
     val dataCacheConnector: DataCacheConnector,
     val mcc: MessagesControllerComponents,
     val appConfig: ApplicationConfig
-)(implicit val executionContext: ExecutionContext)
+)(using val executionContext: ExecutionContext)
     extends DataRetrievalAction
     with Logging {
 
   override def parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
 
   override protected def transform[A](request: Request[A]): Future[OptionalDataRequest[A]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    given hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     hc.sessionId match {
       case None => Future.failed(new IllegalStateException())

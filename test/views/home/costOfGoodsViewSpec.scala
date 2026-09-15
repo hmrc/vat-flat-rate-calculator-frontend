@@ -31,15 +31,15 @@ class CostOfGoodsViewSpec extends PlaySpec with GuiceOneAppPerSuite with CostOfG
 
   val view = app.injector.instanceOf[costOfGoods]
 
-  implicit def messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  given messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  def createView(form: Form[_] = costOfGoodsForm(), period: String) = view(form, period)(FakeRequest(), messages)
+  def createView(form: Form[?] = costOfGoodsForm(), period: String) = view(form, period)(using FakeRequest(), messages)
 
-  def createErrorView(form: Form[_] = costOfGoodsForm(), period: String) =
-    view(form.withError(FormError("costOfGoods", costOfGoodsError("year"))), period)(FakeRequest(), messages)
+  def createErrorView(form: Form[?] = costOfGoodsForm(), period: String) =
+    view(form.withError(FormError("costOfGoods", costOfGoodsError("year"))), period)(using FakeRequest(), messages)
 
   "the CostOfGoodsView" must {
-    val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString())
+    val doc = Jsoup.parse(createView(costOfGoodsForm(), "annually").toString)
 
     "have the correct title" in {
       doc.title() shouldBe costOfGoodsTitle("year")

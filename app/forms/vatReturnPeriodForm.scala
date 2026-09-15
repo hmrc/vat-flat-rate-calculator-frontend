@@ -18,7 +18,7 @@ package forms
 
 import models.ReturnPeriod
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.format.Formatter
 import utils.{InputOption, Validation}
 

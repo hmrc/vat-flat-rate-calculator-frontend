@@ -24,7 +24,7 @@ import scala.concurrent.Future
 
 object FakeDataCacheConnector extends DataCacheConnector {
 
-  override def save[A](cacheId: String, key: String, value: A)(implicit fmt: Format[A]): Future[CacheMap] = Future(
+  override def save[A](cacheId: String, key: String, value: A)(using Format[A]): Future[CacheMap] = Future(
     CacheMap(cacheId, Map())
   )
 

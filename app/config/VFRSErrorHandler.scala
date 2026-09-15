@@ -25,15 +25,15 @@ import views.html.error_template
 import scala.concurrent.{ExecutionContext, Future}
 
 class VFRSErrorHandler @Inject() (val messagesApi: MessagesApi, errorTemplate: error_template)(
-    implicit val ec: ExecutionContext
+    using val ec: ExecutionContext
 ) extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
-      implicit request: RequestHeader
+      using RequestHeader
   ): Future[Html] =
     Future.successful(errorTemplate(pageTitle, heading, message))
 
-  override def internalServerErrorTemplate(implicit request: RequestHeader): Future[Html] =
+  override def internalServerErrorTemplate(using RequestHeader): Future[Html] =
     standardErrorTemplate(
       Messages("techError.title"),
       Messages("techError.heading"),

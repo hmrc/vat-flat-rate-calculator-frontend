@@ -29,36 +29,36 @@ trait Validation {
   val decimalRegex = """^[+-]?[0-9]{1,11}(?:\.[0-9]{1,2})?$"""
 
   protected def minimumValue[A](minimum: A, errorKey: String, errorArgs: Any*)(
-      implicit ev: Ordering[A]
+      using ev: Ordering[A]
   ): Constraint[A] =
     Constraint { input =>
       import ev._
       if (input >= minimum) {
         Valid
       } else {
-        Invalid(errorKey, errorArgs: _*)
+        Invalid(errorKey, errorArgs*)
       }
     }
 
   protected def maximumValue[A](maximum: A, errorKey: String, errorArgs: Any*)(
-      implicit ev: Ordering[A]
+      using ev: Ordering[A]
   ): Constraint[A] =
     Constraint { input =>
       import ev._
       if (input < maximum) {
         Valid
       } else {
-        Invalid(errorKey, errorArgs: _*)
+        Invalid(errorKey, errorArgs*)
       }
     }
 
-  def verifyDecimalPlaces(input: String) =
+  def verifyDecimalPlaces(input: String): Boolean =
     if (input.contains(".")) {
       val decimalPlace = input.length - input.indexOf(".") - 1
       if (decimalPlace <= 2) true
       else false
     } else true
 
-  def optionIsValid(value: String) = options.exists(o => o.value == value)
+  def optionIsValid(value: String): Boolean = options.exists(o => o.value == value)
 
 }

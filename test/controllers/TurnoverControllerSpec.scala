@@ -27,7 +27,7 @@ import org.scalatest.matchers.should.Matchers.*
 import play.api.data.Form
 import play.api.http.Status
 import play.api.libs.json.{JsNumber, JsString}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.CacheMap
 import views.html.errors.technicalError
 import views.html.home.turnover
@@ -42,7 +42,8 @@ class TurnoverControllerSpec extends ControllerSpecBase with TurnoverViewMessage
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new TurnoverController(mcc, FakeDataCacheConnector, dataRetrievalAction, view, technicalErrorView)
 
-  def viewAsString(form: Form[_] = turnoverForm(), period: String) = view(form, period)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = turnoverForm(), period: String) =
+    view(form, period)(using fakeRequest, messages).toString
 
   def returnPeriodAnswer(index: Int = 0) = Map("vatReturnPeriod" -> JsString(vatReturnPeriodForm.options(index).value))
 

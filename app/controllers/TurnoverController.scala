@@ -24,9 +24,10 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{errors, home => views}
+import views.html.{errors, home as views}
+import models.OptionalDataRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,12 +38,13 @@ class TurnoverController @Inject() (
     getData: DataRetrievalAction,
     turnoverView: views.turnover,
     technicalErrorView: errors.technicalError
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport
     with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData { implicit request =>
+  def onPageLoad: Action[AnyContent] = getData { request =>
+    given OptionalDataRequest[AnyContent] = request
     val preparedForm = request.userAnswers.flatMap(x => x.turnover) match {
       case None        => turnoverForm()
       case Some(value) => turnoverForm().fill(value)
@@ -55,11 +57,12 @@ class TurnoverController @Inject() (
     }
   }
 
-  def onSubmit: Action[AnyContent] = getData.async { implicit request =>
+  def onSubmit: Action[AnyContent] = getData.async { request =>
+    given OptionalDataRequest[AnyContent] = request
     turnoverForm()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
             case Some(value) => Future.successful(BadRequest(turnoverView(formWithErrors, value.value)))
             case _ =>

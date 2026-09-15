@@ -15,7 +15,7 @@
  *@
 
 @import config.ApplicationConfig
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.*
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 
 @this(
@@ -31,7 +31,7 @@
     timeoutEnabled: Boolean = true,
     backLinkEnabled: Boolean = true,
     accountMenuEnabled: Boolean = true,
-    urBanner: Boolean = false)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+    urBanner: Boolean = false)(contentBlock: Html)(using request: RequestHeader, messages: Messages)
 
 
 @accountMenu = {

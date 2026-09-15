@@ -17,7 +17,7 @@
 package forms
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.format.Formatter
 import common.Constants.maximumTurnover
 import utils.Validation

@@ -35,10 +35,10 @@ class SessionRepositorySpec
     with PlayMongoRepositorySupport[DatedCacheMap]
     with CleanMongoCollectionSupport {
 
-  implicit val ec: ExecutionContext = global
+  given ExecutionContext = global
 
-  protected def checkTtlIndex: Boolean                 = true
-  override implicit val patienceConfig: PatienceConfig = PatienceConfig(timeout = 30.seconds, interval = 100.millis)
+  protected def checkTtlIndex: Boolean = true
+  given PatienceConfig                 = PatienceConfig(timeout = 30.seconds, interval = 100.millis)
 
   override val repository: MongoRepository = new MongoRepository(
     config = app.injector.instanceOf[ApplicationConfig],
