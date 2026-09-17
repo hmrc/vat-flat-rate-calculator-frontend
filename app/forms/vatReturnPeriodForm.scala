@@ -46,7 +46,7 @@ object vatReturnPeriodForm extends Validation {
       case _                           => produceError(key, "unknownErrorKey")
     }
 
-    def unbind(key: String, value: ReturnPeriod) = Map(key -> value.value)
+    def unbind(key: String, returnPeriod: ReturnPeriod) = Map(key -> returnPeriod.value)
   }
 
 }

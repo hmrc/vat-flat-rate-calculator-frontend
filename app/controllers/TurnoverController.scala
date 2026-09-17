@@ -50,7 +50,7 @@ class TurnoverController @Inject() (
       case Some(value) => turnoverForm().fill(value)
     }
     request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
-      case Some(value) => Ok(turnoverView(preparedForm, value.value))
+      case Some(returnPeriod) => Ok(turnoverView(preparedForm, returnPeriod.value))
       case None =>
         logger.warn("[Turnover Controller] No model found in Keystore; redirecting back to landing page")
         Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
