@@ -4,3 +4,4 @@ test-repositories:
   - vat-flat-rate-calculator-performance-tests
   - vat-flat-rate-calculator-acceptance-tests
   - platform-example-ui-journey-tests
+serviceNowMapping: SNSVC0021055
