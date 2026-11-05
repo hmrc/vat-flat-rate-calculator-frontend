@@ -18,7 +18,7 @@ package utils
 
 import play.api.libs.json.{JsPath, JsValue, Json, JsonValidationError}
 
-class KeyStoreEntryValidationException(
+class CacheMapEntryValidationException(
     val key: String,
     val invalidJson: JsValue,
     val readingAs: Class[?],
@@ -26,6 +26,6 @@ class KeyStoreEntryValidationException(
 ) extends Exception {
 
   override def getMessage: String =
-    s"KeyStore entry for key '$key' was '${Json.stringify(invalidJson)}'. Attempt to convert to ${readingAs.getName} gave errors: $errors"
+    s"Cache entry for key '$key' was '${Json.stringify(invalidJson)}'. Attempt to convert to ${readingAs.getName} gave errors: $errors"
 
 }

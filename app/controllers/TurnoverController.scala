@@ -52,7 +52,7 @@ class TurnoverController @Inject() (
     request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
       case Some(returnPeriod) => Ok(turnoverView(preparedForm, returnPeriod.value))
       case None =>
-        logger.warn("[Turnover Controller] No model found in Keystore; redirecting back to landing page")
+        logger.warn("[Turnover Controller] No model found in Cache; redirecting back to landing page")
         Redirect(controllers.routes.VatReturnPeriodController.onSubmit)
     }
   }
@@ -66,7 +66,7 @@ class TurnoverController @Inject() (
           request.userAnswers.flatMap(x => x.vatReturnPeriod) match {
             case Some(value) => Future.successful(BadRequest(turnoverView(formWithErrors, value.value)))
             case _ =>
-              logger.warn("[Turnover Controller] No model found in Keystore; redirecting back to landing page")
+              logger.warn("[Turnover Controller] No model found in Cache; redirecting back to landing page")
               Future.successful(InternalServerError(technicalErrorView()))
           },
         value =>
@@ -76,7 +76,7 @@ class TurnoverController @Inject() (
                 .save[BigDecimal](request.sessionId, "turnover", value)
                 .map(_ => Redirect(controllers.routes.CostOfGoodsController.onPageLoad))
             case _ =>
-              logger.warn("[Turnover Controller] No model found in Keystore for return Period; Internal server error")
+              logger.warn("[Turnover Controller] No model found in Cache for return Period; Internal server error")
               Future.successful(InternalServerError(technicalErrorView()))
           }
       )
