@@ -27,7 +27,7 @@ case class CacheMap(id: String, data: Map[String, JsValue]) {
         json
           .validate[T]
           .fold(
-            errors => throw new KeyStoreEntryValidationException(key, json, CacheMap.getClass, errors),
+            errors => throw new CacheMapEntryValidationException(key, json, CacheMap.getClass, errors),
             valid => valid
           )
       )
