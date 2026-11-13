@@ -20,9 +20,9 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootstrapVersion    = "10.7.0"
+  val bootstrapVersion    = "10.9.0"
   val mongoVersion        = "2.14.0"
-  val playFrontendVersion = "13.16.0"
+  val playFrontendVersion = "13.17.0"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
@@ -34,8 +34,8 @@ object AppDependencies {
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30"  % bootstrapVersion % Test,
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30" % mongoVersion     % Test,
-    "org.jsoup"          % "jsoup"                   % "1.16.1"         % Test,
-    "org.mockito"        % "mockito-core"            % "5.5.0"          % Test
+    "org.jsoup"          % "jsoup"                   % "1.24.1"         % Test,
+    "org.mockito"        % "mockito-core"            % "5.24.0"          % Test
   )
 
   def all: Seq[ModuleID] = compile ++ test
