@@ -62,7 +62,7 @@ lazy val microservice: Project = Project(appName, file("."))
     retrieveManaged          := true,
     routesGenerator          := InjectedRoutesGenerator,
     Assets / pipelineStages  := Seq(digest),
-    scalaVersion             := "3.3.7",
+    scalaVersion             := "3.3.9",
     PlayKeys.playDefaultPort := 9080
   )
   .settings(
